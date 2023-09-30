@@ -10,10 +10,10 @@ Contributors / Licensing
 
 Authors:
     
-* Firstname Lastname
-* Firstname Lastname
-* Firstname Lastname
-* Firstname Lastname
-* Firstname Lastnmae
+* Gary Ng Kwong Sang
+* Genna Cockburn
+* Jacqueline Azarcon
+* Shanemel Asuncion
+* Sparsh Thakur
 
-Generally everything is LICENSE'D under the ______________.
+Generally everything is LICENSE'D under the GNU GPLv3.
