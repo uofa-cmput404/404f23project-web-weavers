@@ -1,0 +1,11 @@
+{
+  "name": "projectwebweavers",
+  "version": "1.0.0",
+  "description": "distributed social networking",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "author": "",
+  "license": "ISC"
+}
