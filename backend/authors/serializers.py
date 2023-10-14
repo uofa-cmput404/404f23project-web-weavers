@@ -5,4 +5,3 @@ class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
         exclude = ['uuid']
-
