@@ -14,7 +14,7 @@ class AuthorList(APIView, PageNumberPagination):
         self.page_size = 10 # default page size
         self.max_page_size = 100
 
-        authors = Author.objects.all()
+        authors = Author.objects.all().order_by('displayName')
 
         # if a page query is provided, paginate the results
         if self.get_page_number(request, self):
