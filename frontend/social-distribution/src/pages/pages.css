@@ -1,0 +1,7 @@
+.main-content-container {
+    width: auto;
+    height: auto;
+    background-color: var(--slightly-darker-blue);
+    color: white;
+    padding: 2rem;
+}
