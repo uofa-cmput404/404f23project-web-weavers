@@ -20,7 +20,7 @@ export default function Post(props){
         }
     });
 
-    // user information- communicate with the back end
+    // user information- communicate with the backend
     // async and await
     useEffect(() => {
         const getUserData = async() => {
