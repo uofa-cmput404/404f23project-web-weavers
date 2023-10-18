@@ -1,5 +1,5 @@
 import './App.css';
-import Login from './login';
+import Login from './pages/login_signup/login';
 import Home from "./home"
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import {useEffect, useState} from 'react';

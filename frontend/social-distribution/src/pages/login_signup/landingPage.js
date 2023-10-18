@@ -17,9 +17,9 @@ function LandingPage() {
         </div>
 
         <div style={styles.buttons}>
-          <Button type="primary" dest="">Sign Up</Button>
-          <Button type="secondary">Login</Button>
-          <Button type="tertiary">Admin</Button>
+          <Button type="primary" dest="signup">Sign Up</Button>
+          <Button type="secondary" dest="login">Login</Button>
+          <Button type="tertiary" dest="admin"> Admin</Button>
         </div>
 
 
