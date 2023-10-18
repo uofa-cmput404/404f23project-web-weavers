@@ -1,44 +1,68 @@
 import React, {useState} from 'react';
-import { useNavigate } from "react-router-dom";
+import { colors, sizes, spacing } from '../../utils/theme';
+import Button from '../../components/Button';
 
 function Login() {
   const[username, setUsername] = useState("");
   const[password, setPassword] = useState("");
 
-  const navigate = useNavigate();
-  const onButtonClick = () => {
-        navigate("/home")
-  }
-  return (<div className = {"mainContainer"}>
-      <div> <title>Login </title> </div>
-
-      <div className = {"loginContainer"}>
-        <input
-          value = {password}
-          placeholder = "Enter Password"
-          className = {"inputBox"}
-          onChange = {ev => setPassword(ev.target.value)} />
-      </div>
+  return (<div className = {"mainContainer"} style ={styles.container}>
+      <h1 style = {styles.header}> LOGIN </h1>
       <br />
-
-      <div className = {"loginContainer"}>
-        <input
-          value = {username}
-          placeholder = "Enter Username"
-          className = {"inputBox"}
-          onChange = {ev => setUsername(ev.target.value)} />
-      </div>
+      <div className = {"loginStyle"} style = {styles.loginStyle}>
+        <div className = {"loginContainer"} style = {styles.loginContainer}>
+          <h1>Username</h1>
+          <input
+            value = {password}
+            placeholder = "Enter Password"
+            className = {"inputBox"}
+            onChange = {ev => setPassword(ev.target.value)} />
+          <br />
+            <h1>Password</h1>
+            <input
+              value = {username}
+              placeholder = "Enter Username"
+              className = {"inputBox"}
+              onChange = {ev => setUsername(ev.target.value)} />
+          </div>
+        </div>
       <br />
-      <div className = {"loginContainer"}>
-        <input
-        className={"InputButton"}
-        type="button"
-        onClick={onButtonClick}
-        value = {"Login"} />
-      </div>
+      <Button type="secondary" dest="home">Login</Button>
 
     </div>
   );
 }
+const styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.brand.c1,
+    height: '100vh',
+    width: '100vw',
+  },
+  buttons: {
+    padding: spacing.xl,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+  },
+  loginStyle: {
+    fontSize: sizes.xxl,
+    color: colors.text.c4,
+    backgroundColor: colors.brand.c4,
+    padding: spacing.lg,
+    borderStyle: 'solid',
+    borderRadius: '5px',
+    borderWidth: '2px',
+  },
+  loginContainer: {
+    padding: spacing.sm,
+    fontSize: sizes.xs
+  }
 
+}
 export default Login;
