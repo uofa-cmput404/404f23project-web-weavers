@@ -1,16 +1,25 @@
 import { colors,spacing,sizes, buttonSizes } from "../utils/theme";
-export default function Button({ children, ...attributes }) {
-    const type = attributes;
+export default function Button({ children, type, ...attributes }) {
+    const btnType = {
+      primary: type === 'primary',
+      secondary: type === 'secondary',
+      tertiary: type === 'tertiary',
+    }
+
+    const destination = attributes.dest;
+    console.log(destination);
 
     return (
       <button
         type="button"
         style={{
-          ...styles.button,
-          ...(type.primary && styles.primary),
-          ...(type.secondary && styles.secondary),
-          ...(type.tertiary && styles.tertiary),
+          ...(btnType.primary && styles.primary),
+          ...(btnType.secondary && styles.secondary),
+          ...(btnType.tertiary && styles.tertiary),
+          
         }}
+      
+        
       >
         {children}
       </button>
@@ -50,4 +59,5 @@ export default function Button({ children, ...attributes }) {
       width: buttonSizes.md,
     },
   };
+
   
