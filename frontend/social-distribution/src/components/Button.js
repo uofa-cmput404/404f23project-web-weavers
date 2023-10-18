@@ -1,4 +1,6 @@
 import { colors,spacing,sizes, buttonSizes } from "../utils/theme";
+import { useNavigate } from "react-router-dom";
+
 export default function Button({ children, type, ...attributes }) {
     const btnType = {
       primary: type === 'primary',
@@ -6,8 +8,12 @@ export default function Button({ children, type, ...attributes }) {
       tertiary: type === 'tertiary',
     }
 
-    const destination = attributes.dest;
-    console.log(destination);
+    const destination = "/" + attributes.dest;
+    
+    const navigate = useNavigate();
+    const onButtonClick = () => {
+      navigate(destination)
+    }
 
     return (
       <button
@@ -16,10 +22,8 @@ export default function Button({ children, type, ...attributes }) {
           ...(btnType.primary && styles.primary),
           ...(btnType.secondary && styles.secondary),
           ...(btnType.tertiary && styles.tertiary),
-          
         }}
-      
-        
+        onClick={onButtonClick}
       >
         {children}
       </button>
