@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import {useEffect, useState} from 'react';
 import LandingPage from './pages/login_signup/landingPage';
 import Signup from './pages/login_signup/signup';
-import Admin from './pages/admin/adminLogin';
+import AdminLogin from './pages/admin/adminLogin';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false)
@@ -18,7 +18,7 @@ function App() {
           <Route path = "/login" element = {<Login setLoggedIn={setLoggedIn}/>} />
           <Route path = "/home" element = {<Home/>}/>
           <Route path = "/signup" element = {<Signup />} />
-          <Route path = "/admin" element = {<Admin />} />
+          <Route path = "/admin" element = {<AdminLogin />} />
         </Routes>
       </BrowserRouter>
     </div>

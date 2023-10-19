@@ -2,14 +2,22 @@ import React from 'react';
 import { colors, sizes, spacing } from '../../utils/theme';
 import Button from '../../components/Button';
 import {useTypewriter} from 'react-simple-typewriter';
+import { useNavigate } from 'react-router-dom';
+
 
 function LandingPage() {
+  let navigate = useNavigate();
   const [typeEffect] = useTypewriter({
     words: ['Welcome to Social Distribution!'],
     loop: 1,
     cursorStyle: '_',
     deleteSpeed: 50,
   });
+
+  const handleClick = (dest) => {
+    navigate("/"+dest)
+  }
+
   return (
     <div className='container' style={styles.container}>
         <div className='text' style={styles.text}>
@@ -17,13 +25,10 @@ function LandingPage() {
         </div>
 
         <div style={styles.buttons}>
-          <Button type="primary" dest="signup">Sign Up</Button>
-          <Button type="secondary" dest="login">Login</Button>
-          <Button type="tertiary" dest="admin"> Admin</Button>
+          <Button btn_type="primary" onClick={()=>handleClick("signup")}>Sign Up</Button>
+          <Button btn_type="secondary"  onClick={()=>handleClick("login")}>Login</Button>
+          <Button btn_type="tertiary" onClick={()=>handleClick("admin")}> Admin</Button>
         </div>
-
-
-
     </div>
 
   );

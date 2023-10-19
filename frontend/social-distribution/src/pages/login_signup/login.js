@@ -1,8 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import { colors, sizes, spacing } from '../../utils/theme';
 import Button from '../../components/Button';
+import AuthContext from '../../context/AuthProvider';
 
 function Login() {
+  
   const[username, setUsername] = useState("");
   const[password, setPassword] = useState("");
 
