@@ -40,7 +40,6 @@ export default function Button({ children, type, ...attributes }) {
       fontSize: sizes.md,
       backgroundColor: colors.brand.c3,
       width: buttonSizes.md,
-      
     },
     secondary: {
       backgroundColor: colors.brand.c4,
