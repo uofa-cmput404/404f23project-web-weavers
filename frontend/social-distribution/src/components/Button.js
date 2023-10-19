@@ -6,7 +6,7 @@ export default function Button({ children, btn_type, ...attributes }) {
       primary: btn_type === 'primary',
       secondary: btn_type === 'secondary',
       tertiary: btn_type === 'tertiary',
-      conditional: btn_type == "conditional",
+      // conditional: btn_type == "conditional",
     }
 
     // const destination = "/" + dest;
@@ -24,12 +24,11 @@ export default function Button({ children, btn_type, ...attributes }) {
 
     return (
       <button
-        type="button"
         style={{
           ...(btnType.primary && styles.primary),
           ...(btnType.secondary && styles.secondary),
           ...(btnType.tertiary && styles.tertiary),
-          ...(btnType.conditional && styles.secondary),
+          // ...(btnType.conditional && styles.secondary),
         }}
         {...attributes}
       >

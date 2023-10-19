@@ -3,6 +3,8 @@ import { colors, sizes, spacing } from '../../utils/theme';
 import Button from '../../components/Button';
 import {useTypewriter} from 'react-simple-typewriter';
 import { useNavigate } from 'react-router-dom';
+import NavBarH from '../../components/NavbarH';
+import landing from '../../assets/landing.jpeg';
 
 
 function LandingPage() {
@@ -19,7 +21,9 @@ function LandingPage() {
   }
 
   return (
-    <div className='container' style={styles.container}>
+    <div>
+      <NavBarH/>
+        <div className='container' style={styles.container}>
         <div className='text' style={styles.text}>
           {typeEffect}
         </div>
@@ -29,8 +33,8 @@ function LandingPage() {
           <Button btn_type="secondary"  onClick={()=>handleClick("login")}>Login</Button>
           <Button btn_type="tertiary" onClick={()=>handleClick("admin")}> Admin</Button>
         </div>
+      </div>
     </div>
-
   );
 }
 
@@ -44,9 +48,11 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.brand.c1,
+    backgroundImage: `url(${landing})`,
     height: '100vh',
     width: '100vw',
+    backgroundSize: 'cover',
+    paddingBottom: '200px',
   },
   buttons: {
     padding: spacing.xl,
