@@ -7,7 +7,8 @@ function Login() {
   const[password, setPassword] = useState("");
 
   return (<div className = {"mainContainer"} style ={styles.container}>
-      <h1 style = {styles.header}> LOGIN </h1>
+      <h1> LOGIN </h1>
+      <h2 style = {styles.header}> note: hardcoded user and password are 123 123</h2>
       <br />
       <div className = {"loginStyle"} style = {styles.loginStyle}>
         <div className = {"loginContainer"} style = {styles.loginContainer}>
@@ -27,7 +28,7 @@ function Login() {
           </div>
         </div>
       <br />
-      <Button type="secondary" dest="home">Login</Button>
+      <Button type="conditional" dest="home" username= {username} password= {password} >Login</Button>
 
     </div>
   );
@@ -62,7 +63,10 @@ const styles = {
   loginContainer: {
     padding: spacing.sm,
     fontSize: sizes.xs
+  },
+  header: {
+    fontSize: "0.75rem",
+    fontStyle: "oblique"
   }
-
 }
 export default Login;

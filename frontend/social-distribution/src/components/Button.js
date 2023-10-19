@@ -6,13 +6,20 @@ export default function Button({ children, type, ...attributes }) {
       primary: type === 'primary',
       secondary: type === 'secondary',
       tertiary: type === 'tertiary',
+      conditional: type == "conditional",
     }
 
     const destination = "/" + attributes.dest;
-    
+
     const navigate = useNavigate();
     const onButtonClick = () => {
-      navigate(destination)
+      if(type !== "conditional"){
+        navigate(destination)
+      }else{
+        if(attributes.username === "123" && attributes.password == "123"){
+          navigate(destination)
+        }
+      }
     }
 
     return (
@@ -22,6 +29,7 @@ export default function Button({ children, type, ...attributes }) {
           ...(btnType.primary && styles.primary),
           ...(btnType.secondary && styles.secondary),
           ...(btnType.tertiary && styles.tertiary),
+          ...(btnType.conditional && styles.secondary),
         }}
         onClick={onButtonClick}
       >
@@ -40,7 +48,7 @@ export default function Button({ children, type, ...attributes }) {
       fontSize: sizes.md,
       backgroundColor: colors.brand.c3,
       width: buttonSizes.md,
-      
+
     },
     secondary: {
       backgroundColor: colors.brand.c4,
@@ -64,4 +72,3 @@ export default function Button({ children, type, ...attributes }) {
     },
   };
 
-  
