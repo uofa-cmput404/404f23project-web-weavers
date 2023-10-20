@@ -34,8 +34,9 @@ const spacing = {
     sm: "0.5rem",
     md: "1rem",
     lg: "2rem",
-    xl: "4rem",
-    xxl: "5rem",
+    xl: "3rem",
+    xxl: "4rem",
+    '3xl': "5rem",
 }
 
 const buttonSizes = {
