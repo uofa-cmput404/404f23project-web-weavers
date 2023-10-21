@@ -12,13 +12,16 @@ import {
 } from '@chakra-ui/react'
 import "./Posting.css"
 
-export default function Post(props){
-    const userID= localStorage.getItem()
-    const postID = 1;                       // figure out how to get ID later
+export default function Post(){
+    // const userID= localStorage.getItem()
+    // const postID = 1;                       
     const [IsLiked, SetIsLiked]= useState("");
     const [postTitle, setPostTitle]= useState("")
     const [postcontent, SetpostContent]= useState("")
-    const [postImage, SetpostImage]= useState(props.post.image);
+    // const [postImage, SetpostImage]= useState(props.post.image);
+
+
+    // TODO: figure out how to pull data from backends
 
     // if no content in post- just an image
     // const [showContent, setShowContent] = useState(() => {
@@ -71,11 +74,11 @@ export default function Post(props){
     // getUserData()
 
     return(
-        <Card>
+        <Card maxW='md'>
             <CardHeader>
                 <Flex spacing='4'>
                     <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
-                        <Avatar name='Richard' src='https://bit.ly/sage-adebayo' />
+                        <Avatar name='Richard' src='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80' />
                         <Box>
                             <Heading>Richard</Heading>
                         </Box>
