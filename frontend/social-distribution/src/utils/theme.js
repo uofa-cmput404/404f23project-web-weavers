@@ -7,6 +7,8 @@ const colors = {
         c3: "#BB9B6C",
         c4: "#AA9C94",
         c5: "#B4947C",
+        c6: "#45454F",
+        c7: "f6f0e6"
   },
     text: {
         t1: "#000000",
@@ -14,10 +16,12 @@ const colors = {
     }, 
 }
 
+// Need help to get better fonts
 const fonts = {
-    body: "Raleway', sans-serif",
-    heading: "Open Sans', sans-serif",
-    title: "Juilus Sans One', sans-serif",
+    heading: "Roboto",
+    body: "Roboto",
+    mono: "Roboto",
+    title: "Satisfy",
 }
 
 const sizes = {

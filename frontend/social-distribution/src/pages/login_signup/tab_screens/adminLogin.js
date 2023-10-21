@@ -1,7 +1,6 @@
 import React, {useState, useRef,useEffect,useContext} from 'react';
-import AuthContext from '../../context/AuthProvider';
-import { colors, sizes, spacing, fonts } from '../../utils/theme';
-import NavBarH from '../../components/NavbarH';
+import AuthContext from '../../../context/AuthProvider';
+import { colors, sizes, spacing, fonts } from '../../../utils/theme';
 import {
     Box,
     Checkbox,
@@ -13,7 +12,7 @@ import {
   } from "@chakra-ui/react";
 import { Formik,  Field,  } from 'formik';
 import { useNavigate } from 'react-router-dom';
-import Button from '../../components/Button';
+import Button from '../../../components/Button';
 
 
 function AdminLogin() { 
@@ -29,7 +28,6 @@ function AdminLogin() {
     
     return(
         <div>
-            <NavBarH/>
             <div className='container' style={styles.container}>
                 <div className='Header' style = {styles.headers}>
                     <h1>Admin Login</h1>
@@ -124,7 +122,6 @@ const styles = {
         justifyContent: 'center',
         backgroundColor: colors.brand.c1,
         height: '100vh',
-        width: '100vw',
         fontSize: sizes.md,
         fontFace: fonts.body,
     },

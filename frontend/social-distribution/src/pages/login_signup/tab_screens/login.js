@@ -1,18 +1,11 @@
 import React, {useState, useContext} from 'react';
-import { colors, sizes, spacing } from '../../utils/theme';
-import Button from '../../components/Button';
-import AuthContext from '../../context/AuthProvider';
-import { useNavigate } from 'react-router-dom';
+import { colors, sizes, spacing } from '../../../utils/theme';
+import Button from '../../../components/Button';
 
 function Login() {
   
   const[username, setUsername] = useState("");
   const[password, setPassword] = useState("");
-
-  const navigate= useNavigate()
-  const logedin = () => {
-    navigate('home')
-  }
 
   return (<div className = {"mainContainer"} style ={styles.container}>
       <h1> LOGIN </h1>
@@ -36,7 +29,7 @@ function Login() {
           </div>
         </div>
       <br />
-      <Button type="conditional" dest="home" username= {username} password= {password} onClick={logedin}>Login</Button>
+      <Button type="conditional" dest="home" username= {username} password= {password} >Login</Button>
 
     </div>
   );
