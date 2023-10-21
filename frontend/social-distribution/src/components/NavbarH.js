@@ -17,9 +17,13 @@ export default function NavBarH({...attributes }) {
                         <Tab>About</Tab>
                         <Tab>Sign Up</Tab>
                         <Tab>Login</Tab>
-                        <Tab>Admin</Tab>
+    
                     </TabList>
 
+                    <TabPanels>
+                    
+
+                    </TabPanels>
                 </Tabs>
             </div>
             
@@ -32,22 +36,22 @@ const styles = {
     navbar: {
         width:'100vw',
         backgroundColor: colors.brand.c4,
-        height: '10vh',
+        height: '8vh',
         margin: '0',
     },
     logo: {
         width: '10vw',
-        height: '10vh',
+        height: '8vh',
     },
     tabs: {
         float: 'right',
-        height: '10vh',
+        height: '8vh',
         width: '80vw',
     },
     lcontainer: {
         float: 'left',
         width: '20vw',
-        height: '10vh',
+        height: '8vh',
     }
    
 }

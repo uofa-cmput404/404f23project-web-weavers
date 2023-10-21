@@ -31,6 +31,7 @@ function LandingPage() {
         <div style={styles.buttons}>
           <Button btn_type="primary" onClick={()=>handleClick("signup")}>Sign Up</Button>
           <Button btn_type="secondary"  onClick={()=>handleClick("login")}>Login</Button>
+          {/* I will remove this admin page button later but I will leave it here for a bit so you can use this as reference for our login/signup */}
           <Button btn_type="tertiary" onClick={()=>handleClick("admin")}> Admin</Button>
         </div>
       </div>
