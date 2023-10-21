@@ -1,5 +1,5 @@
 import React from "react";
-import {colors, spacing, sizes} from "../../utils/theme";
+import {colors, spacing, sizes} from "../../../utils/theme";
 export default function About() {
     
         return (

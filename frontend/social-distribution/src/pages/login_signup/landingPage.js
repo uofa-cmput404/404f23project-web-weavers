@@ -1,24 +1,22 @@
 import React from 'react';
-import { colors, sizes, spacing } from '../../utils/theme';
-import Welcome from './welcome';
-
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
+import { colors } from '../../utils/theme';
+import { Tabs, TabList, TabPanels, Tab, TabPanel} from '@chakra-ui/react'
 import logo from "../../assets/logo.png"
-import AdminLogin from './adminLogin';
-import Signup from './signup';
-import About from './about';
+import Welcome from './tab_screens/welcome';
+import About from './tab_screens/about';
+import Signup from './tab_screens/signup';
+import AdminLogin from './tab_screens/adminLogin';
 
 function LandingPage() {
-  
-
-  return (
+    return (
     <>
     <div className='tab-container' style={styles.tabContainer}>
-      
+        <img src={logo} alt="logo" style={styles.logo} />
+   
       <div className="tabs" style={styles.tabs}>
-        <Tabs isFitted variant='solid-rounded' m={6} colorScheme="whiteAlpha" size='lg' align='center'>
+        <Tabs variant='solid-rounded' m={6} colorScheme="whiteAlpha" size='sm' align='end'>
             <TabList>
-                <Tab><img src={logo} alt="logo" style={styles.logo}/></Tab>
+                <Tab>Home</Tab>
                 <Tab>About</Tab>
                 <Tab>Sign Up</Tab>
                 <Tab>Login</Tab>
@@ -26,7 +24,7 @@ function LandingPage() {
 
             <TabPanels>
                   <TabPanel>
-                     <Welcome />
+                      <Welcome />
                   </TabPanel>
                   <TabPanel>
                       <About />
@@ -53,11 +51,11 @@ const styles = {
     border: '1px solid black',
   },
   logo: {
-    width: '10vw',
+    width: '8vw',
     height: '8vh',
-    marginTop: '10px',
     zIndex: '1',
     position: 'absolute',
+    marginLeft: '45vw',
 },   
   tabContainer: {
     display: 'flex',

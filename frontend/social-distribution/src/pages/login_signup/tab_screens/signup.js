@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import { colors, sizes, spacing } from '../../utils/theme';
-import Button from '../../components/Button';
+import { colors, sizes, spacing } from '../../../utils/theme';
+import Button from '../../../components/Button';
 
 function Signup() {
     const[username, setUsername] = useState("");

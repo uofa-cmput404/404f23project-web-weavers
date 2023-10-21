@@ -1,9 +1,9 @@
 import React from "react"
-import { colors, spacing, sizes } from "../../utils/theme"
-import landing from '../../assets/landing.jpeg';
+import { colors, spacing, sizes } from "../../../utils/theme"
+import landing from '../../../assets/landing.jpeg';
 import {useTypewriter} from 'react-simple-typewriter';
 import { useNavigate } from 'react-router-dom';
-import Button from '../../components/Button';
+import Button from '../../../components/Button';
 
 export default function Welcome() {
     let navigate = useNavigate();

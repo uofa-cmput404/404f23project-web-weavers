@@ -1,6 +1,6 @@
 import React, {useState, useRef,useEffect,useContext} from 'react';
-import AuthContext from '../../context/AuthProvider';
-import { colors, sizes, spacing, fonts } from '../../utils/theme';
+import AuthContext from '../../../context/AuthProvider';
+import { colors, sizes, spacing, fonts } from '../../../utils/theme';
 import {
     Box,
     Checkbox,
@@ -12,7 +12,7 @@ import {
   } from "@chakra-ui/react";
 import { Formik,  Field,  } from 'formik';
 import { useNavigate } from 'react-router-dom';
-import Button from '../../components/Button';
+import Button from '../../../components/Button';
 
 
 function AdminLogin() { 
