@@ -1,7 +1,6 @@
 import React, {useState, useContext} from 'react';
-import { colors, sizes, spacing } from '../../utils/theme';
-import Button from '../../components/Button';
-import AuthContext from '../../context/AuthProvider';
+import { colors, sizes, spacing } from '../../../utils/theme';
+import Button from '../../../components/Button';
 
 function Login() {
   

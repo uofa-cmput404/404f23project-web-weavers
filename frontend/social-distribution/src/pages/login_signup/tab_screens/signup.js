@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import { colors, sizes, spacing } from '../../utils/theme';
-import Button from '../../components/Button';
+import { colors, sizes, spacing } from '../../../utils/theme';
+import Button from '../../../components/Button';
 
 function Signup() {
     const[username, setUsername] = useState("");
@@ -44,7 +44,6 @@ const styles = {
         justifyContent: 'center',
         backgroundColor: colors.brand.c1,
         height: '100vh',
-        width: '100vw',
 
     },
     loginStyle: {
