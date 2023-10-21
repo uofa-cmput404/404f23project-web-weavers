@@ -1,67 +1,68 @@
 import React from 'react';
 import { colors, sizes, spacing } from '../../utils/theme';
-import Button from '../../components/Button';
-import {useTypewriter} from 'react-simple-typewriter';
-import { useNavigate } from 'react-router-dom';
-import NavBarH from '../../components/NavbarH';
-import landing from '../../assets/landing.jpeg';
+import Welcome from './welcome';
 
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
+import logo from "../../assets/logo.png"
+import AdminLogin from './adminLogin';
+import Signup from './signup';
+import About from './about';
 
 function LandingPage() {
-  let navigate = useNavigate();
-  const [typeEffect] = useTypewriter({
-    words: ['Welcome to Social Distribution!'],
-    loop: 1,
-    cursorStyle: '_',
-    deleteSpeed: 50,
-  });
-
-  const handleClick = (dest) => {
-    navigate("/"+dest)
-  }
+  
 
   return (
-    <div>
-      <NavBarH/>
-        <div className='container' style={styles.container}>
-        <div className='text' style={styles.text}>
-          {typeEffect}
-        </div>
+    <>
+    <div className='tab-container' style={styles.tabContainer}>
+      
+      <div className="tabs" style={styles.tabs}>
+        <Tabs isFitted variant='solid-rounded' m={6} colorScheme="whiteAlpha" size='lg' align='center'>
+            <TabList>
+                <Tab><img src={logo} alt="logo" style={styles.logo}/></Tab>
+                <Tab>About</Tab>
+                <Tab>Sign Up</Tab>
+                <Tab>Login</Tab>
+            </TabList>
 
-        <div style={styles.buttons}>
-          <Button btn_type="primary" onClick={()=>handleClick("signup")}>Sign Up</Button>
-          <Button btn_type="secondary"  onClick={()=>handleClick("login")}>Login</Button>
-          {/* I will remove this admin page button later but I will leave it here for a bit so you can use this as reference for our login/signup */}
-          <Button btn_type="tertiary" onClick={()=>handleClick("admin")}> Admin</Button>
+            <TabPanels>
+                  <TabPanel>
+                     <Welcome />
+                  </TabPanel>
+                  <TabPanel>
+                      <About />
+                  </TabPanel>
+                  <TabPanel>
+                      <Signup />
+                  </TabPanel>
+                  <TabPanel>
+                      <AdminLogin />
+                  </TabPanel>
+            </TabPanels>
+        </Tabs>
         </div>
-      </div>
     </div>
+            
+        
+      </>
   );
 }
 
 const styles = { 
-  text: {
-    fontSize: sizes.xxl, 
-    color: colors.text.c1,
-  },
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundImage: `url(${landing})`,
-    height: '100vh',
+  tabs: {
     width: '100vw',
-    backgroundSize: 'cover',
-    paddingBottom: '200px',
+    border: '1px solid black',
   },
-  buttons: {
-    padding: spacing.xl,
+  logo: {
+    width: '10vw',
+    height: '8vh',
+    marginTop: '10px',
+    zIndex: '1',
+    position: 'absolute',
+},   
+  tabContainer: {
     display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.xxl,
-  },
+    width: '100vw',
+    backgroundColor: colors.brand.c4,
+  }
 }
 export default LandingPage;

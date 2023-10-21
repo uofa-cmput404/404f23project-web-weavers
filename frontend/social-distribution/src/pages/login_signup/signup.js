@@ -44,7 +44,6 @@ const styles = {
         justifyContent: 'center',
         backgroundColor: colors.brand.c1,
         height: '100vh',
-        width: '100vw',
 
     },
     loginStyle: {
