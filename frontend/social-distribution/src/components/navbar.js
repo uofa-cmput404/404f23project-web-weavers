@@ -1,23 +1,34 @@
 import React,{useState} from "react";
 import {colors, spacing, sizes} from '../utils/theme.js'
 import { Avatar, Divider, Flex, Text, Heading, IconButton } from "@chakra-ui/react";
-import { FiMenu, FiHome, FiInbox, FiUser, FiSettings, FiUsers} from "react-icons/fi";
+import { FiMenu, FiHome, FiInbox, FiUser, FiSettings, FiLogOut, FiSquare} from "react-icons/fi";
 import NavItem from "./NavItem.js";
 import Logo from "../assets/logo.png"
+import { useNavigate } from 'react-router-dom';
 
 
 export default function NavBar({...props}) {
     // TODO: get username and pictureUrl from backend   -> remove hardcoded values
-    //       get functionality for links -> set menu items
-    //       remove menu placement or make it cute
-    //       enable selecting menu items by dynamically changing active variable
-
    
-
+    let navigate = useNavigate();
+    const current = props.current
     const username = "JohnDoeInfinity"
     const pictureUrl = "https://bit.ly/dan-abramov"
     // Note: limit amount of characters in username
+
     const [navSize, changeNavSize] = useState("large");
+    const [activeNav, setActive] = useState({current});
+    console.log(activeNav)
+
+
+    const handleClick = (e) => {
+        if(e== "Sign out"){
+            // clear auth token
+            e = "" // back to home page
+        }
+        setActive(e);
+        navigate("/"+e)
+    }
 
     return (
         <Flex style={styles.container} flexDir="column" pos="sticky" h="100vh" w={navSize == "small" ? "75px" : "300px"}>
@@ -25,11 +36,12 @@ export default function NavBar({...props}) {
                 <IconButton background="none" mt={5} _hover={{background: "none"}} icon={<FiMenu />} 
                 onClick={() => navSize === "small" ? changeNavSize("large") : changeNavSize("small")} color='white' />
 
-                <NavItem navSize={navSize} icon={FiHome} title="Home" description="Home" active={true} />
-                <NavItem navSize={navSize} icon={FiUser} title="Profile" />
-                <NavItem navSize={navSize} icon={FiInbox} title="Inbox" />
-                <NavItem navSize={navSize} icon={FiUsers} title="Authors" />
-                <NavItem navSize={navSize} icon={FiSettings} title="Settings" />
+                <NavItem navSize={navSize} icon={FiHome} title="Home" description="Home" active={current === 'Home' ? true : false } onClick={()=>{handleClick('Home')}}/>
+                <NavItem navSize={navSize} icon={FiSquare} title="Explore" active={current === 'Explore' ? true : false } onClick={()=>{handleClick('Explore')}} />
+                <NavItem navSize={navSize} icon={FiUser} title="Profile" active={current === 'Profile' ? true : false } onClick={()=>{handleClick('Profile')}} />
+                <NavItem navSize={navSize} icon={FiInbox} title="Inbox" active={current === 'Inbox' ? true : false } onClick={()=>{handleClick('Inbox')}} />
+                <NavItem navSize={navSize} icon={FiSettings} title="Settings" active={current === 'Settings' ? true : false } onClick={()=>{handleClick('Settings')}} />
+                <NavItem navSize={navSize} icon={FiLogOut} title="Sign out" active={activeNav === 'Signout' ? true : false } onClick={()=>{handleClick('Signout')}} />
             </Flex>
 
 
@@ -50,10 +62,12 @@ export default function NavBar({...props}) {
 
 const styles = {
     container:{
-        boxShadow:"0 4px 12px 0",
+        boxShadow:"0 4px 12px 0 rgba(0,0,0,0.05)",
         backgroundColor:colors.text.t1,
         justifyContent:"space-between",
         color:colors.text.t2,
+        zIndex:1,
+        position:"absolute"
     },
    
 }

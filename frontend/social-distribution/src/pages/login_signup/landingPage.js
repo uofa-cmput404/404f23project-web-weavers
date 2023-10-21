@@ -48,7 +48,7 @@ function LandingPage() {
 const styles = { 
   tabs: {
     width: '100vw',
-    border: '1px solid black',
+    boxShadow:"4px 4px 12px 0 rgba(0,0,0,0.50)",
   },
   logo: {
     width: '8vw',
@@ -61,6 +61,7 @@ const styles = {
     display: 'flex',
     width: '100vw',
     backgroundColor: colors.brand.c4,
+    
   }
 }
 export default LandingPage;
