@@ -65,12 +65,4 @@ const styles = {
         alignItems: "center",
         marginTop: spacing.lg,
     },
-    friendsBar: {
-        position: "fixed",
-        overflowX: 'hidden',
-        overflowY: 'hidden',
-        "&::-webkit-scrollbar": {
-            display: "none", // Hide the scrollbar in WebKit browsers
-          },
-      },
 };

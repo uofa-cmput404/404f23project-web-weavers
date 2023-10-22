@@ -63,9 +63,9 @@ export default function TextPost(props){
 
 const styles = {
     contentField: {
-        width: "100%", // Set the width to 100%
-        maxWidth: "100%", // Set the maxWidth to 100%
-        height: "50px",
+        width: "100%",
+        maxWidth: "100%",
+        height: "60px", // Increase the height of the textarea
         padding: "10px",
         fontSize: "16px",
         border: "none",
@@ -73,5 +73,6 @@ const styles = {
         boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.1)",
         resize: "none",
         marginBottom: "20px",
-    }
+        overflowX: "hidden",
+      },
 }

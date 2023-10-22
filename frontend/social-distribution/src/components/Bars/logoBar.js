@@ -18,9 +18,10 @@ const styles = {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        position: "absolute",
+        position: "fixed",
         top: 0,
         left: 0,
+        zIndex: 1,
     },
     logo: {
         width: '8vw',
