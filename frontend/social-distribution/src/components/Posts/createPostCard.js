@@ -1,5 +1,5 @@
 import React from "react";
-import {colors} from "../utils/theme.js";
+import {colors} from "../../utils/theme.js";
 import { Divider,Flex, IconButton, Button } from "@chakra-ui/react";
 import {FiImage} from "react-icons/fi";
 import { BeatLoader } from "react-spinners";
@@ -8,10 +8,12 @@ import { BeatLoader } from "react-spinners";
     TODO: Add functionality to the post button and image upload button
           Integrate with backend
           Add Description box w/ functionality
+          Okay mb but yeah the buttons do not align properly if window is resized
 */}
 
 export default function CreatePostCard({props}){
     const [content, setContent] = React.useState(''); 
+    const [image, setImage] = React.useState('');
     const getPhoto = () => {
         console.log("get photo");
     }
@@ -23,7 +25,9 @@ export default function CreatePostCard({props}){
     return(
         <div style={styles.container}>
         <Flex flexDir="column" w="100%" alignItems="center" align="center">
-            {/* Note: Make the description box not resizable */}
+            {/* Note: Make the description box not resizable 
+                      Text tab would be here
+            */}
             <h1 style={{height:'80px'}}>Create Text Post Component</h1>
             <Divider/>
             <Flex flexDir="row" align="start" >
@@ -41,7 +45,7 @@ export default function CreatePostCard({props}){
 
 const styles = {
     container:{
-        width: "40vw",
+        width: "600px",
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -56,7 +60,7 @@ const styles = {
         backgroundColor: colors.brand.c4,
         borderRadius: '1rem',
         boxShadow: '0 0 1rem #0001',
-        marginRight: '16vw',
-        marginLeft: '16vw',
+        marginRight: '220px',
+        marginLeft: '220px',
     }
 }

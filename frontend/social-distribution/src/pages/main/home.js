@@ -1,30 +1,40 @@
 import React from "react";
-import {colors, spacing, sizes} from "../../utils/theme";
-import NavBar from "../../components/navbar";
-import LogoBar from "../../components/logoBar";
-import CreatePostCard from "../../components/createPostCard";
+import {colors, sizes, spacing} from "../../utils/theme";
+import NavBar from "../../components/Bars/navbar";
+import LogoBar from "../../components/Bars/logoBar";
+import CreatePostCard from "../../components/Posts/createPostCard";
+import FriendsBar from "../../components/FriendsBar/friendsBar";
+import { Divider, Flex } from "@chakra-ui/react";
+import PostFeed from "../../components/Posts/postFeed";
 
 export default function Home() {
 
     return (
-        <div style={styles.container}>
+        <div style={styles.containers}>
             <LogoBar/>
             <NavBar current='Home'/>
+            <FriendsBar/>
             
             <div style={styles.content}>
                 <CreatePostCard/>
+                <Flex direction="column" align="center" justify="center">
+                    <Divider orientation="horizontal" width="50%" mt='5rem' colorScheme="blackAlpha" />
+                </Flex>
+                <Flex direction='column' align='center' justify='center' mt={spacing.xl}>
+                    <PostFeed />
+                </Flex>
             </div>
         </div>
     );
 }
 const styles = {
-    container:{
+    containers:{
         backgroundColor: colors.brand.c6,
-        height: "100vh",
     },
     content:{
-        // padding: spacing.medium,
-        width: sizes.contentWidth,
-        paddingTop: '5rem'
-    }
+        paddingTop: '5rem',
+        height:'100vh',
+        overflow:'scroll',
+    },
+
 }
