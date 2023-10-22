@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { 
     Card, 
-    CardHeader, 
-    CardBody, 
-    Flex, 
-    Avatar, 
-    Box, 
-    Heading,
-    Divider,
-    Text
 } from '@chakra-ui/react'
 
 
@@ -60,7 +52,7 @@ export default function TextPost(props){
     // setPostTitle()
 
     return(
-        <Card maxW='lg'>
+        <Card maxW='xl'>
             <textarea
             style={styles.contentField}
             placeholder="Write something..."
@@ -71,9 +63,15 @@ export default function TextPost(props){
 
 const styles = {
     contentField: {
-        width: "90%",
-        maxWidth: "100%",
+        width: "100%", // Set the width to 100%
+        maxWidth: "100%", // Set the maxWidth to 100%
         height: "50px",
+        padding: "10px",
+        fontSize: "16px",
+        border: "none",
+        borderRadius: "5px",
+        boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.1)",
         resize: "none",
+        marginBottom: "20px",
     }
 }

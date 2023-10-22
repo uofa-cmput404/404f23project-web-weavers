@@ -28,7 +28,7 @@ export default function FriendsBar({props}) {
 
     return (
         <div >
-            <Flex style={styles.container} flexDir="column" pos="sticky" h="95vh" w="300px" left={'84vw'} top={'5vh'}>
+            <Flex style={styles.container} flexDir="column" pos="sticky" h="95vh" w="20px" left={'84vw'} top={'5vh'}>
                 <SearchBar />
          
                 <Flex flexDir="column" w="100%" alignItems="center" align="center">
@@ -49,9 +49,12 @@ const styles = {
         boxShadow:"0 4px 12px 0 rgba(0,0,0,0.5)",
         backgroundColor:colors.text.t1,
         zIndex:1,
-        position:"fixed",
+        position:"absolute",
         padding:'1rem',
         overflow:'scroll',
+        overflowX:'hidden',
+        width:'230px',
+        height: '95vh',
     },
    
 }

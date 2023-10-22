@@ -42,13 +42,13 @@ export default function CreatePostCard() {
           Add a description...
         </h1>
 
-        {showTextPost && <TextPost />}
+        {showTextPost && <TextPost maxWidth= "xl"/>}
 
         {imageSrc && (
           <img
             src={imageSrc}
             alt="Selected Image"
-            style={{ maxWidth: "100%", marginTop: "10px" }}
+            style={{ maxWidth: "100%", maxHeight: "300px", objectFit: "contain" ,marginTop: "10px" }}
           />
         )}
 
