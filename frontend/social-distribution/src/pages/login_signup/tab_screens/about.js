@@ -10,7 +10,7 @@ export default function About() {
     }
 const styles = {
     container:{
-        backgroundColor: colors.brand.c4,
+        backgroundColor: colors.brand.c6,
         height: '100vh',
     }
 }

@@ -1,8 +1,11 @@
 import React from "react";
-import {colors, spacing, sizes} from "../../utils/theme";
-import NavBar from "../../components/navbar";
-import LogoBar from "../../components/logoBar";
-import CreatePostCard from "../../components/Posts/createPostCard";
+import {colors, sizes, spacing} from "../../utils/theme";
+import NavBar from "../../components/Bars/navbar";
+import LogoBar from "../../components/Bars/logoBar";
+import CreatePostCard from "../../components/Posts/Posts/createPostCard";
+import FriendsBar from "../../components/FriendsBar/friendsBar";
+import { Divider, Flex } from "@chakra-ui/react";
+import PostFeed from "../../components/Posts/postFeed";
 import Post from "../../components/Posts/Posted";
 
 export default function Home() {
@@ -14,6 +17,12 @@ export default function Home() {
             
             <div style={styles.content}>
                 <CreatePostCard/>
+                <Flex direction="column" align="center" justify="center">
+                    <Divider orientation="horizontal" width="50%" mt='5rem' colorScheme="blackAlpha" />
+                </Flex>
+                <Flex direction='column' align='center' justify='center' mt={spacing.xl}>
+                    <PostFeed />
+                </Flex>
 
                 <div style={{ ...styles.postContainer }}>
                     {/* TODO: change this to be more dynamic when pulling list of posts */}
@@ -28,7 +37,7 @@ export default function Home() {
 const navbarHeight = "50px"; // replace with actual height of NavBar
 
 const styles = {
-    container: {
+    containers: {
         backgroundColor: colors.brand.c6,
         height: "100%",
     },
