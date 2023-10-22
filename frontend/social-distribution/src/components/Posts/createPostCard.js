@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { colors } from "../../utils/theme.js";
-import LogoBar from "../logoBar.js";
+import LogoBar from "../Bars/logoBar.js";
 import { Flex, Divider, IconButton, Button } from "@chakra-ui/react";
 import { FiImage } from "react-icons/fi";
 import { BeatLoader } from "react-spinners";

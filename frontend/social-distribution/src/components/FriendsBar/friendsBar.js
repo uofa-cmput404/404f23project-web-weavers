@@ -49,7 +49,7 @@ const styles = {
         boxShadow:"0 4px 12px 0 rgba(0,0,0,0.5)",
         backgroundColor:colors.text.t1,
         zIndex:1,
-        position:"absolute",
+        position:"fixed",
         padding:'1rem',
         overflow:'scroll',
     },

@@ -67,7 +67,7 @@ const styles = {
         justifyContent:"space-between",
         color:colors.text.t2,
         zIndex:1,
-        position:"absolute",
+        position:"fixed",
         height: "100vh",
         overflow:'scroll',
     },
