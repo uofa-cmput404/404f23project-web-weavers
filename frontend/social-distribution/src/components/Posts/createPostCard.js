@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
-import { colors } from "../../utils/theme.js";
-import LogoBar from "../Bars/logoBar.js";
+import { colors  } from "../../utils/theme.js";
 import { Flex, Divider, IconButton, Button } from "@chakra-ui/react";
 import { FiImage } from "react-icons/fi";
 import { BeatLoader } from "react-spinners";
@@ -32,17 +31,17 @@ export default function CreatePostCard() {
 
   return (
     <div style={styles.container}>
-      <Flex flexDir="column" w="100%" alignItems="center" align="center">
+      <Flex flexDir="column" w="100%" alignItems="center" align="center" >
         {/* Note: Make the description box not resizable */}
         <h1 style={styles.prompt}>Make a New Post</h1>
         <h1
-          style={{ height: "40px", cursor: "pointer" }}
+          style={{ height: "40px", width: "flex",cursor: "pointer" }}
           onClick={() => setShowTextPost(!showTextPost)}
         >
           Add a description...
         </h1>
 
-        {showTextPost && <TextPost maxWidth= "xl"/>}
+        {showTextPost && <TextPost style={{ maxWidth: "xl"}}/>}
 
         {imageSrc && (
           <img

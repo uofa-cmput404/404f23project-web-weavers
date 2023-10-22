@@ -5,13 +5,9 @@ import LogoBar from "../../components/Bars/logoBar";
 import CreatePostCard from "../../components/Posts/createPostCard";
 import FriendsBar from "../../components/FriendsBar/friendsBar";
 // import { Divider, Flex } from "@chakra-ui/react";
-// import PostFeed from "../../components/Posts/postFeed";
 import Post from "../../components/Posts/Posted";
 
 export default function Home() {
-    const navbarHeight = "64px";
-    const logoBarHeight = "48px";
-    const friendsBarWidth = "200px"; // Set the width of the FriendsBar     
 
     return (
         <div style={styles.container}>

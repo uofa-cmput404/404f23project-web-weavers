@@ -13,14 +13,18 @@ import {
     Input,
     Button
 } from '@chakra-ui/react'
-import { AiOutlineHeart, AiOutlineComment } from "react-icons/ai";
+import { 
+    AiOutlineHeart, 
+    AiOutlineComment,
+    AiFillHeart,
+} from "react-icons/ai";
 import "./Posting.css"
 import { sizes, colors } from "../../utils/theme";
 
 export default function Post(){
     // const userID= localStorage.getItem()
     // const postID = 1;                       
-    // const [IsLiked, SetIsLiked]= useState("");
+    const [IsLiked, SetIsLiked]= useState(false);
     // const [postcontent, SetpostContent]= useState("")
     // const [postImage, SetpostImage]= useState(props.post.image);
     const [showCommentField, setShowCommentField] = useState(false);
@@ -71,6 +75,26 @@ export default function Post(){
     // })
 
     // getUserData()
+    const handleLikeClick = () => {
+        SetIsLiked(!IsLiked); // Toggle the liked state when the button is clicked
+      };
+
+    const likeButton = IsLiked ? (
+        <IconButton
+          aria-label="Liked"
+          icon={<AiFillHeart />}
+          style={styles.likeButton} // Apply the likedButton style when the button is clicked
+          mr="2"
+          onClick={handleLikeClick}
+        />
+      ) : (
+        <IconButton
+          aria-label="Like"
+          icon={<AiOutlineHeart />}
+          mr="2"
+          onClick={handleLikeClick}
+        />
+      );
 
     return(
         <Card maxW='md'>
@@ -97,11 +121,7 @@ export default function Post(){
                 </Box>
 
                 <Flex style={styles.buttons}>
-                    <IconButton
-                        aria-label="Like"
-                        icon={<AiOutlineHeart />}
-                        mr="2"
-                        />
+                    {likeButton}
                     <IconButton
                     aria-label="Comment"
                     icon={<AiOutlineComment />}
@@ -134,6 +154,9 @@ const styles = {
       width: "100%",
       height: "auto",
       marginBottom: "10px",
+    },
+    likeButton: {
+        color: "red",
     },
     buttons: {
       marginTop: "10px",

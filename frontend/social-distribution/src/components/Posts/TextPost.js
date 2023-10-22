@@ -35,24 +35,10 @@ export default function TextPost(props){
     //     }
     // })
 
-    // useEffect(() => {
-    //     const getPostTitle = async() => {
-    //         await api
-    //         .get()
-    //         .then((res) => {
-    //             const title=''
-    //             setPostTitle(title)
-    //         })
-        
-
-    //     }
-    // })
-
     // getUserData()
-    // setPostTitle()
 
     return(
-        <Card maxW='xl'>
+        <Card maxW='2xl'>
             <textarea
             style={styles.contentField}
             placeholder="Write something..."
@@ -64,7 +50,7 @@ export default function TextPost(props){
 const styles = {
     contentField: {
         width: "100%",
-        maxWidth: "100%",
+        maxWidth: "2000px",
         height: "60px", // Increase the height of the textarea
         padding: "10px",
         fontSize: "16px",
