@@ -20,12 +20,13 @@ const validate = values => {
     errors.username = 'Must be 200 characters or less';
   }
 
+  /*
   if (!values.password) {
     errors.password = 'Password required';
   } else if (values.password.length < 8) {
     errors.password = 'Must be 8 characters or more';
   }
-
+  */
   return errors;
 };
 
