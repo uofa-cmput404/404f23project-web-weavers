@@ -17,8 +17,8 @@ const validate = values => {
     const errors = {};
     if (!values.username) {
       errors.username = 'Username required';
-    } else if (values.username.length > 15) {
-      errors.username = 'Must be 15 characters or less';
+    } else if (values.username.length > 200) {
+      errors.username = 'Must be 200 characters or less';
     }
 
     if (!values.password) {
@@ -44,75 +44,42 @@ function Signup() {
 
   });
   return (
-  <div className = {"mainContainer"} style ={styles.container}>
-      <div class = "header" style = {styles.header}>
-          <h1>User Signup</h1>
-      </div>
-      <div className = {"loginStyle"} style = {styles.loginStyle}>
-        <Box bg="white" p={50} rounded="md" w={500}>
-          <form onSubmit={formik.handleSubmit}>
-          <VStack spacing={4} align="flex-start">
-            <FormControl>
-              <FormLabel htmlFor="username">Username</FormLabel>
-              <Input
-                id="username"
-                name="username"
-                type="text"
-                onChange={formik.handleChange}
-                values = {formik.values.username}
-                />
-              {formik.touched.username && formik.errors.username ? (
-                <div>{formik.errors.username}</div>
-              ) : null}
-            </FormControl>
-            <FormControl>
-              <FormLabel htmlFor="password"> Password </FormLabel>
-              <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  onChange={formik.handleChange}
-                  values = {formik.values.password}
-                  />
-              {formik.touched.password && formik.errors.password ? (
-                <div>{formik.errors.password}</div>
-              ) : null}
-            </FormControl>
-            <div style={styles.button}>
-              <Button btn_type="secondary" type="submit">Sign Up</Button>
-            </div>
-            </VStack>
-          </form>
-          </Box>
-      </div>
-    </div>
+      <form onSubmit={formik.handleSubmit}>
+      <VStack spacing={3} align="flex-start">
+        <FormControl>
+          <FormLabel htmlFor="username">Username</FormLabel>
+          <Input
+            id="username"
+            name="username"
+            type="text"
+            onChange={formik.handleChange}
+            values = {formik.values.username}
+            />
+          {formik.touched.username && formik.errors.username ? (
+            <div>{formik.errors.username}</div>
+          ) : null}
+        </FormControl>
+        <FormControl>
+          <FormLabel htmlFor="password"> Password </FormLabel>
+          <Input
+              id="password"
+              name="password"
+              type="password"
+              onChange={formik.handleChange}
+              values = {formik.values.password}
+              />
+          {formik.touched.password && formik.errors.password ? (
+            <div>{formik.errors.password}</div>
+          ) : null}
+        </FormControl>
+        <div>
+          <Button btn_type="secondary" type="submit">Sign Up</Button>
+        </div>
+        </VStack>
+      </form>
   );
 }
-const styles = {
-    main: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: colors.brand.c1,
-        height: '100vh',
 
-    },
-    loginStyle: {
-        fontSize: sizes.xxl,
-        color: colors.text.c4,
-        backgroundColor: colors.brand.c4,
-        padding: spacing.lg,
-        borderStyle: 'solid',
-        borderRadius: '5px',
-        borderWidth: '2px',
-      },
-      loginContainer: {
-        padding: spacing.sm,
-        fontSize: sizes.xs
-      }
-
-  }
 
 
 export default Signup;

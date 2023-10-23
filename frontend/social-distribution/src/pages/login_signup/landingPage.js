@@ -4,7 +4,7 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel} from '@chakra-ui/react'
 import logo from "../../assets/logo.png"
 import Welcome from './tab_screens/welcome';
 import About from './tab_screens/about';
-import Signup from './tab_screens/signup';
+import UserStart from './tab_screens/user_start';
 import AdminLogin from './tab_screens/adminLogin';
 
 function LandingPage() {
@@ -12,13 +12,13 @@ function LandingPage() {
     <>
     <div className='tab-container' style={styles.tabContainer}>
         <img src={logo} alt="logo" style={styles.logo} />
-   
+
       <div className="tabs" style={styles.tabs}>
         <Tabs variant='solid-rounded' m={6} colorScheme="whiteAlpha" size='sm' align='end'>
             <TabList>
                 <Tab>Home</Tab>
                 <Tab>About</Tab>
-                <Tab>Sign Up</Tab>
+                <Tab>User</Tab>
                 <Tab>Login</Tab>
             </TabList>
 
@@ -30,7 +30,7 @@ function LandingPage() {
                       <About />
                   </TabPanel>
                   <TabPanel>
-                      <Signup />
+                      <UserStart />
                   </TabPanel>
                   <TabPanel>
                       <AdminLogin />
@@ -39,13 +39,13 @@ function LandingPage() {
         </Tabs>
         </div>
     </div>
-            
-        
+
+
       </>
   );
 }
 
-const styles = { 
+const styles = {
   tabs: {
     width: '100vw',
     boxShadow:"4px 4px 12px 0 rgba(0,0,0,0.50)",
@@ -56,12 +56,12 @@ const styles = {
     zIndex: '1',
     position: 'absolute',
     marginLeft: '45vw',
-},   
+},
   tabContainer: {
     display: 'flex',
     width: '100vw',
     backgroundColor: colors.brand.c4,
-    
+
   }
 }
 export default LandingPage;

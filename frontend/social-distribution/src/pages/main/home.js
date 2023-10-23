@@ -5,12 +5,13 @@ import LogoBar from "../../components/logoBar";
 import CreatePostCard from "../../components/createPostCard";
 
 export default function Home() {
-
+    //This is where the uuid of the user is being stored for now
+    console.log(localStorage.getItem("user"))
     return (
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='Home'/>
-            
+
             <div style={styles.content}>
                 <CreatePostCard/>
             </div>

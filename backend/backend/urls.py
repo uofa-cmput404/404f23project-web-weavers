@@ -19,11 +19,7 @@ from django.urls import path, include, re_path
 from authors import views 
 from rest_framework import routers
 
-router = routers.DefaultRouter()
-router.register(r'authors', views.AuthorView)
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('authors/', include('authors.urls')),
-    #path('api/', include(router.urls))
 ]
