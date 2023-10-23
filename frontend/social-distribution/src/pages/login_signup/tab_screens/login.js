@@ -1,8 +1,6 @@
 import React, {useState, useContext} from 'react';
-import { colors, sizes, spacing } from '../../utils/theme';
-import Button from '../../components/Button';
-import AuthContext from '../../context/AuthProvider';
-import NavBarH from '../../components/NavbarH';
+import { colors, sizes, spacing } from '../../../utils/theme';
+import Button from '../../../components/Button';
 import { useFormik, Formik,  Field, Form } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -16,39 +14,39 @@ import {
 } from "@chakra-ui/react";
 
 const validate = values => {
-    const errors = {};
-    if (!values.username) {
-      errors.username = 'Username required';
-    } else if (values.username.length > 15) {
-      errors.username = 'Must be 15 characters or less';
-    }
+  const errors = {};
+  if (!values.username) {
+    errors.username = 'Username required';
+  } else if (values.username.length > 15) {
+    errors.username = 'Must be 15 characters or less';
+  }
 
-    if (!values.password) {
-      errors.password = 'Password required';
-    } else if (values.password.length < 8) {
-      errors.password = 'Must be 8 characters or more';
-    }
+  if (!values.password) {
+    errors.password = 'Password required';
+  } else if (values.password.length < 8) {
+    errors.password = 'Must be 8 characters or more';
+  }
 
-    return errors;
-  };
+  return errors;
+};
 
-function Signup() {
-    let navigate = useNavigate();
+function Login() {
+  let navigate = useNavigate();
 
   const [error, setError] = useState(false);
   const formik = useFormik({
     initialValues: {username: '', password: ''},
         validate,
         onSubmit: values => {
-          navigate("/login")
-          alert(JSON.stringify("Please Login"));
+          alert(JSON.stringify(values, null, 2));
+          navigate("/home")
         },
 
   });
-  return (<div> <NavBarH/>
+  return (
   <div className = {"mainContainer"} style ={styles.container}>
       <div class = "header" style = {styles.header}>
-          <h1>User Signup</h1>
+          <h1>User Login</h1>
       </div>
       <div className = {"loginStyle"} style = {styles.loginStyle}>
         <Box bg="white" p={50} rounded="md" w={500}>
@@ -80,15 +78,20 @@ function Signup() {
                 <div>{formik.errors.password}</div>
               ) : null}
             </FormControl>
+            <Checkbox
+              id="rememberMe"
+              name="rememberMe"
+              colorScheme="green"
+            >Remember me?
+            </Checkbox>
             <div style={styles.button}>
-              <Button btn_type="secondary" type="submit">Sign Up</Button>
+              <Button btn_type="secondary" type="submit">Login</Button>
             </div>
             </VStack>
           </form>
           </Box>
       </div>
     </div>
-  </div>
   );
 }
 const styles = {
@@ -125,5 +128,4 @@ const styles = {
 
   }
 }
-
-export default Signup;
+export default Login;
