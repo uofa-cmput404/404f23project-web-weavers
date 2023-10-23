@@ -1,13 +1,12 @@
 import React, {useState, useContext} from 'react';
-import { colors, sizes, spacing } from '../../../utils/theme';
 import Button from '../../../components/Button';
-import { useFormik, Formik,  Field, Form } from 'formik';
+import validateUser from '../../../components/api';
+import { useFormik} from 'formik';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Checkbox,
   FormControl,
-  FormErrorMessage,
   FormLabel,
   Input,
   VStack
@@ -17,8 +16,8 @@ const validate = values => {
   const errors = {};
   if (!values.username) {
     errors.username = 'Username required';
-  } else if (values.username.length > 15) {
-    errors.username = 'Must be 15 characters or less';
+  } else if (values.username.length > 200) {
+    errors.username = 'Must be 200 characters or less';
   }
 
   if (!values.password) {
@@ -38,20 +37,25 @@ function Login() {
     initialValues: {username: '', password: ''},
         validate,
         onSubmit: values => {
-          alert(JSON.stringify(values, null, 2));
-          navigate("/home")
+          validateUser(values.username).then((response) => {
+            localStorage.setItem("user", values.username)
+            navigate("/home")
+         })
+         .catch(function(error){
+            if(error.response.status== 404){
+              alert("Request to login failed, user " + values.username + " does not exist")
+            } else {
+              alert("Unknown Error occured. Login Failed code: " + error.response.status)
+            }
+
+            console.log(JSON.stringify(error))
+         });
         },
 
   });
   return (
-  <div className = {"mainContainer"} style ={styles.container}>
-      <div class = "header" style = {styles.header}>
-          <h1>User Login</h1>
-      </div>
-      <div className = {"loginStyle"} style = {styles.loginStyle}>
-        <Box bg="white" p={50} rounded="md" w={500}>
           <form onSubmit={formik.handleSubmit}>
-          <VStack spacing={4} align="flex-start">
+          <VStack spacing={3} align="flex-start">
             <FormControl>
               <FormLabel htmlFor="username">Username</FormLabel>
               <Input
@@ -84,48 +88,11 @@ function Login() {
               colorScheme="green"
             >Remember me?
             </Checkbox>
-            <div style={styles.button}>
+            <div>
               <Button btn_type="secondary" type="submit">Login</Button>
             </div>
             </VStack>
           </form>
-          </Box>
-      </div>
-    </div>
   );
-}
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.brand.c1,
-    height: '100vh',
-    width: '100vw',
-    fontSize: sizes.sm,
-  },
-  buttons: {
-    padding: spacing.xl,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.sm,
-  },
-  loginStyle: {
-    fontSize: sizes.sm,
-    color: colors.text.c4,
-    display: "block",
-  },
-  header: {
-    fontSize: sizes.xl,
-    padding: spacing.lg,
-  },
-  button: {
-    marginLeft: "auto",
-    marginRight: "auto",
-
-  }
 }
 export default Login;
