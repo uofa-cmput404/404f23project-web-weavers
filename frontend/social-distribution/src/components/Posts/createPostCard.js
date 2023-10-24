@@ -9,6 +9,7 @@ export default function CreatePostCard() {
   const fileInputRef = useRef(null);
   const [showTextPost, setShowTextPost] = useState(false);
   const [imageSrc, setImageSrc] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getPhoto = () => {
     fileInputRef.current.click();
@@ -26,7 +27,11 @@ export default function CreatePostCard() {
   };
 
   const post = () => {
-    console.log("post");
+    setIsLoading(true);
+    // Perform post operation here
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
   };
 
   return (
@@ -52,7 +57,7 @@ export default function CreatePostCard() {
         )}
 
         <Divider />
-        <Flex flexDir="row" align="start">
+        <Flex flexDir="row" align="center">
           <input
             type="file"
             accept="image/*"
@@ -61,18 +66,18 @@ export default function CreatePostCard() {
             onChange={handleFileSelect}
           />
           <IconButton
-            style={styles.icons}
+            style={{ ...styles.icons, width: "40px", marginRight: "100px" }}
             icon={<FiImage />}
             aria-label="Image Upload"
             onClick={getPhoto}
           />
-          {/* TODO: add isLoading prop but find way for it to modify! */}
           <Button
-            style={styles.icons}
-            spinner={<BeatLoader size={8} color="white" />}
+            style={{ ...styles.icons, width: "80px", marginLeft: "100px" }}
+            isLoading={isLoading} // Add the isLoading prop to the Button component
+            spinner={<BeatLoader size={5} color="white" />}
             onClick={post}
           >
-            Post
+            {isLoading ? "Posting..." : "Post"} {/* Change the text of the button based on isLoading */}
           </Button>
         </Flex>
       </Flex>

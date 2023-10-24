@@ -53,7 +53,7 @@ const styles = {
         backgroundColor: colors.brand.c3,
         paddingBottom: spacing.md,
         overflow: "auto",
-        paddingTop: spacing.md, // add top padding to prevent cut off
+        paddingTop: spacing.md,
 
     },
     post: {

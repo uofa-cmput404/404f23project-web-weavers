@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
     Card, 
     CardHeader, 
@@ -27,54 +27,10 @@ export default function Post(){
     const [IsLiked, SetIsLiked]= useState(false);
     // const [postcontent, SetpostContent]= useState("")
     // const [postImage, SetpostImage]= useState(props.post.image);
+    const [ comment, setComment ] = useState(""); 
     const [showCommentField, setShowCommentField] = useState(false);
 
-        const handleCommentClick = () => {
-            setShowCommentField(!showCommentField);
-        }
-
-    // TODO: figure out how to pull data from backends
-
-    // if no content in post- just an image
-    // const [showContent, setShowContent] = useState(() => {
-    //     if (props.post.contentType.startsWith("image")) {
-    //       return false;
-    //     } else {
-    //       return true;
-    //     }
-    // });
-
-    // user information- communicate with the backend
-    // async and await
-    // useEffect(() => {
-    //     const getUserData = async() => {
-    //         await api
-    //         .get()              // get url from backend
-    //         .then((response) => {
-                
-    //         })
-
-
-    //         await api
-
-    //     }
-
-
-    //     const getPostImage = async() => {
-    //         await api
-    //         .get()
-    //         .then((res) => {
-    //             const data= ''
-    //             SetpostImage(data)
-    //         })
-
-    //         .catch((err) => {
-    //             console.log(err)
-    //         })
-    //     }
-    // })
-
-    // getUserData()
+    // Like handles
     const handleLikeClick = () => {
         SetIsLiked(!IsLiked); // Toggle the liked state when the button is clicked
       };
@@ -95,6 +51,49 @@ export default function Post(){
           onClick={handleLikeClick}
         />
       );
+
+
+    // Comment handles
+    const handleCommentClick = () => {
+        setShowCommentField(!showCommentField);
+    }
+    const handleCommentChange = (event) => {
+    // TBH, don't know if we need this
+        setComment(event.target.value); 
+    };
+    
+    const handleCommentPost = () => {
+    // TODO: post comment to backend
+    console.log(comment); 
+        setComment(""); // Clear the comment field after posting
+    };
+
+
+    // User information- communicate with the backend
+    // TODO: figure out how to pull data from backend
+    // useEffect(() => {
+    //     const getUserData = async() => {
+    //         await api
+    //         .get()              // get url from backend
+    //         .then((response) => {
+                
+    //         })
+    //     }
+
+    //     const getPostImage = async() => {
+    //         await api
+    //         .get()
+    //         .then((res) => {
+    //             const data= ''
+    //             SetpostImage(data)
+    //         })
+    //         .catch((err) => {
+    //             console.log(err)
+    //         })
+    //     }
+    // })
+
+    // getUserData()
 
     return(
         <Card maxW='md'>
@@ -117,7 +116,9 @@ export default function Post(){
                 </Box>
 
                 <Box mx="auto" textAlign="center">
-                    <img src="https://via.placeholder.com/350x150" alt="Image" />
+                    <Flex justifyContent="center">
+                        <img src="https://via.placeholder.com/350x150" alt="Image" />
+                    </Flex>
                 </Box>
 
                 <Flex style={styles.buttons}>
@@ -130,8 +131,14 @@ export default function Post(){
                 </Flex>
                 {showCommentField && (
                         <Flex flexDirection="column" mt="2">
-                            <Input placeholder="Add a comment" />
-                            <Button mt="2">Post</Button>
+                            <Input
+                                placeholder="Add a comment"
+                                value={comment} // Set the value of the input field to the state
+                                onChange={handleCommentChange} // Update the state when the user types
+                            />
+                            <Button mt="2" backgroundColor={colors.brand.c2} onClick={handleCommentPost}>
+                                Post
+                            </Button>
                         </Flex>
                     )}
 
@@ -157,6 +164,13 @@ const styles = {
     },
     likeButton: {
         color: "red",
+    },
+    commentButton: {
+        mt: "2",
+        backgroundColor: colors.brand.c2,
+        ":hover": {
+            backgroundColor: colors.brand.c1,
+        }
     },
     buttons: {
       marginTop: "10px",
