@@ -20,6 +20,6 @@ from authors import views
 from rest_framework import routers
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),n
     path('authors/', include('authors.urls')),
 ]
