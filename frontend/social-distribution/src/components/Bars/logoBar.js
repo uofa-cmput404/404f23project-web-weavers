@@ -1,5 +1,5 @@
-import {colors} from "../utils/theme.js";
-import logo from "../assets/logo.png";
+import {colors} from "../../utils/theme.js";
+import logo from "../../assets/logo.png";
 
 export default function LogoBar() {
     return (
@@ -12,7 +12,7 @@ export default function LogoBar() {
 const styles = {    
     container: {
         boxShadow:"0 4px 12px 0 rgba(0,0,0,0.10)",
-        backgroundColor: colors.brand.c5,
+        backgroundColor: colors.brand.c4,
         height: "5vh",
         width: "100%",
         display: "flex",

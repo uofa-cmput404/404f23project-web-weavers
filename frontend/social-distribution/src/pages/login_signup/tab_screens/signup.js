@@ -41,7 +41,6 @@ function Signup() {
           navigate("/login")
           alert(JSON.stringify("Please Login"));
         },
-
   });
   return (
       <form onSubmit={formik.handleSubmit}>
