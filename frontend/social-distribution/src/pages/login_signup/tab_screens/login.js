@@ -40,7 +40,7 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.brand.c1,
+    backgroundColor: colors.brand.c6,
     height: '100vh',
     width: '100vw',
   },

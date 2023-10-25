@@ -1,13 +1,15 @@
 import React from "react";
-import NavBar from "../../components/navbar.js";
+import NavBar from "../../components/Bars/navbar.js";
 import { colors } from "../../utils/theme.js";
-import LogoBar from "../../components/logoBar.js";
+import LogoBar from "../../components/Bars/logoBar.js";
+import FriendsBar from "../../components/FriendsBar/friendsBar.js";
 
 export default function Explore({props}){
     return(
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='Explore'/>
+            <FriendsBar/>
             <h1>Explore</h1>
         </div>
     )
@@ -15,7 +17,7 @@ export default function Explore({props}){
 
 const styles = {
     container:{
-        backgroundColor: colors.brand.c4,
+        backgroundColor: colors.brand.c6,
         height: "100vh",
 
     }

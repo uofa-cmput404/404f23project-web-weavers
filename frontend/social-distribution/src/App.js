@@ -15,7 +15,7 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false)
 
   return (
-    <div className = {"App"}>
+    <div className = {"App"} >
       <BrowserRouter>
         <Routes>
           <Route path = "/" element = {<LandingPage />} />

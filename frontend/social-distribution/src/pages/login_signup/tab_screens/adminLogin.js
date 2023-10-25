@@ -33,7 +33,7 @@ function AdminLogin() {
                     <h1>Admin Login</h1>
                 </div>
                 <div className='form'>
-                    <Box bg="white" p={100} rounded="md" w={500}>
+                    <Box bg="white" p={100} rounded="md" w={500} height='60vh'>
                         <Formik
                             initialValues={{
                             username: "",
@@ -120,7 +120,7 @@ const styles = {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: colors.brand.c1,
+        backgroundColor: colors.brand.c6,
         height: '100vh',
         fontSize: sizes.md,
         fontFace: fonts.body,
@@ -132,6 +132,7 @@ const styles = {
     headers:{
         marginBottom: spacing.xl,
         fontSize: sizes.xl,
+        color: colors.brand.c1
     }
 
 }
