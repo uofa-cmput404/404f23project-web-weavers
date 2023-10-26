@@ -4,4 +4,4 @@ from .models import Post
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        exclude = ['uuid']
+        fields = '__all__'

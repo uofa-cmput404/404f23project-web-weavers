@@ -21,6 +21,12 @@ class Post(models.Model):
         (CT_PNG, 'PNG Image'),
         (CT_JPG, 'JPEG Image'),
     ]
+
+    VISIBILITY_CHOICES = (
+        ("PUBLIC","PUBLIC"),
+        ("FRIENDS","FRIENDS")
+    )
+
     type = models.CharField(max_length=200, default="post")
     title = models.CharField(max_length=200)
     id = models.URLField(primary_key=True, default=uuid.uuid4, editable=False)     
@@ -39,5 +45,5 @@ class Post(models.Model):
     comments = models.URLField(null=True, blank=True)
     commentsSrc = models.JSONField(null=True, blank=True) # TODO: will be replaced by the Comment model when implemented
     published = models.DateTimeField(default=timezone.now)
-    visibility = models.CharField(max_length=255)
-    unlisted = models.BooleanField()
+    visibility = models.CharField(max_length=200, choices=VISIBILITY_CHOICES, default="PUBLIC")
+    unlisted = models.BooleanField(default=False)

@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import PostList, PostDetail
+from . import views
 
 urlpatterns = [
-    path('', PostList.as_view()),
-    path('<uuid:pk>/', PostDetail.as_view()),
+    path('authors/<author_id>/posts/<post_id>', views.post_list),
+    path('authors/<author_id>/posts/', views.post_list),
+    path('authors/posts/', views.post_list),
 ]
