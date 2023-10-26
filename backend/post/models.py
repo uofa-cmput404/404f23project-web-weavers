@@ -19,6 +19,6 @@ class Post(models.Model):
     visibility = models.CharField(max_length=255)
     unlisted = models.BooleanField()
 
-    commentsSrc = models.JSONField(null=True, blank=True)
+    commentsSrc = models.JSONField(null=True, blank=True) # TODO: will be replaced by the Comment model when implemented
 
 # Create your models here.
