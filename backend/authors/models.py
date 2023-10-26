@@ -11,6 +11,7 @@ class Author(models.Model):
     url = models.URLField(max_length=200, unique=True, editable=False)
     github = models.URLField(max_length=200, blank=True)
     profileImage = models.URLField(max_length=100, blank=True)
+    followers = models.ManyToManyField("self", blank=True)
 
     def __str__(self) -> str:
         return self.displayName
