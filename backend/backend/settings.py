@@ -145,9 +145,16 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'authors.Author'
+<<<<<<< Updated upstream
 =======
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000", 
    ] 
 >>>>>>> Dev
+=======
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
+]
+>>>>>>> Stashed changes
