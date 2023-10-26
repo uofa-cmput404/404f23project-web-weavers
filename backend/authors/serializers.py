@@ -4,4 +4,6 @@ from .models import Author
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
-        exclude = ['uuid']
+        # exclude = ['uuid']
+        fields = ['id', 'username', 'email', 'is_active']
+        # read_only_field = ['is_active', 'created', 'updated']
