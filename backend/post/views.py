@@ -43,7 +43,7 @@ class PostDetail(APIView):
     def delete(self, request, pk):
         post = Post.objects.get(id=pk)
         post.delete()
-        return Response("Deleted")
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
     def put(self, request, pk):
         post = Post.objects.get(id=pk)
