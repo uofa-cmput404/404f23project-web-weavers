@@ -12,7 +12,7 @@ class Post(models.Model):
     contentType = models.CharField(max_length=200)
     content = models.TextField()
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    categories = models.JSONField()
+    categories = models.ArrayField()
     count = models.IntegerField()
     comments = models.URLField()
     published = models.DateTimeField()
