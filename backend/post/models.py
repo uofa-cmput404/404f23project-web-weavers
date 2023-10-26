@@ -3,9 +3,9 @@ import uuid
 from authors.models import Author
 
 class Post(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     type = models.CharField(max_length=200, default="post")
     title = models.CharField(max_length=200)
+    id = models.URLField(primary_key=True, default=uuid.uuid4, editable=False)     
     source = models.URLField()
     origin = models.URLField()
     description = models.CharField(max_length=200)
@@ -15,10 +15,11 @@ class Post(models.Model):
     categories = models.ArrayField()
     count = models.IntegerField()
     comments = models.URLField()
+    commentsSrc = models.JSONField(null=True, blank=True) # TODO: will be replaced by the Comment model when implemented
     published = models.DateTimeField()
     visibility = models.CharField(max_length=255)
     unlisted = models.BooleanField()
 
-    commentsSrc = models.JSONField(null=True, blank=True) # TODO: will be replaced by the Comment model when implemented
+    
 
 # Create your models here.
