@@ -1,65 +1,84 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import { colors, sizes, spacing } from '../../../utils/theme';
 import Button from '../../../components/Button';
+import { useFormik, Formik,  Field, Form } from 'formik';
+import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Checkbox,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  VStack
+} from "@chakra-ui/react";
+
+const validate = values => {
+    const errors = {};
+    if (!values.username) {
+      errors.username = 'Username required';
+    } else if (values.username.length > 200) {
+      errors.username = 'Must be 200 characters or less';
+    }
+
+    if (!values.password) {
+      errors.password = 'Password required';
+    } else if (values.password.length < 8) {
+      errors.password = 'Must be 8 characters or more';
+    }
+
+    return errors;
+  };
 
 function Signup() {
-    const[username, setUsername] = useState("");
-    const[password, setPassword] = useState("");
+    let navigate = useNavigate();
 
-    return ( <div className="mainContainer" style = {styles.main}>
-        <h1>SIGN UP</h1>
-            <br />
-        <div className = {"loginStyle"} style = {styles.loginStyle}>
-            <div className = {"loginContainer"} style = {styles.loginContainer}>
-            <h1>Username</h1>
-            <input
-                value = {password}
-                placeholder = "Enter Password"
-                className = {"inputBox"}
-                onChange = {ev => setPassword(ev.target.value)} />
-            <br />
-                <h1>Password</h1>
-                <input
-                value = {username}
-                placeholder = "Enter Username"
-                className = {"inputBox"}
-                onChange = {ev => setUsername(ev.target.value)} />
-            </div>
-            </div>
-        <br />
-        <Button type="secondary" dest="login">Sign Up</Button>
-
+  const [error, setError] = useState(false);
+  const formik = useFormik({
+    initialValues: {username: '', password: ''},
+        validate,
+        onSubmit: values => {
+          navigate("/login")
+          alert(JSON.stringify("Please Login"));
+        },
+  });
+  return (
+      <form onSubmit={formik.handleSubmit}>
+      <VStack spacing={3} align="flex-start">
+        <FormControl>
+          <FormLabel htmlFor="username">Username</FormLabel>
+          <Input
+            id="username"
+            name="username"
+            type="text"
+            onChange={formik.handleChange}
+            values = {formik.values.username}
+            />
+          {formik.touched.username && formik.errors.username ? (
+            <div>{formik.errors.username}</div>
+          ) : null}
+        </FormControl>
+        <FormControl>
+          <FormLabel htmlFor="password"> Password </FormLabel>
+          <Input
+              id="password"
+              name="password"
+              type="password"
+              onChange={formik.handleChange}
+              values = {formik.values.password}
+              />
+          {formik.touched.password && formik.errors.password ? (
+            <div>{formik.errors.password}</div>
+          ) : null}
+        </FormControl>
+        <div>
+          <Button btn_type="secondary" type="submit">Sign Up</Button>
         </div>
-
-
-
-
-    );}
-
-const styles = {
-    main: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: colors.brand.c6,
-        height: '100vh',
-
-    },
-    loginStyle: {
-        fontSize: sizes.xxl,
-        color: colors.text.c4,
-        backgroundColor: colors.brand.c4,
-        padding: spacing.lg,
-        borderStyle: 'solid',
-        borderRadius: '5px',
-        borderWidth: '2px',
-      },
-      loginContainer: {
-        padding: spacing.sm,
-        fontSize: sizes.xs
-      }
-
+        </VStack>
+      </form>
+  );
 }
+
+
 
 export default Signup;

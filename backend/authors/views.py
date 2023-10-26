@@ -1,5 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view 
+from rest_framework import viewsets
 from .models import Author
 from .serializers import AuthorSerializer
 from rest_framework.pagination import PageNumberPagination
@@ -22,10 +24,12 @@ class AuthorList(APIView, PageNumberPagination):
             if self.get_page_size(request):
                 authors = self.paginate_queryset(authors, request)
         serializer = AuthorSerializer(authors, many=True)
-        return Response({
+        response = Response({
             "type": "authors",
             "items": serializer.data
         })
+        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+        return response
 
 class AuthorDetails(APIView):
     """
@@ -34,12 +38,16 @@ class AuthorDetails(APIView):
     def get(self, request, pk):
         author = Author.objects.get(pk=pk)
         serializer = AuthorSerializer(author)
-        return Response(serializer.data)
+        response = Response(serializer.data)
+        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+        return response
 
     def post(self, request, pk):
         author = Author.objects.get(pk=pk)
         serializer = AuthorSerializer(author, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            response = Response(serializer.data)
+            response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+            return response
         return Response(serializer.errors)

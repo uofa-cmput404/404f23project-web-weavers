@@ -8,13 +8,13 @@ import FriendsBar from "../../components/FriendsBar/friendsBar";
 import Post from "../../components/Posts/Posted";
 
 export default function Home() {
-
+    //This is where the uuid of the user is being stored for now
+    console.log(localStorage.getItem("user"))
     return (
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='Home'/>
             <FriendsBar style={styles.friendsBar}/>
-            
             <div style={styles.content}>
                 <CreatePostCard/>
 
