@@ -1,17 +1,21 @@
 import React, {useState, useContext} from 'react';
 import Button from '../../../components/Button';
-import validateUser from '../../../components/api';
 import { useFormik} from 'formik';
 import { useNavigate } from 'react-router-dom';
 import {
-  Box,
   Checkbox,
   FormControl,
   FormLabel,
   Input,
   VStack
 } from "@chakra-ui/react";
+import * as Yup from "yup";
+import API_URL from "../../../components/api"
 
+import authSlice from "../../../store/slices/auth";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+/*
 const validate = values => {
   const errors = {};
   if (!values.username) {
@@ -20,38 +24,53 @@ const validate = values => {
     errors.username = 'Must be 200 characters or less';
   }
 
-  /*
+
   if (!values.password) {
     errors.password = 'Password required';
   } else if (values.password.length < 8) {
     errors.password = 'Must be 8 characters or more';
   }
-  */
+
   return errors;
 };
+  */
 
 function Login() {
   let navigate = useNavigate();
 
-  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const history = useNavigate();
+
+  const handleLogin = (username, password) =>{
+    localStorage.setItem("user", username)
+    axios
+          .post(`${API_URL}/auth/login/`, { username, password })
+          .then((res) => {
+            dispatch(
+              authSlice.actions.setAuthTokens({
+                token: res.data.access,
+                refreshToken: res.data.refresh,
+              })
+            );
+            dispatch(authSlice.actions.setAccount(res.data.user));
+            setLoading(false);
+            history.push("/");
+          })
+          .catch((err) => {
+            console.log(JSON.stringify(err));
+          });
+  }
   const formik = useFormik({
     initialValues: {username: '', password: ''},
-        validate,
-        onSubmit: values => {
-          validateUser(values.username).then((response) => {
-            localStorage.setItem("user", values.username)
-            navigate("/home")
-         })
-         .catch(function(error){
-            if(error.response.status== 404){
-              alert("Request to login failed, user " + values.username + " does not exist")
-            } else {
-              alert("Unknown Error occured. Login Failed code: " + error.response.status)
-            }
-
-            console.log(JSON.stringify(error))
-         });
+        onSubmit: (values) => {
+          setLoading(true)
+          handleLogin(values.username, values.password)
         },
+        validationSchema: Yup.object({
+          username: Yup.string().trim().required("Username is required"),
+          password: Yup.string().trim().required("password is required"),
+        }),
 
   });
   return (
