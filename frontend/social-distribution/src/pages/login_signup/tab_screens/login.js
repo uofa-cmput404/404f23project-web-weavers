@@ -1,6 +1,6 @@
 import React, {useState, useContext} from 'react';
 import Button from '../../../components/Button';
-import validateUser from '../../../components/api';
+import {recieveUser} from '../../../components/api';
 import { useFormik} from 'formik';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -38,7 +38,7 @@ function Login() {
     initialValues: {username: '', password: ''},
         validate,
         onSubmit: values => {
-          validateUser(values.username).then((response) => {
+          recieveUser(values.username).then((response) => {
             localStorage.setItem("user", values.username)
             navigate("/home")
          })
