@@ -8,9 +8,9 @@ class FollowersList(APIView):
     """
     View to list all followers of a user on the server.
     """
-    def get(self, request, pk):
+    def get(self, request, author_id):
         try:
-            author = Author.objects.get(pk=pk)
+            author = Author.objects.get(pk=author_id)
         except Author.DoesNotExist:
             return Response({"error": "Author not found"}, status=status.HTTP_404_NOT_FOUND)
         
@@ -22,41 +22,43 @@ class FollowersList(APIView):
         })
 
 class FollowerDetails(APIView):
-    def get(self, request, pk, foreign_author_id):
+    def get(self, request, author_id, foreign_author_id):
         try:
-            author = Author.objects.get(pk=pk)
+            author = Author.objects.get(pk=author_id)
         except Author.DoesNotExist:
             return Response({"error": "Author not found"}, status=status.HTTP_404_NOT_FOUND)
         
         if author.followers.filter(pk=foreign_author_id).exists():
-            return Response({
-                    "is_follower": True
-                })
+            return Response({"is_follower": True})
         else:
-            return Response({
-                    "is_follower": False
-                })
+            return Response({"is_follower": False})
 
-    def put(self, request, pk, foreign_author_id):
+    def put(self, request, author_id, foreign_author_id):
         #TODO implement authentication for this route
         try:
-            author = Author.objects.get(pk=pk)
-            follower = Author.objects.get(pk=foreign_author_id)
+            author = Author.objects.get(pk=author_id)
         except Author.DoesNotExist:
             return Response({"error": "Author not found"}, status=status.HTTP_404_NOT_FOUND)
         
-        author.followers.add(follower)
-        return Response({
-            "message": "Successfully added follower"
-        }, status=status.HTTP_200_OK)  
+        if not author.followers.filter(pk=foreign_author_id).exists():
+            follower = Author.objects.get(pk=foreign_author_id)
+            author.followers.add(follower)
+        else:
+            return Response({"error": "Follower already exists"}, status=status.HTTP_409_CONFLICT)
+        
+        return Response({"message": "Successfully added follower"}, status=status.HTTP_200_OK)  
 
-    def delete(self, request, pk, foreign_author_id):
+    def delete(self, request, author_id, foreign_author_id):
         try:
-            author = Author.objects.get(pk=pk)
-            follower = Author.objects.get(pk=foreign_author_id)
+            author = Author.objects.get(pk=author_id)
         except Author.DoesNotExist:
             return Response({"error": "Author not found"}, status=status.HTTP_404_NOT_FOUND)
         
-        author.followers.remove(follower)
+        if author.followers.filter(pk=foreign_author_id).exists():
+            follower = author.followers.get(pk=foreign_author_id)
+            author.followers.remove(follower)
+        else:
+            return Response({"error": "Follower not found"}, status=status.HTTP_404_NOT_FOUND)
+        
         return Response(status=status.HTTP_204_NO_CONTENT)
 
