@@ -26,10 +26,10 @@ class Post(models.Model):
         ("PUBLIC","PUBLIC"),
         ("FRIENDS","FRIENDS")
     )
-
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     type = models.CharField(max_length=200, default="post")
     title = models.CharField(max_length=200)
-    id = models.URLField(primary_key=True, default=uuid.uuid4, editable=False)     
+    id = models.URLField(max_length=200, unique=True, editable=False) 
     source = models.URLField()
     origin = models.URLField()
     description = models.CharField(max_length=200)
@@ -40,10 +40,18 @@ class Post(models.Model):
         )
     content = models.TextField(default="")
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    categories = ArrayField(models.TextField(), blank=True, default=list, null=True)
-    count = models.PositiveIntegerField(default=0)
-    comments = models.URLField(null=True, blank=True)
+    categories = ArrayField(models.CharField(), blank=True, default=list, null=True)
+    count = models.PositiveIntegerField(default=0)         # TODO: update this field when a comment is added
+    comments = ArrayField(models.JSONField(), blank=True, default=list, null=True)
     commentsSrc = models.JSONField(null=True, blank=True) # TODO: will be replaced by the Comment model when implemented
     published = models.DateTimeField(default=timezone.now)
     visibility = models.CharField(max_length=200, choices=VISIBILITY_CHOICES, default="PUBLIC")
     unlisted = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        # When the object is instantiated, set the id field using the author's id (URL) and the uuid
+        if not self.id:
+            self.id = self.author.id + "posts/" + str(self.uuid)
+            self.source = self.id
+            self.origin = self.id
+        super().save(*args, **kwargs)
