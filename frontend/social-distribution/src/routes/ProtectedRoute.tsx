@@ -1,5 +1,5 @@
 import React from "react";
-import {Navigate, Route, RouteProps } from "react-router";
+import {Navigate, Outlet, Route, RouteProps } from "react-router";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 
@@ -7,10 +7,12 @@ export const ProtectedRoute = (props: RouteProps) => {
   const auth = useSelector((state: RootState) => state.auth);
 
   if (auth.account) {
-    if (props.path === "/login") {
+    if (props.path === "/") {
+      console.log("In Protected Route")
       return <Navigate to={"/home"} />;
     }
-    return <Route {...props} />;
+    console.log("not")
+    return <Navigate to={"/"} />;
   } else if (!auth.account) {
     return <Navigate to={"/"} />;
   } else {

@@ -10,7 +10,7 @@ import {
   VStack
 } from "@chakra-ui/react";
 import * as Yup from "yup";
-import API_URL from "../../../components/api"
+import {API_URL} from "../../../components/api"
 
 import authSlice from "../../../store/slices/auth";
 import { useDispatch } from "react-redux";
@@ -42,10 +42,8 @@ function Login() {
   const dispatch = useDispatch();
   const history = useNavigate();
 
-  const handleLogin = (username, password) =>{
-    localStorage.setItem("user", username)
-    axios
-          .post(`${API_URL}/auth/login/`, { username, password })
+  const handleLogin = (displayName, password) =>{
+    axios.post(API_URL + "/auth/login/", { displayName, password })
           .then((res) => {
             dispatch(
               authSlice.actions.setAuthTokens({
@@ -53,9 +51,10 @@ function Login() {
                 refreshToken: res.data.refresh,
               })
             );
+            console.log("Got a successful request")
             dispatch(authSlice.actions.setAccount(res.data.user));
             setLoading(false);
-            history.push("/");
+            history.push("/home");
           })
           .catch((err) => {
             console.log(JSON.stringify(err));

@@ -25,10 +25,9 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path = "/" element = {<LandingPage />} />
-            <Route path = "/login" element = {<Login setLoggedIn={setLoggedIn}/>} />
 
-            <Route path='/' element={<ProtectedRoute/>}>
-              <Route path='/home' element={<Home/>}/>
+            <Route element={<ProtectedRoute  />}>
+              <Route path="/home" element={<Home />} />
             </Route>
 
             <Route path = "/signup" element = {<Signup />} />
