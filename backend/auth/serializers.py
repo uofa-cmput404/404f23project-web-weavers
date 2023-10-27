@@ -27,15 +27,15 @@ class LoginSerializer(TokenObtainPairSerializer):
 
 class RegisterSerializer(AuthorSerializer):
     password = serializers.CharField(max_length=128, min_length=8, write_only=True, required=True)
-    username = serializers.CharField(required=True, write_only=True, max_length=128)
+    displayName = serializers.CharField(required=True, write_only=True, max_length=128)
 
     class Meta:
         model = Author
-        fields = ['id', 'username', 'email', 'password', 'is_active']
+        fields = ['uuid', 'displayName', 'password', 'is_active']
 
     def create(self, validated_data):
         try:
-            user = Author.objects.get(username=validated_data['username'])
+            user = Author.objects.get(displayName=validated_data['displayName'])
         except ObjectDoesNotExist:
             user = Author.objects.create_user(**validated_data)
         return user

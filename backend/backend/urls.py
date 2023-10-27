@@ -21,6 +21,6 @@ from rest_framework import routers
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('authors/', include('authors.urls')),
+    path('authors/', include('authors.urls')),
     path('auth/', include(('backend.routers', 'backend'), namespace='backend')),
 ]
