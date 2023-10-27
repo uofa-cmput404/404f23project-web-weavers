@@ -31,7 +31,7 @@ class RegisterSerializer(AuthorSerializer):
 
     class Meta:
         model = Author
-        fields = ['uuid', 'displayName', 'password', 'is_active']
+        fields = ['id', 'displayName', 'password', 'is_active']
 
     def create(self, validated_data):
         try:

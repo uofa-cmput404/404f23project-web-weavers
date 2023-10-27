@@ -40,7 +40,7 @@ class RegistrationViewSet(ModelViewSet, TokenObtainPairView):
             "refresh": str(refresh),
             "access": str(refresh.access_token),
         }
-
+        print(serializer.data)
         return Response({
             "user": serializer.data,
             "refresh": res["refresh"],

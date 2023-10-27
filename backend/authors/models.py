@@ -30,19 +30,19 @@ class AuthorManager(BaseUserManager):
 
 
 class Author(AbstractBaseUser, PermissionsMixin):
-    uuid = models.CharField(primary_key=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     type = models.CharField(max_length=50, default="author")
-    # id = models.CharField(max_length=100, unique=True, editable=False, default='')
+    id = models.URLField(blank=True, null=True)
     host = models.URLField(max_length=200, default="http://127.0.0.1:8000/")
     displayName = models.CharField(max_length=100, default="displayName",unique=True)
     url = models.URLField(max_length=200, editable=False)    
     github = models.URLField(max_length=200, blank=True)
     profileImage = models.URLField(max_length=100, blank=True)
-    # email = models.EmailField(max_length=100, unique=True, blank=True)
+    email = models.EmailField(max_length=100, blank=True)  # do we need this? we dont even require email for registration
     password=models.CharField(max_length=100, blank=True, null=False, editable=False, default='')
 
     is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False) # a admin user; non super-user
     USERNAME_FIELD = 'displayName'
 
 
