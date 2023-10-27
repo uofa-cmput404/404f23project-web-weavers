@@ -15,25 +15,6 @@ import {API_URL} from "../../../components/api"
 import authSlice from "../../../store/slices/auth";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-/*
-const validate = values => {
-  const errors = {};
-  if (!values.username) {
-    errors.username = 'Username required';
-  } else if (values.username.length > 200) {
-    errors.username = 'Must be 200 characters or less';
-  }
-
-
-  if (!values.password) {
-    errors.password = 'Password required';
-  } else if (values.password.length < 8) {
-    errors.password = 'Must be 8 characters or more';
-  }
-
-  return errors;
-};
-  */
 
 function Login() {
   let navigate = useNavigate();
@@ -53,7 +34,7 @@ function Login() {
             console.log("Got a successful request")
             dispatch(authSlice.actions.setAccount(res.data.user));
             setLoading(false);
-            navigate("/home");
+            navigate("/explore");
           })
           .catch((err) => {
             console.log(JSON.stringify(err));

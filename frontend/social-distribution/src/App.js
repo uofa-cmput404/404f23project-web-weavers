@@ -1,10 +1,8 @@
 import './App.css';
-import Login from './pages/login_signup/tab_screens/login';
 import Home from './pages/main/home';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import {useState} from 'react';
 import LandingPage from './pages/login_signup/landingPage';
-import Signup from './pages/login_signup/tab_screens/signup';
 import AdminLogin from './pages/login_signup/tab_screens/adminLogin';
 import Settings from './pages/main/settings';
 import Inbox from './pages/main/inbox';
@@ -25,17 +23,12 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path = "/" element = {<LandingPage />} />
-
-            <Route element={<ProtectedRoute  />}>
-              <Route path="/home" element={<Home />} />
-            </Route>
-
-            <Route path = "/signup" element = {<Signup />} />
-            <Route path = "/admin" element = {<AdminLogin />} />
-            <Route path = "/explore" element = {<Explore/>}/>
-            <Route path = "/profile" element = {<Profile/>}/>
-            <Route path = "/inbox" element = {<Inbox/>}/>
-            <Route path = "/settings" element = {<Settings/>}/>
+            <Route path="/explore" element={<ProtectedRoute><Explore /></ProtectedRoute>}/>
+            <Route path = "/admin" element = {<ProtectedRoute><AdminLogin /></ProtectedRoute>}/>
+            <Route path = "/profile" element = {<ProtectedRoute><Profile /></ProtectedRoute>}/>
+            <Route path = "/inbox" element = {<ProtectedRoute><Inbox /></ProtectedRoute>}/>
+            <Route path = "/settings" element = {<ProtectedRoute><Settings /></ProtectedRoute>}/>
+            <Route path = "/home" element = {<ProtectedRoute><Home /></ProtectedRoute>}/>
           </Routes>
         </BrowserRouter>
       </PersistGate>

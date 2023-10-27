@@ -5,12 +5,16 @@ import { FiMenu, FiHome, FiInbox, FiUser, FiSettings, FiLogOut, FiSquare} from "
 import NavItem from "./NavItem.js";
 import Logo from "../../assets/logo.png";
 import { useNavigate } from 'react-router-dom';
+import authSlice from "../../store/slices/auth";
+import { useDispatch } from "react-redux";
 
 // TODO: get username and pictureUrl from backend   -> remove hardcoded values
 //       OPTIMIZE TOO SLOW
 
-export default function NavBar({...props}) {  
+export default function NavBar({...props}) {
     let navigate = useNavigate();
+    let dispatch = useDispatch();
+
     const current = props.current
     const username = "JohnDoeInfinity"
     const pictureUrl = "https://bit.ly/dan-abramov"
@@ -25,6 +29,7 @@ export default function NavBar({...props}) {
         if(e== "Sign out"){
             // clear auth token
             e = "" // back to home page
+            dispatch(authSlice.actions.logout());
         }
         setActive(e);
         navigate("/"+e)
@@ -33,7 +38,7 @@ export default function NavBar({...props}) {
     return (
         <Flex style={styles.container} flexDir="column" pos="sticky" w={navSize === "small" ? "75px" : "300px"}>
             <Flex p="5%" flexDir="column" alignItems={navSize == "small" ? "center" : "flex-start"} >
-                <IconButton background="none" mt={5} _hover={{background: "none"}} icon={<FiMenu />} 
+                <IconButton background="none" mt={5} _hover={{background: "none"}} icon={<FiMenu />}
                 onClick={() => navSize === "small" ? changeNavSize("large") : changeNavSize("small")} color='white' />
 
                 <NavItem navSize={navSize} icon={FiHome} title="Home" description="Home" active={current === 'Home' ? true : false } onClick={()=>{handleClick('Home')}}/>
@@ -53,7 +58,7 @@ export default function NavBar({...props}) {
                     <Avatar src={pictureUrl} />
                         <Flex flexDir="column" ml={4} display={navSize==="small"?"none":"flex"}>
                             <Heading as="h3" size='sm'>{username}</Heading>
-                        </Flex>     
+                        </Flex>
                 </Flex>
             </Flex>
         </Flex>
@@ -63,7 +68,7 @@ export default function NavBar({...props}) {
 const styles = {
     container:{
         boxShadow:"0 4px 12px 0 rgba(0,0,0,0.5)",
-        backgroundColor:colors.text.t1,      
+        backgroundColor:colors.text.t1,
         justifyContent:"space-between",
         color:colors.text.t2,
         zIndex:1,
@@ -71,5 +76,5 @@ const styles = {
         height: "100vh",
         overflow:'scroll',
     },
-   
+
 }
