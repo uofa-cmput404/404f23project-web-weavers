@@ -32,7 +32,6 @@ class AuthorManager(BaseUserManager):
 class Author(AbstractBaseUser, PermissionsMixin):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     type = models.CharField(max_length=50, default="author")
-    id = models.URLField(blank=True, null=True)
     host = models.URLField(max_length=200, default="http://127.0.0.1:8000/")
     displayName = models.CharField(max_length=100, default="displayName",unique=True)
     url = models.URLField(max_length=200, editable=False)    
@@ -42,7 +41,7 @@ class Author(AbstractBaseUser, PermissionsMixin):
     password=models.CharField(max_length=100, blank=True, null=False, editable=False, default='')
 
     is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False) # a admin user; non super-user
+    is_staff = models.BooleanField(default=False) # an admin user
     USERNAME_FIELD = 'displayName'
 
 

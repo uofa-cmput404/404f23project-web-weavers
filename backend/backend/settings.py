@@ -144,6 +144,10 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'authors.Author'
+SIMPLE_JWT = {
+    'USER_ID_FIELD': 'uuid',
+}
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000"

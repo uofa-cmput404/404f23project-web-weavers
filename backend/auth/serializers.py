@@ -13,9 +13,10 @@ class LoginSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
 
-        refresh = self.get_token(self.user)
+        refresh = self.get_token(self.author)
+        print("refresh: ",refresh)
 
-        data['user'] = AuthorSerializer(self.user).data
+        data['user'] = AuthorSerializer(self.author).data
         data['refresh'] = str(refresh)
         data['access'] = str(refresh.access_token)
 
@@ -31,11 +32,11 @@ class RegisterSerializer(AuthorSerializer):
 
     class Meta:
         model = Author
-        fields = ['id', 'displayName', 'password', 'is_active']
+        fields = ['uuid', 'displayName', 'password', 'is_active']
 
     def create(self, validated_data):
         try:
-            user = Author.objects.get(displayName=validated_data['displayName'])
+            author = Author.objects.get(displayName=validated_data['displayName'])
         except ObjectDoesNotExist:
-            user = Author.objects.create_user(**validated_data)
-        return user
+            author = Author.objects.create_user(**validated_data)
+        return author
