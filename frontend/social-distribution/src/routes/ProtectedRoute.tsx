@@ -7,13 +7,14 @@ export const ProtectedRoute = (props: RouteProps) => {
   const auth = useSelector((state: RootState) => state.auth);
 
   if (auth.account) {
-    if (props.path === "/") {
+    if (props.path === "") {
       console.log("In Protected Route")
-      return <Navigate to={"/home"} />;
+      return <Navigate to={"/explore"} />;
     }
-    console.log("not")
-    return <Navigate to={"/"} />;
+    //This needs to send to other routes
+    return <Navigate to={"/explore"} />;
   } else if (!auth.account) {
+    console.log("account NOT authenticated")
     return <Navigate to={"/"} />;
   } else {
     return <div>Not found</div>;

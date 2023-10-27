@@ -18,6 +18,7 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/uuid": "^9.0.6",
     "axios": "^1.6.0",
+    "axios-auth-refresh": "^3.3.6",
     "formik": "^2.4.5",
     "framer-motion": "^10.16.4",
     "react": "^18.2.0",

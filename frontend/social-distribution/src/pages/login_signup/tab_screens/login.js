@@ -40,7 +40,6 @@ function Login() {
 
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const history = useNavigate();
 
   const handleLogin = (displayName, password) =>{
     axios.post(API_URL + "/auth/login/", { displayName, password })
@@ -54,7 +53,7 @@ function Login() {
             console.log("Got a successful request")
             dispatch(authSlice.actions.setAccount(res.data.user));
             setLoading(false);
-            history.push("/home");
+            navigate("/home");
           })
           .catch((err) => {
             console.log(JSON.stringify(err));
