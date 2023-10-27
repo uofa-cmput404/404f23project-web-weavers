@@ -29,7 +29,7 @@ class LoginSerializer(TokenObtainPairSerializer):
 class RegisterSerializer(AuthorSerializer):
     password = serializers.CharField(max_length=128, min_length=8, write_only=True, required=True)
     displayName = serializers.CharField(required=True, write_only=True, max_length=128)
-
+    is_active = serializers.BooleanField(default=True)
     class Meta:
         model = Author
         fields = ['uuid', 'displayName', 'password', 'is_active']
