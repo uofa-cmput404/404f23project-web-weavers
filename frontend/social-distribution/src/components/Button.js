@@ -1,25 +1,21 @@
 import { colors,spacing,sizes, buttonSizes } from "../utils/theme";
-export default function Button({ children, type, ...attributes }) {
-    const btnType = {
-      primary: type === 'primary',
-      secondary: type === 'secondary',
-      tertiary: type === 'tertiary',
-    }
 
-    const destination = attributes.dest;
-    console.log(destination);
+
+export default function Button({ children, btn_type, ...attributes }) {
+    const btnType = {
+      primary: btn_type === 'primary',
+      secondary: btn_type === 'secondary',
+      tertiary: btn_type === 'tertiary',
+    }
 
     return (
       <button
-        type="button"
         style={{
           ...(btnType.primary && styles.primary),
           ...(btnType.secondary && styles.secondary),
           ...(btnType.tertiary && styles.tertiary),
-          
         }}
-      
-        
+        {...attributes}
       >
         {children}
       </button>
@@ -36,7 +32,6 @@ export default function Button({ children, type, ...attributes }) {
       fontSize: sizes.md,
       backgroundColor: colors.brand.c3,
       width: buttonSizes.md,
-      
     },
     secondary: {
       backgroundColor: colors.brand.c4,
@@ -60,4 +55,3 @@ export default function Button({ children, type, ...attributes }) {
     },
   };
 
-  
