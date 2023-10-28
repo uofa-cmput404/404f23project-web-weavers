@@ -20,7 +20,15 @@ from authors import views
 from rest_framework import routers
 
 urlpatterns = [
+    # Admin site
     path('admin/', admin.site.urls),
+
+    # Authors app
     path('authors/', include('authors.urls')),
+    # Posts
+    path('authors/<uuid:author_id>/posts/', include('post.urls')),
+
+    # Followers app
+    path('authors/<uuid:author_id>/followers/', include('followers.urls')),
     path('auth/', include(('backend.routers', 'backend'), namespace='backend')),
 ]
