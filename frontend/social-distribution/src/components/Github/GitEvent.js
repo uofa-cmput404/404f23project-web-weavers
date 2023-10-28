@@ -1,4 +1,5 @@
 import {colors} from "../../utils/theme.js";
+import { recieveEvents } from "../api.js";
 import { Avatar, Flex, Link, Text } from "@chakra-ui/react";
 import React from "react";
 import { useNavigate } from 'react-router-dom';
@@ -6,7 +7,15 @@ import { useNavigate } from 'react-router-dom';
 
 export default function GitActivity({eventType, gitName, repo}){
     const username = localStorage.getItem("user");
+    const navigate = useNavigate();
+    // const avatar = localStorage.getItem("avatar");
+    const avatar = "https://avatars.githubusercontent.com/u/59799621?v=4";
     recieveEvents(username);
+
+    const handleClick = () => {
+        navigate(`/profile/${username}`);
+    };
+
  return (
     <Flex align ="center">
         <Link
@@ -21,3 +30,10 @@ export default function GitActivity({eventType, gitName, repo}){
         </Link>
     </Flex>
 )}
+
+const styles = {
+    container:{
+        backgroundColor: colors.brand.c6,
+        height: "100vh",
+    }
+}

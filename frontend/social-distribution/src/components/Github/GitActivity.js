@@ -1,5 +1,6 @@
-import {recieveEvents} from "../api.js";
+import { recieveEvents } from "../api.js";
 import React from "react";
+import { Flex } from '@chakra-ui/react'
 import { colors } from "../../utils/theme.js";
 import GitEvent from "./GitEvent.js"
 
