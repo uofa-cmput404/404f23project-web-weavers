@@ -19,6 +19,7 @@ class PostTests(APITestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data["title"], "post99")
         self.assertEqual(response.data["description"], "content99")
+        self.assertEqual(Post.objects.count(), 4)
 
     def test_list_posts(self):
         response = self.client.get(f"{self.author1.url}/posts/")

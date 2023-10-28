@@ -41,9 +41,11 @@ class PostList(APIView, PageNumberPagination):
         serializer = PostSerializer(data=request.data)
         if serializer.is_valid():
             author = Author.objects.get(pk=author_id)
-            serializer.validated_data["author"] = author
+            new_post_id = uuid.uuid4()
 
-            post_url = author.url + "/posts/" + str(uuid.uuid4())
+            post_url = author.url + "/posts/" + str(new_post_id)
+            serializer.validated_data["uuid"] = new_post_id
+            serializer.validated_data["author"] = author
             serializer.validated_data["id"] = post_url
             serializer.validated_data["source"] = post_url
             serializer.validated_data["origin"] = post_url
