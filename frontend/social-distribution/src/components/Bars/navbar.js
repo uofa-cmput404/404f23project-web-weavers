@@ -30,6 +30,7 @@ export default function NavBar({...props}) {
             // clear auth token
             e = "" // back to home page
             dispatch(authSlice.actions.logout());
+            localStorage.removeItem("user")
         }
         setActive(e);
         navigate("/"+e)

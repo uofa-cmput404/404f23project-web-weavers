@@ -31,7 +31,7 @@ function Login() {
                 refreshToken: res.data.refresh,
               })
             );
-            console.log("Got a successful request")
+            localStorage.setItem("user", res.data.user.uuid)
             dispatch(authSlice.actions.setAccount(res.data.user));
             setLoading(false);
             navigate("/explore");
