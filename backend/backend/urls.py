@@ -18,7 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
+    # Admin site
     path('admin/', admin.site.urls),
+
+    # Authors app
     path('authors/', include('authors.urls')),
+    # Posts
     path('authors/<uuid:author_id>/posts/', include('post.urls')),
+
+    # Followers app
+    path('authors/<uuid:author_id>/followers/', include('followers.urls')),
 ]
