@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('authors', '0004_rename_display_name_author_displayname_and_more'),
+        ('authors', '0023_remove_author_id'),
     ]
 
     operations = [

@@ -5,6 +5,5 @@ class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
 
-        exclude = ['uuid', 'followers']
-        fields = ["uuid",'displayName', 'is_active']
+        exclude = ['followers']
         # read_only_field = ['is_active', 'created', 'updated']
