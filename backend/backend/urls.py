@@ -30,4 +30,5 @@ urlpatterns = [
 
     # Followers app
     path('authors/<uuid:author_id>/followers/', include('followers.urls')),
+    path('auth/', include(('backend.routers', 'backend'), namespace='backend')),
 ]
