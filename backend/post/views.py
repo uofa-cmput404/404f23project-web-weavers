@@ -89,7 +89,15 @@ class PostDetails(APIView):
         
         serializer = PostSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(uuid=post_id)
+            author = Author.objects.get(pk=author_id)
+            post_url = author.url + "/posts/" + str(post_id)
+
+            serializer.validated_data["uuid"] = post_id
+            serializer.validated_data["author"] = author
+            serializer.validated_data["id"] = post_url
+            serializer.validated_data["source"] = post_url
+            serializer.validated_data["origin"] = post_url
+            serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
         
         return Response(serializer.errors)
@@ -99,6 +107,9 @@ class PostDetails(APIView):
         Delete a post.
         """
         author = Author.objects.get(pk=author_id)
-        post = Post.objects.get(pk=post_id, author=author)
+        try:
+            post = Post.objects.get(pk=post_id, author=author)
+        except:
+            return Response({"error": "Post Not Found"}, status=status.HTTP_404_NOT_FOUND)
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
