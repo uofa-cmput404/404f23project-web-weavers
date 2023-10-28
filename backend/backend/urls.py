@@ -25,7 +25,8 @@ urlpatterns = [
     path('authors/', include('authors.urls')),
     # Posts
     path('authors/<uuid:author_id>/posts/', include('post.urls')),
-
+    # Comments
+    path('authors/<uuid:author_id>/posts/<uuid:post_id>/comments/', include('comments.urls')),
     # Followers app
     path('authors/<uuid:author_id>/followers/', include('followers.urls')),
 ]
