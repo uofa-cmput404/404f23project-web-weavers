@@ -4,6 +4,7 @@ from rest_framework import status
 from .models import Like
 from .serializers import LikeSerializer
 from authors.models import Author
+from post.models import Post
 
 # Create your views here.
 @api_view(['GET'])
@@ -27,10 +28,8 @@ def list_post_likes(request, author_id, post_id):
     """
     author = Author.objects.get(pk=author_id)
     # get the post url
-    url = request.build_absolute_uri()
-    likes_index = url.rindex("/likes")
-    post_url = url[:likes_index]
-    post_likes = Like.objects.filter(object=post_url).exclude(author=author).all()
+    post = Post.objects.get(pk=post_id)
+    post_likes = Like.objects.filter(object=post.id).exclude(author=author).all()
     serializer = LikeSerializer(post_likes, many=True)
     return Response({
         "type": "likes",
@@ -42,6 +41,8 @@ def list_comment_likes(request, author_id, post_id, comment_id):
     """
     List all likes of a comment
     """
+    # TODO: Change implementation to use Comment model instead of getting
+    # the comment url from the full url
     author = Author.objects.get(pk=author_id)
     # get the comment url
     url = request.build_absolute_uri()
