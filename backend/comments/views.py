@@ -21,7 +21,7 @@ class CommentList(APIView, PageNumberPagination):
 
         author = Author.objects.get(pk=author_id)
         post = Post.objects.get(pk=post_id)
-        comments = Comment.objects.filter(author=author,post=post).order_by('-published')
+        comments = Comment.objects.filter(author=author,post=post)
 
         if self.get_page_number(request, self):
             if self.get_page_size(request):
