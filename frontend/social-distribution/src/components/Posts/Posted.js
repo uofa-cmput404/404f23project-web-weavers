@@ -18,10 +18,12 @@ import {
     AiOutlineComment,
     AiFillHeart,
     AiOutlineEdit,
+    AiFillDelete,
 } from "react-icons/ai";
 import "./Posting.css"
 import { sizes, colors } from "../../utils/theme";
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 
 export default function Post({postData, visibility}){
@@ -107,6 +109,12 @@ export default function Post({postData, visibility}){
     });
     };
 
+    // Delete Handles
+    const handleDeleteClick = () => {
+        axios.delete(postData.id + "/")
+        window.location.reload(false);
+    };
+
     return(
         <Card maxW='md'>
             <CardHeader>
@@ -123,8 +131,19 @@ export default function Post({postData, visibility}){
                                 icon={<AiOutlineEdit />}
                                 onClick={handleEditClick}
                             />
-                    </Flex>
-                )}
+
+                            </Flex>
+                        )}
+                        {showDeleteField && (
+                            <Flex style={styles.buttons}>
+                            <IconButton
+                                aria-label="Delete"
+                                icon={<AiFillDelete />}
+                                onClick={handleDeleteClick}
+                            />
+
+                            </Flex>
+                        )}
                     </Flex>
                 </Flex>
             </CardHeader>
