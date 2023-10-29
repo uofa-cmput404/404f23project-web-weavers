@@ -6,17 +6,6 @@ from .serializers import LikeSerializer
 from authors.models import Author
 
 # Create your views here.
-@api_view(['POST'])
-def send_like(request, author_id):
-    """
-    Send a like
-    """
-    serializer = LikeSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status = status.HTTP_200_OK)
-    return Response(serializer.errors)
-
 @api_view(['GET'])
 def list_author_likes(request, author_id):
     """
@@ -41,7 +30,6 @@ def list_post_likes(request, author_id, post_id):
     url = request.build_absolute_uri()
     likes_index = url.rindex("/likes")
     post_url = url[:likes_index]
-
     post_likes = Like.objects.filter(object=post_url).exclude(author=author).all()
     serializer = LikeSerializer(post_likes, many=True)
     return Response({

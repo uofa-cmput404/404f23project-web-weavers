@@ -16,7 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from likes.views import list_author_likes, list_post_likes, send_like
+from likes.views import list_author_likes, list_post_likes
+from inbox.views import InboxView
 
 urlpatterns = [
     # Admin site
@@ -31,8 +32,8 @@ urlpatterns = [
     # Post Likes
     path('authors/<uuid:author_id>/posts/<uuid:post_id>/likes/', list_post_likes),
     # Liked
-    path('<uuid:author_id>/liked', list_author_likes),
+    path('authors/<uuid:author_id>/liked/', list_author_likes),
     # Inbox
-    path('<uuid:author_id>/inbox', send_like),
+    path('authors/<uuid:author_id>/inbox/', InboxView.as_view()),
     
 ]
