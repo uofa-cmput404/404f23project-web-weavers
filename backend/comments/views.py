@@ -30,12 +30,15 @@ class CommentList(APIView, PageNumberPagination):
         serializer = CommentSerializer(comments, many=True)
         return Response({
             "type" : "comments",
+            "page" : self.page.number,
+            "size" : self.page.paginator.per_page,
+            "id" : post_id + "/comments/",
             "items" : serializer.data,
         })
     
     def post(self, request, author_id, post_id):
         """
-        Create a new comment
+        Create a nrew comment
         """
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
