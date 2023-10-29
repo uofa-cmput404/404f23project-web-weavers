@@ -51,21 +51,6 @@ class CommentList(APIView, PageNumberPagination):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors)
-    
-class CommentDetail(APIView):
-    def get (self, request, author_id, post_id, comment_id):
-        """
-        Get a particular comment
-        """
-        author = Author.objects.get(pk=author_id)
-        post = Post.objects.get(pk=post_id)
-        
-        try:
-            comment = Comment.objects.get(pk=comment_id, author=author, post=post)
-        except:
-            return Response({"error" : "Comment not found"}, status=status.HTTP_404_NOT_FOUND)
-        serializer = CommentSerializer(comment)
-        return Response(serializer.data)
 
 
         

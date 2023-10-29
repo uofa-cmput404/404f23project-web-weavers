@@ -14,7 +14,7 @@ class Comment(models.Model):
     ]
     type = models.CharField(max_length=300, blank=True, default="comment")
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    author = models.ForeignKey(Author, on_delete=models.PROTECT)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE)
     comment = models.TextField()
     contentType = models.CharField(
         max_length=200,
