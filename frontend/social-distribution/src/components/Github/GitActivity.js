@@ -10,9 +10,6 @@ export default function GitActivity({props}){
 
     return
         <Flex flexDir="column" w="100%" alignItems="center" align="center">
-            {users.map((user) => (
-                <GitEvent fullName={user.fullName} username={user.username} avatar={user.avatar} />
-        ))}
 
     </Flex>
 }

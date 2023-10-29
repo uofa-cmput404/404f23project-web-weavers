@@ -25,10 +25,7 @@ export let recieveEvents = (username) =>{
         console.log(JSON.stringify(error))
         return null;
     })
-
-
-
-
 }
+
 
 export default recieveUser;

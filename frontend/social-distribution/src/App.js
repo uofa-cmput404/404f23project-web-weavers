@@ -11,6 +11,7 @@ import Inbox from './pages/main/inbox';
 import Profile from './pages/main/profile';
 import Explore from './pages/main/explore';
 import MyStream from './pages/main/mystream';
+import {EditPost} from './pages/main/editPost';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false)
@@ -29,6 +30,7 @@ function App() {
           <Route path = "/inbox" element = {<Inbox/>}/>
           <Route path = "/mystream" element = {<MyStream/>}/>
           <Route path = "/settings" element = {<Settings/>}/>
+          <Route path = "/editPost" element = {<EditPost/>}/>
         </Routes>
       </BrowserRouter>
     </div>

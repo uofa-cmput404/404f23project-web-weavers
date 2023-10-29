@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { 
-    Card, 
-    CardHeader, 
-    CardBody, 
-    Flex, 
-    Avatar, 
-    Box, 
+import {
+    Card,
+    CardHeader,
+    CardBody,
+    Flex,
+    Avatar,
+    Box,
     Heading,
     Divider,
     Text,
@@ -13,22 +13,48 @@ import {
     Input,
     Button
 } from '@chakra-ui/react'
-import { 
-    AiOutlineHeart, 
+import {
+    AiOutlineHeart,
     AiOutlineComment,
     AiFillHeart,
+    AiOutlineEdit,
 } from "react-icons/ai";
 import "./Posting.css"
 import { sizes, colors } from "../../utils/theme";
+import { useNavigate } from 'react-router-dom';
 
-export default function Post(){
+
+export default function Post({postData, visibility}){
     // const userID= localStorage.getItem()
-    // const postID = 1;                       
+    // const postID = 1;
+    let navigate = useNavigate();
     const [IsLiked, SetIsLiked]= useState(false);
     // const [postcontent, SetpostContent]= useState("")
     // const [postImage, SetpostImage]= useState(props.post.image);
-    const [ comment, setComment ] = useState(""); 
+    const [ comment, setComment ] = useState("");
     const [showCommentField, setShowCommentField] = useState(false);
+    const[showLikeField, setShowLikeField] = useState(false);
+    const[showEditField, setShowEditField] = useState(false);
+    const[showDeleteField, setShowDeleteField] = useState(false);
+
+    const[showEditPOST, setShowEditPOST] = useState(false)
+
+    useEffect(() => {
+        //This always get set to false initially
+        setShowEditPOST(false)
+        if (visibility == "PERSONAL"){
+            setShowLikeField(false)
+            setShowCommentField(true)
+            setShowEditField(true)
+            setShowDeleteField(true)
+        } else if (visibility == "PUBLIC"){
+            setShowLikeField(true)
+            setShowCommentField(true)
+            setShowEditField(false)
+            setShowDeleteField(false)
+        }
+
+     }, []);
 
     // Like handles
     const handleLikeClick = () => {
@@ -59,51 +85,46 @@ export default function Post(){
     }
     const handleCommentChange = (event) => {
     // TBH, don't know if we need this
-        setComment(event.target.value); 
+        setComment(event.target.value);
     };
-    
+
     const handleCommentPost = () => {
     // TODO: post comment to backend
-    console.log(comment); 
+    console.log(comment);
         setComment(""); // Clear the comment field after posting
     };
 
 
-    // User information- communicate with the backend
-    // TODO: figure out how to pull data from backend
-    // useEffect(() => {
-    //     const getUserData = async() => {
-    //         await api
-    //         .get()              // get url from backend
-    //         .then((response) => {
-                
-    //         })
-    //     }
-
-    //     const getPostImage = async() => {
-    //         await api
-    //         .get()
-    //         .then((res) => {
-    //             const data= ''
-    //             SetpostImage(data)
-    //         })
-    //         .catch((err) => {
-    //             console.log(err)
-    //         })
-    //     }
-    // })
-
-    // getUserData()
+    // Edit Handles
+    const handleEditClick = () => {
+        // Add the ability to edit a post by adding a make a post feature
+        // Send the actual POST
+        // re-render the page
+        navigate('/editPost', {
+            state: {
+                postData: postData
+            }
+    });
+    };
 
     return(
         <Card maxW='md'>
             <CardHeader>
                 <Flex spacing='4'>
                     <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
-                        <Avatar name='JohnDoeInfinity' src='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80' />
+                        <Avatar name={postData.author.displayName} src='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80' />
                         <Box>
-                            <Heading size={sizes.md}>JohnDoeInfinity</Heading>
+                            <Heading size={sizes.md}>{postData.author.displayName}</Heading>
                         </Box>
+                        {showEditField && (
+                            <Flex style={styles.buttons}>
+                            <IconButton
+                                aria-label="Edit"
+                                icon={<AiOutlineEdit />}
+                                onClick={handleEditClick}
+                            />
+                    </Flex>
+                )}
                     </Flex>
                 </Flex>
             </CardHeader>
@@ -111,8 +132,11 @@ export default function Post(){
             <Divider/>
 
             <CardBody>
+                <Box textAlign= "left" padding= "0.5rem" fontSize="2.0rem">
+                    <Text>{postData.title}</Text>
+                </Box>
                 <Box textAlign= "left" padding= "0.5rem">
-                    <Text>a really good caption</Text>
+                    <Text>{postData.description}</Text>
                 </Box>
 
                 <Box mx="auto" textAlign="center">
@@ -121,14 +145,16 @@ export default function Post(){
                     </Flex>
                 </Box>
 
-                <Flex style={styles.buttons}>
-                    {likeButton}
-                    <IconButton
-                    aria-label="Comment"
-                    icon={<AiOutlineComment />}
-                    onClick={handleCommentClick}
-                    />
-                </Flex>
+                {showLikeField && (
+                    <Flex style={styles.buttons}>
+                        {likeButton}
+                        <IconButton
+                        aria-label="Comment"
+                        icon={<AiOutlineComment />}
+                        onClick={handleCommentClick}
+                        />
+                    </Flex>
+                )}
                 {showCommentField && (
                         <Flex flexDirection="column" mt="2">
                             <Input

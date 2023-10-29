@@ -20,9 +20,6 @@ export default function Home() {
 
                 <div style={{ ...styles.postContainer }}>
                     {/* TODO: change this to be more dynamic when pulling list of posts */}
-                    <div style={styles.post}> <Post /> </div>
-                    <div style={styles.post}> <Post /> </div>
-                    <div style={styles.post}> <Post /> </div>
                 </div>
             </div>
         </div>
