@@ -5,9 +5,19 @@ import LogoBar from "../../components/Bars/logoBar";
 import CreatePostCard from "../../components/Posts/createPostCard";
 import FriendsBar from "../../components/FriendsBar/friendsBar";
 
+import {API_URL} from "../../components/api";
+import axios from 'axios';
+
 export default function Home() {
     //This is where the uuid of the user is being stored for now
     console.log(localStorage.getItem("user"))
+
+    //queries all available authors the database
+    //queries all posts of every author
+    //adds a post to the list if it's public TODO later
+
+
+
     return (
         <div style={styles.container}>
             <LogoBar/>
