@@ -21,13 +21,12 @@ class InboxView(APIView, PageNumberPagination):
         self.max_page_size = 100
 
         author = Author.objects.get(pk=author_id)
-        inbox_posts = author.inbox
         
         # if a page query is provided, paginate the results
         if self.get_page_number(request, self):
             # results are paginated either by the default page size or the page size query parameter
             if self.get_page_size(request):
-                inbox_posts = self.paginate_queryset(inbox_posts, request)
+                inbox_posts = self.paginate_queryset(author.inbox, request)
 
         return Response({
             "type": "inbox",
@@ -54,7 +53,6 @@ class InboxView(APIView, PageNumberPagination):
                 author.save()
                 return Response(like_serializer.data, status = status.HTTP_200_OK)
             
-            return Response(like_serializer.errors, status = status.HTTP_400_BAD_REQUEST)
         elif request.data["type"] == "post":
             # I am not sure if it makes sense to create a new post object
             # if we are sending a post to the inbox
@@ -65,15 +63,11 @@ class InboxView(APIView, PageNumberPagination):
                 # add the post to the author's inbox
                 author.inbox.append(request.data)
                 author.save()
+                return Response(post_serializer.data, status = status.HTTP_200_OK)
             
             return Response(post_serializer.errors, status = status.HTTP_400_BAD_REQUEST)
         
         return Response(status = status.HTTP_400_BAD_REQUEST)
-
-        author.inbox.append(request.data)
-        author.save()
-
-        return Response(request.data, status = status.HTTP_200_OK)
     
     def delete(self, request, author_id):
         """
