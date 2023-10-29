@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
     Card,
     CardHeader,
@@ -22,17 +22,22 @@ import {
 } from "react-icons/ai";
 import "./Posting.css"
 import { sizes, colors } from "../../utils/theme";
+import { authorUUID, postUUID } from "../../utils/utils.js";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 
 export default function Post({postData, visibility}){
+    const { baseURL } = "http://127.0.0.1:8000/authors/";        // "http://127.0.0.1:8000/authors/" fine now since we need to look at authors anywas- change maybe later
     // const userID= localStorage.getItem()
-    // const postID = 1;
     let navigate = useNavigate();
     const [IsLiked, SetIsLiked]= useState(false);
-    // const [postcontent, SetpostContent]= useState("")
-    // const [postImage, SetpostImage]= useState(props.post.image);
+    const postUserUUID= authorUUID(postData.author.id);
+    const postID= postUUID(postData.id);
+    const [postAuthor, SetpostAuthor]= useState("");
+    const [postAuthorPF, SetpostAuthorPF]= useState("");
+    const [postcontent, SetpostContent]= useState("")
+    const [postImage, SetpostImage]= useState("");
     const [ comment, setComment ] = useState("");
     const [showCommentField, setShowCommentField] = useState(false);
     const[showLikeField, setShowLikeField] = useState(false);
@@ -40,6 +45,19 @@ export default function Post({postData, visibility}){
     const[showDeleteField, setShowDeleteField] = useState(false);
 
     const[showEditPOST, setShowEditPOST] = useState(false)
+
+    useEffect(() => {
+        // get post author, PFP, content and image
+        const getpostData = async () => {
+            const response = await axios.get(baseURL + postUserUUID + "/posts/" + postID + "/");
+            SetpostAuthor(response.data.author.displayName);
+            SetpostAuthorPF(response.data.author.github);
+            SetpostContent(response.data.content);
+            SetpostImage(response.data.image);
+        };
+
+        getpostData();
+    }, []);
 
     useEffect(() => {
         //This always get set to false initially
