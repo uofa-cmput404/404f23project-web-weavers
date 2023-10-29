@@ -1,11 +1,10 @@
 import React from "react";
 import NavBar from "../../components/Bars/navbar.js";
-import {colors, sizes, spacing} from "../../utils/theme";
 import LogoBar from "../../components/Bars/logoBar.js";
-import GitActivity from "../../components/Github/GitActivity.js";
 import FriendsBar from "../../components/FriendsBar/friendsBar.js";
+import {colors, sizes, spacing} from "../../utils/theme";
 
-import CreatePostCard from "../../components/Posts/createPostCard";
+
 import Post from "../../components/Posts/Posted";
 import {API_URL} from "../../components/api";
 import axios from 'axios';

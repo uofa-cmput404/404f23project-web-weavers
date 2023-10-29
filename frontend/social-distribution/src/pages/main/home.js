@@ -4,8 +4,6 @@ import NavBar from "../../components/Bars/navbar";
 import LogoBar from "../../components/Bars/logoBar";
 import CreatePostCard from "../../components/Posts/createPostCard";
 import FriendsBar from "../../components/FriendsBar/friendsBar";
-// import { Divider, Flex } from "@chakra-ui/react";
-import Post from "../../components/Posts/Posted";
 
 export default function Home() {
     //This is where the uuid of the user is being stored for now

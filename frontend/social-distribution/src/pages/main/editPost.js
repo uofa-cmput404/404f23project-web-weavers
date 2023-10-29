@@ -1,20 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import {Flex, Divider, IconButton, Button} from '@chakra-ui/react'
-import { sizes, colors } from "../../utils/theme";
-import {API_URL} from "../../components/api";
+import {colors, sizes, spacing } from "../../utils/theme";
 import axios from 'axios';
 import { useLocation, useNavigate } from "react-router-dom";
 import { FiImage } from "react-icons/fi";
-import { BeatLoader } from "react-spinners";
-import {
-    Box,
-    Checkbox,
-    FormControl,
-    FormLabel,
-    Input,
-    VStack
-  } from "@chakra-ui/react";
-  import { useFormik} from 'formik';
+import {FormControl,FormLabel,Input,VStack} from "@chakra-ui/react";
+import { useFormik} from 'formik';
+import NavBar from "../../components/Bars/navbar.js";
+import LogoBar from "../../components/Bars/logoBar.js";
+import FriendsBar from "../../components/FriendsBar/friendsBar.js";
 
 
 export function EditPost(){
@@ -39,7 +33,6 @@ export function EditPost(){
 
     const location = useLocation();
     const navigate = useNavigate();
-    const[postData, setPostData] = useState(false);
 
     //If a user has accessed this page without information send them back
     useEffect(() => {
@@ -73,8 +66,14 @@ export function EditPost(){
 
 return (
     <div style={styles.container}>
+            <LogoBar/>
+            <NavBar current='My Stream'/>
+            <FriendsBar/>
+        <div style={styles.content}>
+        <div style={styles.postContainer}>
+        <div style={styles.post}>
         <form onSubmit={formik.handleSubmit}>
-            <VStack spacing={3} align="flex-start" padding = "0.5rem">
+            <VStack spacing={3} alignText= "center" align="flex-start" padding = "0.5rem">
                 <FormControl>
                 <FormLabel htmlFor="title">Title</FormLabel>
                 <Input
@@ -147,34 +146,47 @@ return (
                 </Button>
             </Flex>
         </form>
+        </div>
+        </div>
+        </div>
     </div>
     );
 }
+const navbarHeight = "50px"; // replace with actual height of NavBar
 
 const styles = {
     container: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      width: "100%",
-      maxWidth: "600px",
-      marginTop: "20px",
+        backgroundColor: colors.brand.c6,
+        height: "100%",
+    },
+    content: {
+        // padding: spacing.medium,
+        width: sizes.contentWidth,
+        paddingTop: '5rem',
+        height: `calc(100vh - ${navbarHeight})`, // set height to remaining viewport height
+        marginBottom: "20px",
+
+    },
+    postContainer: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        backgroundColor: colors.brand.c3,
+        paddingBottom: spacing.md,
+        overflow: "auto",
+        paddingTop: spacing.md,
+        margin: spacing.md
+
+    },
+    post: {
+        width: "500px",
+        alignItems: "center",
+        marginTop: spacing.lg,
     },
     postImage: {
       width: "100%",
       height: "auto",
       marginBottom: "10px",
-    },
-    likeButton: {
-        color: "red",
-    },
-    commentButton: {
-        mt: "2",
-        backgroundColor: colors.brand.c2,
-        ":hover": {
-            backgroundColor: colors.brand.c1,
-        }
     },
     buttons: {
       marginTop: "10px",
