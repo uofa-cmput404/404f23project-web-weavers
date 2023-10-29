@@ -22,4 +22,4 @@ class Comment(models.Model):
         default=CT_MARKDOWN
         )
     published = models.DateTimeField(default=timezone.now)
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
