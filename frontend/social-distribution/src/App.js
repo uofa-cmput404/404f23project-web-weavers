@@ -8,11 +8,13 @@ import Settings from './pages/main/settings';
 import Inbox from './pages/main/inbox';
 import Profile from './pages/main/profile';
 import Explore from './pages/main/explore';
+import MyStream from './pages/main/mystream';
+import {EditPost} from './pages/main/editPost';
+
 import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
 import {store, persistor } from './store/index';
 import {ProtectedRoute} from "./routes/ProtectedRoute";
-
 function App() {
 
   return (
@@ -28,6 +30,8 @@ function App() {
             <Route path = "/inbox" element = {<ProtectedRoute><Inbox /></ProtectedRoute>}/>
             <Route path = "/settings" element = {<ProtectedRoute><Settings /></ProtectedRoute>}/>
             <Route path = "/home" element = {<ProtectedRoute><Home /></ProtectedRoute>}/>
+            <Route path = "/mystream" element = {<ProtectedRoute><MyStream /></ProtectedRoute>}/>
+            <Route path = "/editPost" element = {<ProtectedRoute><EditPost /></ProtectedRoute>}/>
           </Routes>
         </BrowserRouter>
       </PersistGate>
