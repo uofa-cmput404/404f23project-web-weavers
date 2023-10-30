@@ -7,6 +7,7 @@ from rest_framework import filters
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
+from drf_spectacular.utils import extend_schema
 
 
 class AuthorViewSet(viewsets.ModelViewSet):
@@ -35,6 +36,10 @@ class AuthorList(APIView, PageNumberPagination):
     """
     View to list all profiles on the server.
     """
+    @extend_schema(
+        description="List all authors.",
+        responses={200: AuthorSerializer(many=True)}
+    )
     def get(self, request):
         # Pagination settings
         self.page_size_query_param = 'size'
@@ -56,10 +61,23 @@ class AuthorList(APIView, PageNumberPagination):
         response["Access-Control-Allow-Origin"] = "http://localhost:3000"
         return response
 
+    def post(self, request):
+        serializer = AuthorSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                "message": "Author created successfully",
+            })
+        return Response(serializer.errors)
+
 class AuthorDetails(APIView):
     """
     View to retrieve or update a specific author's profile in the server.
     """
+    @extend_schema(
+        description="Retrieve a specific author's profile.",
+        responses={200: AuthorSerializer()}
+    )
     def get(self, request, pk):
         author = Author.objects.get(pk=pk)
         serializer = AuthorSerializer(author)
@@ -67,6 +85,11 @@ class AuthorDetails(APIView):
         response["Access-Control-Allow-Origin"] = "http://localhost:3000"
         return response
 
+    @extend_schema(
+        description="Update a specific author's profile.",
+        request=AuthorSerializer,
+        responses={200: AuthorSerializer()}
+    )
     def post(self, request, pk):
         author = Author.objects.get(pk=pk)
         serializer = AuthorSerializer(author, data=request.data, partial=True)

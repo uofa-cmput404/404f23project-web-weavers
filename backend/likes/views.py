@@ -5,8 +5,13 @@ from .models import Like
 from .serializers import LikeSerializer
 from authors.models import Author
 from post.models import Post
+from drf_spectacular.utils import extend_schema
 
 # Create your views here.
+@extend_schema(
+    description="List all likes of an author.",
+    responses={200: LikeSerializer(many=True)}
+)
 @api_view(['GET'])
 def list_author_likes(request, author_id):
     """
@@ -23,6 +28,10 @@ def list_author_likes(request, author_id):
     response["Access-Control-Allow-Origin"] = "http://localhost:3000"
     return response
     
+@extend_schema(
+    description="List all likes of a post.",
+    responses={200: LikeSerializer(many=True)}
+)
 @api_view(['GET'])
 def list_post_likes(request, author_id, post_id):
     """
@@ -40,6 +49,10 @@ def list_post_likes(request, author_id, post_id):
     response["Access-Control-Allow-Origin"] = "http://localhost:3000"
     return response
 
+@extend_schema(
+    description="List all likes of a comment.",
+    responses={200: LikeSerializer(many=True)}
+) 
 @api_view(['GET'])
 def list_comment_likes(request, author_id, post_id, comment_id):
     """

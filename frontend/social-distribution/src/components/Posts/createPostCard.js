@@ -4,15 +4,33 @@ import { Flex, Divider, IconButton, Button } from "@chakra-ui/react";
 import { FiImage } from "react-icons/fi";
 import { BeatLoader } from "react-spinners";
 import TextPost from "./TextPost.js";
+import { API_URL } from "../api.js";
+import axios from "axios";
 
 export default function CreatePostCard() {
+  const baseURL = "http://127.0.0.1:8000/authors/";
   const fileInputRef = useRef(null);
+  const [title, setTitle] = useState(false);
+  const [showDescriptionInput, setShowDescriptionInput] = useState(false);
+  const [description, setDescription] = useState("");
   const [showTextPost, setShowTextPost] = useState(false);
   const [imageSrc, setImageSrc] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const getPhoto = () => {
     fileInputRef.current.click();
+  };
+
+  const handleDescriptionChage = (event) => {
+    setDescription(event.target.value);
+  };
+
+  const handTitleClick = () => {
+    setTitle(!title);
+  };
+
+  const handleHeaderClick = () => {
+    setShowDescriptionInput(!showDescriptionInput);
   };
 
   const handleFileSelect = (event) => {
@@ -26,27 +44,71 @@ export default function CreatePostCard() {
     reader.readAsDataURL(file);
   };
 
-  const post = () => {
+  const handlePost = () => {
+    // Post to server
     setIsLoading(true);
-    // Perform post operation here
-    setTimeout(() => {
+    
+    // Get data from post- don't get rid of the const in front of description
+    const description= document.getElementById("description").value;
+    const title= document.getElementById("title").value;
+    const imageData= imageSrc;
+    const postUserUUID= localStorage.getItem("user");
+    const url= baseURL + postUserUUID + "/posts/";
+
+    const fields= {
+      "title": title,
+      "description": description,
+      "image": imageData,
+    }
+    console.log("fields: " + JSON.stringify(fields));
+
+    // Send to server
+    axios.post(url, fields)
+    .then((response) => {
+      if (response.ok) {
+        console.log("Post created successfully!");
+        setIsLoading(false);
+      }
+      return response;
+    })
+    .then((data) => {
+      console.log(data);
       setIsLoading(false);
-    }, 2000);
+    })
+    .catch((error) => {
+      console.error("Error creating post: ", error);
+      setIsLoading(false);
+    }
+    );
   };
 
   return (
     <div style={styles.container}>
       <Flex flexDir="column" w="100%" alignItems="center" align="center" >
-        {/* Note: Make the description box not resizable */}
         <h1 style={styles.prompt}>Make a New Post</h1>
-        <h1
-          style={{ height: "40px", width: "flex",cursor: "pointer" }}
-          onClick={() => setShowTextPost(!showTextPost)}
-        >
-          Add a description...
-        </h1>
-
-        {showTextPost && <TextPost style={{ maxWidth: "xl"}}/>}
+        <Button onClick={handTitleClick} style={{ background: "none", border: "none", cursor: "pointer" }}>
+          <h1 >Add a title</h1>
+        </Button>
+        {title && (
+          <textarea
+            type="text"
+            id="title"
+            placeholder="Add a title..."
+            rows="1"
+            onChange={(event) => setTitle(event.target.value)}
+          />
+        )}
+        <Button onClick={handleHeaderClick} style={{ background: "none", border: "none", cursor: "pointer" }}>
+          <h1 >Add a description</h1>
+        </Button>
+        {showDescriptionInput && (
+          <textarea
+            type="text"
+            id="description"
+            placeholder="Add a description..."
+            onChange={(event) => setDescription(event.target.value)}
+          />
+        )}
 
         {imageSrc && (
           <img
@@ -75,7 +137,7 @@ export default function CreatePostCard() {
             style={{ ...styles.icons, width: "80px", marginLeft: "100px" }}
             isLoading={isLoading} // Add the isLoading prop to the Button component
             spinner={<BeatLoader size={5} color="white" />}
-            onClick={post}
+            onClick={handlePost}
           >
             {isLoading ? "Posting..." : "Post"} {/* Change the text of the button based on isLoading */}
           </Button>
