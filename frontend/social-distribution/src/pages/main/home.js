@@ -1,9 +1,10 @@
-import React from "react";
+import {React, useState, useEffect} from "react";
 import {colors, sizes, spacing} from "../../utils/theme";
 import NavBar from "../../components/Bars/navbar";
 import LogoBar from "../../components/Bars/logoBar";
 import CreatePostCard from "../../components/Posts/createPostCard";
 import FriendsBar from "../../components/FriendsBar/friendsBar";
+import Post from "../../components/Posts/Posted";
 
 import {API_URL} from "../../components/api";
 import axios from 'axios';
@@ -12,8 +13,6 @@ export default function Home() {
     //This is where the uuid of the user is being stored for now
     const [publicPosts, setPublicPosts] = useState([])
     const [publicUsers, setPublicUsers] = useState([])
-    console.log(localStorage.getItem("user"))
-    const currentPosts = [];
 
     //queries all available authors the database
     //queries all posts of every author
@@ -22,7 +21,7 @@ export default function Home() {
         try {
           const res = await axios({
             method: "GET",
-            url: API_URL,
+            url: API_URL + "authors/",
           });
 
           setPublicUsers(res.data.items)
@@ -35,6 +34,7 @@ export default function Home() {
 
       const getPosts = async () => {
         try {
+          const currentPosts = [];
             const postUsers= await getPublicUsers();
             for (let i = 0; i < postUsers.length; i++){
                 const res = await axios({
@@ -44,10 +44,7 @@ export default function Home() {
                 });
             for(let i = 0; i < res.data.items.length; i++){
                 currentPosts.push(res.data.items[i]);
-                console.log("public post is " + i + " " + JSON.stringify(res.data.items[i]))
             }
-
-
             }
           setPublicPosts(currentPosts);
         } catch (err) {
@@ -69,6 +66,9 @@ export default function Home() {
 
                 <div style={{ ...styles.postContainer }}>
                     {/* TODO: change this to be more dynamic when pulling list of posts */}
+                    {publicPosts.map((e)=>{
+                        return <div style={styles.post}> <Post postData={e} visibility = {"PUBLIC"}/> </div>
+                    })}
                 </div>
             </div>
         </div>

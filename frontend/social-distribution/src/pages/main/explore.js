@@ -2,8 +2,6 @@ import React, { useState, useEffect, } from "react";
 import NavBar from "../../components/Bars/navbar.js";
 import LogoBar from "../../components/Bars/logoBar.js";
 import FriendsBar from "../../components/FriendsBar/friendsBar.js";
-import {API_URL} from "../../components/api";
-import axios from 'axios';
 import {colors, sizes, spacing} from "../../utils/theme";
 
 
@@ -22,9 +20,6 @@ export default function Explore({props}){
             <div style={styles.content}>
             <div style={{ ...styles.postContainer }}>
                     {/* TODO: change this to be more dynamic when pulling list of posts */}
-                    {publicPosts.map((e)=>{
-                        return <div style={styles.post}> <Post postData={e} visibility = {"PUBLIC"}/> </div>
-                    })}
                 </div>
             </div>
         </div>

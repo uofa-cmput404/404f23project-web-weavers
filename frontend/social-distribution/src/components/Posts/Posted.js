@@ -11,7 +11,8 @@ import {
     Text,
     IconButton,
     Input,
-    Button
+    Button,
+    Textarea
 } from '@chakra-ui/react'
 import {
     AiOutlineHeart,
@@ -38,6 +39,7 @@ export default function Post({postData, visibility}){
     const[showLikeField, setShowLikeField] = useState(false);
     const[showEditField, setShowEditField] = useState(false);
     const[showDeleteField, setShowDeleteField] = useState(false);
+    const[showImageField, setShowImageField] = useState(false);
 
     const[showEditPOST, setShowEditPOST] = useState(false)
 
@@ -46,14 +48,16 @@ export default function Post({postData, visibility}){
         setShowEditPOST(false)
         if (visibility == "PERSONAL"){
             setShowLikeField(false)
-            setShowCommentField(true)
             setShowEditField(true)
             setShowDeleteField(true)
         } else if (visibility == "PUBLIC"){
             setShowLikeField(true)
-            setShowCommentField(true)
             setShowEditField(false)
             setShowDeleteField(false)
+        }
+
+        if(postData.contentType == "text/markdown"){
+            setShowImageField(false)
         }
 
      }, []);
@@ -154,15 +158,27 @@ export default function Post({postData, visibility}){
                 <Box textAlign= "left" padding= "0.5rem" fontSize="2.0rem">
                     <Text>{postData.title}</Text>
                 </Box>
-                <Box textAlign= "left" padding= "0.5rem">
+                <Box textAlign= "left" padding= "0.5rem" fontStyle="italic">
                     <Text>{postData.description}</Text>
                 </Box>
 
-                <Box mx="auto" textAlign="center">
-                    <Flex justifyContent="center">
-                        <img src="https://via.placeholder.com/350x150" alt="Image" />
-                    </Flex>
-                </Box>
+                {showImageField && (
+                    <Box mx="auto" textAlign="center">
+                        <Flex justifyContent="center">
+                            <img src="https://via.placeholder.com/350x150" alt="Image" />
+                        </Flex>
+                    </Box>
+                )}
+
+                {!showImageField && (
+                    <Box mx="auto" textAlign="center">
+                        <Flex justifyContent="center">
+                        <Textarea isDisabled
+                            value = {postData.content}
+                        />
+                        </Flex>
+                    </Box>
+                )}
 
                 {showLikeField && (
                     <Flex style={styles.buttons}>

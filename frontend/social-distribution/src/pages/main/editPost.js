@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import {Flex, Divider, IconButton, Button} from '@chakra-ui/react'
+import {Flex, Divider, IconButton, Button, Card, Textarea} from '@chakra-ui/react'
 import {colors, sizes, spacing } from "../../utils/theme";
 import axios from 'axios';
 import { useLocation, useNavigate } from "react-router-dom";
@@ -52,11 +52,11 @@ export function EditPost(){
             title: location.state.postData.title,
             description: location.state.postData.description,
             categories: location.state.postData.categories,
-            visibility: location.state.postData.visibility},
+            visibility: location.state.postData.visibility,
+            content: location.state.postData.content,
+        },
         onSubmit: values => {
-            console.log("API is " + location.state.postData.id + "/" + JSON.stringify(values))
                 axios.post(location.state.postData.id + "/", values).then((response) => {
-                console.log(response)
                 navigate("/mystream")
             }).catch(function(error){
                 console.log(JSON.stringify(error))
@@ -71,9 +71,10 @@ return (
             <FriendsBar/>
         <div style={styles.content}>
         <div style={styles.postContainer}>
-        <div style={styles.post}>
+        <Card maxW='md'>
+
         <form onSubmit={formik.handleSubmit}>
-            <VStack spacing={3} alignText= "center" align="flex-start" padding = "0.5rem">
+            <VStack spacing={3} alignItems= "center" align="flex-start" padding = "2.0rem">
                 <FormControl>
                 <FormLabel htmlFor="title">Title</FormLabel>
                 <Input
@@ -114,6 +115,16 @@ return (
                     onChange={formik.handleChange}
                     />
                 </FormControl>
+                <FormControl>
+                <FormLabel htmlFor="content"> Content</FormLabel>
+                <Textarea
+                    id="content"
+                    name="content"
+                    defaultValue = {formik.values.content}
+                    onChange={formik.handleChange}
+                    size='sm'
+                    />
+                </FormControl>
             </VStack>
             {imageSrc && (
                 <img
@@ -124,7 +135,7 @@ return (
             )}
 
         <Divider />
-            <Flex flexDir="row" align="center">
+            <Flex flexDir="row" align="center" padding = "2.0rem">
                 <input
                 type="file"
                 accept="image/*"
@@ -146,7 +157,8 @@ return (
                 </Button>
             </Flex>
         </form>
-        </div>
+        </Card>
+
         </div>
         </div>
     </div>

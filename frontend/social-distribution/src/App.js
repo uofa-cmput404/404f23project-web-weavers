@@ -30,6 +30,8 @@ function App() {
             <Route path = "/inbox" element = {<ProtectedRoute><Inbox /></ProtectedRoute>}/>
             <Route path = "/settings" element = {<ProtectedRoute><Settings /></ProtectedRoute>}/>
             <Route path = "/home" element = {<ProtectedRoute><Home /></ProtectedRoute>}/>
+            <Route path = "/mystream" element = {<ProtectedRoute><MyStream /></ProtectedRoute>}/>
+            <Route path = "/editPost" element = {<ProtectedRoute><EditPost /></ProtectedRoute>}/>
           </Routes>
         </BrowserRouter>
       </PersistGate>
