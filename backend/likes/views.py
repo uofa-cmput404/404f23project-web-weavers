@@ -16,10 +16,12 @@ def list_author_likes(request, author_id):
     author = Author.objects.get(pk=author_id)
     likes = Like.objects.filter(author=author).all()
     serializer = LikeSerializer(likes, many=True)
-    return Response({
+    response = Response({
         "type": "liked",
         "items": serializer.data
     })
+    response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+    return response
     
 @api_view(['GET'])
 def list_post_likes(request, author_id, post_id):
@@ -31,10 +33,12 @@ def list_post_likes(request, author_id, post_id):
     post = Post.objects.get(pk=post_id)
     post_likes = Like.objects.filter(object=post.id).exclude(author=author).all()
     serializer = LikeSerializer(post_likes, many=True)
-    return Response({
+    response = Response({
         "type": "likes",
         "items": serializer.data
     })
+    response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+    return response
 
 @api_view(['GET'])
 def list_comment_likes(request, author_id, post_id, comment_id):
@@ -51,7 +55,9 @@ def list_comment_likes(request, author_id, post_id, comment_id):
     
     comment_likes = Like.objects.filter(object=comment_url).exclude(author=author).all()
     serializer = LikeSerializer(comment_likes, many=True)
-    return Response({
+    response = Response({
         "type": "likes",
         "items": serializer.data
     })
+    response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+    return response

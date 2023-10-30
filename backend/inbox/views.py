@@ -28,11 +28,13 @@ class InboxView(APIView, PageNumberPagination):
             if self.get_page_size(request):
                 inbox_posts = self.paginate_queryset(author.inbox, request)
 
-        return Response({
+        response = Response({
             "type": "inbox",
             "author": author.id,
             "items": inbox_posts
         })
+        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+        return response
     
     def post(self, request, author_id):
         """
@@ -51,7 +53,9 @@ class InboxView(APIView, PageNumberPagination):
                 # add the like to the author's inbox
                 author.inbox.append(request.data)
                 author.save()
-                return Response(like_serializer.data, status = status.HTTP_200_OK)
+                response = Response(like_serializer.data, status = status.HTTP_200_OK)
+                response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+                return response
             
         elif request.data["type"] == "post":
             # I am not sure if it makes sense to create a new post object
@@ -65,9 +69,13 @@ class InboxView(APIView, PageNumberPagination):
                 author.save()
                 return Response(post_serializer.data, status = status.HTTP_200_OK)
             
-            return Response(post_serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+            response = Response(post_serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+            response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+            return response
         
-        return Response(status = status.HTTP_400_BAD_REQUEST)
+        response = Response(status = status.HTTP_400_BAD_REQUEST)
+        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+        return response
     
     def delete(self, request, author_id):
         """
@@ -77,5 +85,7 @@ class InboxView(APIView, PageNumberPagination):
         author.inbox = []
         author.save()
 
-        return Response(status = status.HTTP_204_NO_CONTENT)
+        response = Response(status = status.HTTP_204_NO_CONTENT)
+        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+        return response
         
