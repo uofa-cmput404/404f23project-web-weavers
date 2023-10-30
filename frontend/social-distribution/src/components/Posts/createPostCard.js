@@ -5,9 +5,11 @@ import { FiImage } from "react-icons/fi";
 import { BeatLoader } from "react-spinners";
 import TextPost from "./TextPost.js";
 import { authorUUID, postUUID } from "../../utils/utils.js";
+import { API_URL } from "../api.js";
+import axios from "axios";
 
 export default function CreatePostCard() {
-  const { baseURL } = "http://127.0.0.1:8000/authors/";
+  const baseURL = "http://127.0.0.1:8000/authors/";
   const fileInputRef = useRef(null);
   const [showDescription, setShowDescription] = useState(false);
   const [description, setDescription] = useState("");
@@ -17,6 +19,10 @@ export default function CreatePostCard() {
 
   const getPhoto = () => {
     fileInputRef.current.click();
+  };
+
+  const handleDescriptionChage = (event) => {
+    setDescription(event.target.value);
   };
 
   const handleFileSelect = (event) => {
@@ -31,40 +37,62 @@ export default function CreatePostCard() {
   };
 
   const handlePost = () => {
+    // Post to server
     setIsLoading(true);
     
     // Get data from post
     const description= document.getElementById("description").value;
     const imageData= imageSrc;
 
-    const postUserUUID= authorUUID(localStorage.getItem("userID"));
-    const postID= postUUID(localStorage.getItem("postID"));
+    const postUserUUID= localStorage.getItem("user");
 
-    const url= baseURL + postUserUUID + "/posts/" + postID + "/";
+    const url= baseURL + postUserUUID + "/posts/";
+    console.log("url: " + url);
 
-    const formData = new FormData();
-    formData.append("description", description);
-    formData.append("image", imageData);
+    const fields= {
+      "title": description,
+      "description": description,
+      "image": imageData,
+    }
+
+    console.log("fields: " + JSON.stringify(fields));
+    console.log("description: " + description);
 
     // Send to server
-    fetch( url, {
-      method: "POST",
-      body: formData,
-      })
-        .then((response) => {
-          if (response.ok) {
-            console.log("Post created successfully!");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          console.log(data);
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error creating post: ", error);
-          setIsLoading(false);
-        });
+    axios.post(url, fields)
+    .then((response) => {
+      if (response.ok) {
+        console.log("Post created successfully!");
+      }
+      return response;
+    })
+    .then((data) => {
+      console.log(data);
+      setIsLoading(false);
+    })
+    .catch((error) => {
+      console.error("Error creating post: ", error);
+      setIsLoading(false);
+    }
+    );
+    // axios.post( url, {
+    //   method: "POST",
+    //   body: fields,
+    //   })
+    //     .then((response) => {
+    //       if (response.ok) {
+    //         console.log("Post created successfully!");
+    //       }
+    //       return response.json();
+    //     })
+    //     .then((data) => {
+    //       console.log(data);
+    //       setIsLoading(false);
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error creating post: ", error);
+    //       setIsLoading(false);
+    //     });
   };
 
   return (
@@ -72,16 +100,12 @@ export default function CreatePostCard() {
       <Flex flexDir="column" w="100%" alignItems="center" align="center" >
         {/* Note: Make the description box not resizable */}
         <h1 style={styles.prompt}>Make a New Post</h1>
-        <h1
-          style={{ height: "40px", width: "flex",cursor: "pointer" }}
-          onClick={() => setShowTextPost(!showTextPost)}
+        <input
+          type="text"
           id="description"
-          name="description"
-          value={description}
+          placeholder="Add a description..."
           onChange={(event) => setDescription(event.target.value)}
-        >
-          Add a description...
-        </h1>
+        />
 
         {showTextPost && <TextPost style={{ maxWidth: "xl"}}/>}
 

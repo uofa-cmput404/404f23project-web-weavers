@@ -1,11 +1,11 @@
-export function authorUUID(id) {
-    const splitArray = id.split("authors/");
-    let UUID = splitArray[1];
-    if (id.slice(-1) === '/') {
-        UUID = UUID.slice(0, -1);   //remove end slash
+export function authorUUID() {
+    const author = localStorage.getItem("user");
+    if (author) {
+      const authorUUID = author.split(":")[1]; // Check if author is not null before calling split
+      return authorUUID;
     }
-    return UUID;
-}
+    return null;
+  }
 
 export function postUUID(id){
     const splitArray = id.split("posts/");
