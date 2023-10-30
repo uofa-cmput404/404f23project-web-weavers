@@ -98,7 +98,7 @@ npm install
 ```bash
 cd frontend
 cd social-distribution
-npm start
+npm start --legacy-peer-deps
 ```
 
 #### For Windows Users
