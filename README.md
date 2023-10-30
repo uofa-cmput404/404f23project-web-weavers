@@ -33,6 +33,13 @@ python3 -m venv venv
 source venv/bin/activate
 python3 -m pip install -r requirements.txt
 ```
+Install libraries
+```bash
+cd frontend
+cd social-distribution
+npm install
+```
+
 ## Setting up the database
 #### For Linux Users
 First, make sure that the PostgreSQL server is started:
