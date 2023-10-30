@@ -41,7 +41,7 @@ function Signup() {
   const dispatch = useDispatch();
 
   const handleSubmit = (displayName, password) => {
-    axios.post(API_URL + "/auth/register/", { displayName, password })
+    axios.post(API_URL + "auth/register/", { displayName, password })
           .then((res) => {
             dispatch(
               authSlice.actions.setAccount({

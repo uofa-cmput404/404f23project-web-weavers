@@ -12,7 +12,7 @@ import {
 import * as Yup from "yup";
 import {API_URL} from "../../../components/api"
 import {colors, sizes, spacing } from '../../../utils/theme';
-import authSlice from "../../../store/slices/auth.ts";
+import authSlice from "../../../store/slices/auth";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { Box } from '@chakra-ui/react';
