@@ -1,7 +1,7 @@
 import React,{useEffect, useState} from "react";
 import {colors} from '../../utils/theme.js'
 import { Avatar, Divider, Flex, Text, Heading, IconButton } from "@chakra-ui/react";
-import { FiMenu, FiHome, FiInbox, FiUser, FiSettings, FiLogOut, FiSquare} from "react-icons/fi";
+import { FiMenu, FiHome, FiInbox, FiUser, FiSettings, FiLogOut, FiSquare, FiBook} from "react-icons/fi";
 import NavItem from "./NavItem.js";
 import Logo from "../../assets/logo.png";
 import { useNavigate } from 'react-router-dom';
@@ -61,6 +61,7 @@ export default function NavBar({uuid,...props}) {
                 <NavItem navSize={navSize} icon={FiSquare} title="Explore" active={current === 'Explore' ? true : false } onClick={()=>{handleClick('Explore')}} />
                 <NavItem navSize={navSize} icon={FiUser} title="Profile" active={current === 'Profile' ? true : false } onClick={()=>{handleClick('Profile')}} />
                 <NavItem navSize={navSize} icon={FiInbox} title="Inbox" active={current === 'Inbox' ? true : false } onClick={()=>{handleClick('Inbox')}} />
+                <NavItem navSize={navSize} icon={FiBook} title="My Stream" active={current === 'My Stream' ? true : false } onClick={()=>{handleClick('mystream')}} />
                 <NavItem navSize={navSize} icon={FiSettings} title="Settings" active={current === 'Settings' ? true : false } onClick={()=>{handleClick('Settings')}} />
                 <NavItem navSize={navSize} icon={FiLogOut} title="Sign out" active={activeNav === 'Sign out' ? true : false } onClick={()=>{handleClick('Sign out')}} />
             </Flex>
