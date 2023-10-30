@@ -25,13 +25,17 @@ import "./Posting.css"
 import { sizes, colors } from "../../utils/theme";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import {API_URL} from "../api"
+import localStorage from "redux-persist/es/storage";
+import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 
 
-export default function Post({postData, visibility}){
+export default function Post({postData, visibility, userUUID}){
     // const userID= localStorage.getItem()
     // const postID = 1;
     let navigate = useNavigate();
     const [IsLiked, SetIsLiked]= useState(false);
+    const [likes, setLikes] = useState([])
     // const [postcontent, SetpostContent]= useState("")
     // const [postImage, SetpostImage]= useState(props.post.image);
     const [ comment, setComment ] = useState("");
@@ -42,6 +46,20 @@ export default function Post({postData, visibility}){
     const[showImageField, setShowImageField] = useState(false);
 
     const[showEditPOST, setShowEditPOST] = useState(false)
+
+    // Check likes of the post (THIS WILL BE MODULARIZED LATER)
+    /*
+    const fetchLikes= async () => {
+        const res = await axios.get(postData.id + "/likes/")
+        setLikes(res.data.items)
+        for(let i = 0; i < likes.length; i++){
+            console.log(JSON.stringify(likes))
+        }
+    };
+    useEffect(() => {
+        fetchLikes();
+    }, [])
+    */
 
     useEffect(() => {
         //This always get set to false initially
@@ -65,6 +83,21 @@ export default function Post({postData, visibility}){
     // Like handles
     const handleLikeClick = () => {
         SetIsLiked(!IsLiked); // Toggle the liked state when the button is clicked
+        let like_values = {
+            'author': userUUID,
+            'type': "Like",
+            'object': postData.id,
+            'summary': "" + userUUID + "liked your post"
+        }
+
+        axios.post(API_URL + "authors/" + postData.author.uuid + "/inbox/", like_values).then(function(response){
+            console.log(response)
+        }).catch(function(error){
+            console.log(error)
+            console.log(like_values)
+        })
+
+
       };
 
     const likeButton = IsLiked ? (

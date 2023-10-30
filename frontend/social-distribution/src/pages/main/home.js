@@ -67,7 +67,7 @@ export default function Home() {
                 <div style={{ ...styles.postContainer }}>
                     {/* TODO: change this to be more dynamic when pulling list of posts */}
                     {publicPosts.map((e)=>{
-                        return <div style={styles.post}> <Post postData={e} visibility = {"PUBLIC"}/> </div>
+                        return <div style={styles.post}> <Post postData={e} visibility = {"PUBLIC"} userUUID = {user}/> </div>
                     })}
                 </div>
             </div>
