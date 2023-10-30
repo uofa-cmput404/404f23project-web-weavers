@@ -33,6 +33,7 @@ python3 -m venv venv
 source venv/bin/activate
 python3 -m pip install -r requirements.txt
 ```
+
 ## Setting up the database
 #### For Linux Users
 First, make sure that the PostgreSQL server is started:
@@ -83,6 +84,21 @@ Now we'll create our database:
 psql -U postgres -W
 postgres=# CREATE DATABASE "web-database";
 postgres=# \q
+```
+
+## For Frontend
+#### Install Dependencies
+```bash
+cd frontend
+cd social-distribution
+npm install --legacy-peer-deps
+```
+
+#### For Running Frontend
+```bash
+cd frontend
+cd social-distribution
+npm start 
 ```
 
 #### For Windows Users
