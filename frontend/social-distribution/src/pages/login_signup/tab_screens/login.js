@@ -11,15 +11,14 @@ import {
 } from "@chakra-ui/react";
 import * as Yup from "yup";
 import {API_URL} from "../../../components/api"
-
+import {colors, sizes, spacing } from '../../../utils/theme';
 import authSlice from "../../../store/slices/auth";
 import { useDispatch } from "react-redux";
 import axios from "axios";
+import { Box } from '@chakra-ui/react';
 
 function Login() {
   let navigate = useNavigate();
-
-  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const handleLogin = (displayName, password) =>{
@@ -31,10 +30,9 @@ function Login() {
                 refreshToken: res.data.refresh,
               })
             );
-            console.log("Got a successful request")
+            localStorage.setItem("user", res.data.user.uuid)
             dispatch(authSlice.actions.setAccount(res.data.user));
-            setLoading(false);
-            navigate("/explore");
+            navigate("/home");
           })
           .catch((err) => {
             console.log(JSON.stringify(err));
@@ -43,7 +41,6 @@ function Login() {
   const formik = useFormik({
     initialValues: {username: '', password: ''},
         onSubmit: (values) => {
-          setLoading(true)
           handleLogin(values.username, values.password)
         },
         validationSchema: Yup.object({
@@ -53,6 +50,10 @@ function Login() {
 
   });
   return (
+  <div style={styles.container}>
+  <Box bg="white" rounded="md" w={500} h={500} style={styles.box} >
+  <div style = {styles.secondary}>
+    <h1 style = {styles.h1}> User Login </h1>
           <form onSubmit={formik.handleSubmit}>
           <VStack spacing={3} align="flex-start">
             <FormControl>
@@ -92,6 +93,39 @@ function Login() {
             </div>
             </VStack>
           </form>
+          </div>
+        </Box>
+        </div>
   );
 }
 export default Login;
+
+const styles = {
+  container: {
+    backgroundColor: colors.brand.c6,
+    height: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  box: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      margin: 'auto',
+    },
+
+  secondary: {
+    display: 'flex',
+    textAlign: "left",
+    flexDirection: "column",
+    fontSize: sizes.sm,},
+
+  h1: {
+    float: 'left',
+    fontSize: sizes.lg,
+    marginBottom: spacing.lg,
+    marginTop: '0'}
+}

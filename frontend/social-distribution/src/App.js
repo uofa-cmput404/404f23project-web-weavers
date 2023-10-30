@@ -14,7 +14,6 @@ import {store, persistor } from './store/index';
 import {ProtectedRoute} from "./routes/ProtectedRoute";
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false)
 
   return (
     <div className = {"App"} >

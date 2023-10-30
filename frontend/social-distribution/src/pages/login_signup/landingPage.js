@@ -5,7 +5,7 @@ import logo from "../../assets/logo.png"
 import Welcome from './tab_screens/welcome';
 import About from './tab_screens/about';
 import UserStart from './tab_screens/user_start';
-import AdminLogin from './tab_screens/adminLogin';
+import Login from './tab_screens/login';
 
 function LandingPage() {
     return (
@@ -33,7 +33,7 @@ function LandingPage() {
                       <UserStart />
                   </TabPanel>
                   <TabPanel>
-                      <AdminLogin />
+                      <Login />
                   </TabPanel>
             </TabPanels>
         </Tabs>

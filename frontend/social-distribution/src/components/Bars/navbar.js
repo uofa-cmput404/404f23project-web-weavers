@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useEffect, useState} from "react";
 import {colors} from '../../utils/theme.js'
 import { Avatar, Divider, Flex, Text, Heading, IconButton } from "@chakra-ui/react";
 import { FiMenu, FiHome, FiInbox, FiUser, FiSettings, FiLogOut, FiSquare} from "react-icons/fi";
@@ -7,22 +7,37 @@ import Logo from "../../assets/logo.png";
 import { useNavigate } from 'react-router-dom';
 import authSlice from "../../store/slices/auth";
 import { useDispatch } from "react-redux";
-
-// TODO: get username and pictureUrl from backend   -> remove hardcoded values
+import axios from "axios";
+import localStorage from "redux-persist/es/storage";
+import { API_URL } from "../api.js";
+// TODO: pictureUrl from backend   -> remove hardcoded values
 //       OPTIMIZE TOO SLOW
 
-export default function NavBar({...props}) {
+export default function NavBar({uuid,...props}) {
     let navigate = useNavigate();
     let dispatch = useDispatch();
+    const userID = uuid;
+    const [displayn, setDisplayn] = useState("")
+    
+    axios.get(API_URL + "authors/")
+        .then((res) => {   
+            const authors = res.data
+            for (let i = 0; i < authors.items.length; i++) {
+                if (authors.items[i].uuid === userID) {                    
+                    // localStorage.setItem("username", authors.items[i].uuid)
+                    setDisplayn(authors.items[i].displayName)
+                }
+            }
+        })
 
+    console.log(displayn)
     const current = props.current
-    const username = "JohnDoeInfinity"
-    const pictureUrl = "https://bit.ly/dan-abramov"
+    const username = displayn
+    const pictureUrl = ""
     // Note: limit amount of characters in username
 
     const [navSize, changeNavSize] = useState("large");
     const [activeNav, setActive] = useState({current});
-    console.log(activeNav)
 
 
     const handleClick = (e) => {
@@ -30,6 +45,7 @@ export default function NavBar({...props}) {
             // clear auth token
             e = "" // back to home page
             dispatch(authSlice.actions.logout());
+            localStorage.removeItem("user")
         }
         setActive(e);
         navigate("/"+e)
