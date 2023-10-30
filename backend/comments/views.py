@@ -21,7 +21,7 @@ class CommentList(APIView, PageNumberPagination):
 
         author = Author.objects.get(pk=author_id)
         post = Post.objects.get(pk=post_id)
-        comments = Comment.objects.filter(author=author,post=post)
+        comments = Comment.objects.filter(author=author,post=post).order_by('-published')
 
         if self.get_page_number(request, self):
             if self.get_page_size(request):
@@ -52,6 +52,9 @@ class CommentList(APIView, PageNumberPagination):
             serializer.validated_data['post'] = post
             serializer.validated_data['id'] = comment_url
             serializer.save()
+
+            #appending comment to post
+            post.comments.append(comment_url)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors)
 

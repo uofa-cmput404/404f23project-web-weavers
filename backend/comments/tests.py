@@ -30,3 +30,4 @@ class CommentTests(APITestCase):
         self.assertEqual(len(response.data["items"]), 1)
         self.assertEqual(response.data["page"], 1)
         self.assertEqual(response.data["size"], 1)
+        self.assertEqual(response.data["items"][0]["comment"], "comment2")
