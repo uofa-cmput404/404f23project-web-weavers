@@ -87,6 +87,11 @@ postgres=# \q
 ```
 
 ## For Frontend
+#### Initialize your system
+```bash
+sudo apt install nodejs npm
+```
+
 #### Install Dependencies
 ```bash
 cd frontend
