@@ -32,7 +32,7 @@ function Login() {
             );
             localStorage.setItem("user", res.data.user.uuid)
             dispatch(authSlice.actions.setAccount(res.data.user));
-            navigate("/explore");
+            navigate("/home");
           })
           .catch((err) => {
             console.log(JSON.stringify(err));
