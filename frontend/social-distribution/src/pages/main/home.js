@@ -23,6 +23,9 @@ export default function Home() {
                     <div style={styles.post}> <Post /> </div>
                     <div style={styles.post}> <Post /> </div>
                     <div style={styles.post}> <Post /> </div>
+                    <div style={styles.post}> <Post /> </div>
+                    <div style={styles.post}> <Post /> </div>
+                    <div style={styles.post}> <Post /> </div>
                 </div>
             </div>
         </div>

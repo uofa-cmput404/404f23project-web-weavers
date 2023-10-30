@@ -24,7 +24,7 @@ function App() {
             <Route path = "/" element = {<LandingPage />} />
             <Route path="/explore" element={<ProtectedRoute><Explore /></ProtectedRoute>}/>
             <Route path = "/admin" element = {<ProtectedRoute><AdminLogin /></ProtectedRoute>}/>
-            <Route path = "/profile" element = {<ProtectedRoute><Profile /></ProtectedRoute>}/>
+            <Route path = "/myprofile" element = {<ProtectedRoute><Profile /></ProtectedRoute>}/>
             <Route path = "/inbox" element = {<ProtectedRoute><Inbox /></ProtectedRoute>}/>
             <Route path = "/settings" element = {<ProtectedRoute><Settings /></ProtectedRoute>}/>
             <Route path = "/home" element = {<ProtectedRoute><Home /></ProtectedRoute>}/>
