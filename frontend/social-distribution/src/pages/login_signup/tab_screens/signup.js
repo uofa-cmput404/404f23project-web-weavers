@@ -62,7 +62,8 @@ function Signup() {
     initialValues: {username: '', password: ''},
         validate,
         onSubmit: values => {
-          handleSubmit(values.username, values.password)
+          navigate("/login")
+          alert(JSON.stringify("Please Login"));
         },
   });
   return (

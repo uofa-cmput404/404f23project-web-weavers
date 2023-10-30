@@ -4,6 +4,5 @@ from .models import Author
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
-
         exclude = ['followers']
-        # read_only_field = ['is_active', 'created', 'updated']
+
