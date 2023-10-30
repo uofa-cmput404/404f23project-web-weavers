@@ -15,7 +15,7 @@ import {
 import * as Yup from "yup";
 import {API_URL} from "../../../components/api"
 
-import authSlice from "../../../store/slices/auth";
+import authSlice from "../../../store/slices/auth.ts";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import localStorage from 'redux-persist/es/storage';
@@ -41,7 +41,7 @@ function Signup() {
   const dispatch = useDispatch();
 
   const handleSubmit = (displayName, password) => {
-    axios.post(API_URL + "/auth/register/", { displayName, password })
+    axios.post(API_URL + "auth/register/", { displayName, password })
           .then((res) => {
             dispatch(
               authSlice.actions.setAccount({

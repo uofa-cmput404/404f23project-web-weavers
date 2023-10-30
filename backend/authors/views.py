@@ -61,6 +61,15 @@ class AuthorList(APIView, PageNumberPagination):
         response["Access-Control-Allow-Origin"] = "http://localhost:3000"
         return response
 
+    def post(self, request):
+        serializer = AuthorSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                "message": "Author created successfully",
+            })
+        return Response(serializer.errors)
+
 class AuthorDetails(APIView):
     """
     View to retrieve or update a specific author's profile in the server.
