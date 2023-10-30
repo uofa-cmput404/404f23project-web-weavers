@@ -18,6 +18,11 @@ Authors:
 
 Generally everything is LICENSE'D under the GNU GPLv3.
 
+## API Documentation
+The API Documentation can be found at http://127.0.0.1:8000/api/schema/swagger-ui after running
+```bash
+python3 manage.py runserver
+```
 ## Setting up the development environment
 ### Installing dependencies
 
@@ -84,3 +89,7 @@ postgres=# \q
 Pgadmin4 should be installed along with your installation of PostgreSQL.
 Follow the tutorial [here](https://www.youtube.com/watch?v=KqcS3P32s6Y)
 and create a database named "web-database", with its password being "12345".
+
+## References  
+Authentication: https://dev.to/koladev/django-rest-authentication-cmh
+Pagination: https://stackoverflow.com/questions/35830779/django-rest-framework-apiview-pagination

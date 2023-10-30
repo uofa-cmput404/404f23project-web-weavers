@@ -16,10 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
-from authors import views 
-from rest_framework import routers
 from likes.views import list_author_likes, list_post_likes
 from inbox.views import InboxView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
     # Admin site
@@ -38,4 +37,8 @@ urlpatterns = [
     path('authors/<uuid:author_id>/liked/', list_author_likes),
     # Inbox
     path('authors/<uuid:author_id>/inbox/', InboxView.as_view()),
+
+    # API Documentation
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]

@@ -7,10 +7,15 @@ from rest_framework import status
 from authors.models import Author
 from likes.models import Like
 from post.models import Post
+from drf_spectacular.utils import extend_schema
 
 # Create your views here.
 class InboxView(APIView, PageNumberPagination):
     # TODO add authentication
+    @extend_schema(
+        description="List all posts (post, follow requests, like, comment) sent to the author.",
+        responses={200: PostSerializer(many=True)}
+    )
     def get(self, request, author_id):
         """
         List all posts (post, follow requests, like, comment) sent to the author.
@@ -34,6 +39,11 @@ class InboxView(APIView, PageNumberPagination):
             "items": inbox_posts
         })
     
+    @extend_schema(
+        description="Send a post, follow request, like or comment to the author's inbox.",
+        request=PostSerializer,
+        responses={200: PostSerializer()}
+    )
     def post(self, request, author_id):
         """
         Send a post, follow request, like or comment to the author's inbox.
@@ -69,6 +79,10 @@ class InboxView(APIView, PageNumberPagination):
         
         return Response(status = status.HTTP_400_BAD_REQUEST)
     
+    @extend_schema(
+        description="Clear the author's inbox.",
+        responses={204: None}
+    )
     def delete(self, request, author_id):
         """
         Clear the author's inbox.

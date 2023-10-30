@@ -5,10 +5,15 @@ from .models import Post
 from authors.models import Author
 from .serializers import PostSerializer
 from rest_framework.pagination import PageNumberPagination
+from drf_spectacular.utils import extend_schema
 import uuid
 
 # Create your views here.
 class PostList(APIView, PageNumberPagination):
+    @extend_schema(
+        description="List all posts.",
+        responses={200: PostSerializer(many=True)}
+    )
     def get(self, request, author_id):
         """
         List all posts.
@@ -36,6 +41,11 @@ class PostList(APIView, PageNumberPagination):
         response["Access-Control-Allow-Origin"] = "http://localhost:3000"
         return response
     
+    @extend_schema(
+        description="Create a new post with a new id.",
+        request=PostSerializer,
+        responses={201: PostSerializer()}
+    )
     def post(self, request, author_id):
         """
         Create a new post with a new id.
@@ -59,6 +69,10 @@ class PostList(APIView, PageNumberPagination):
         return response
     
 class PostDetails(APIView):
+    @extend_schema(
+        description="Retrieve a post.",
+        responses={200: PostSerializer()}
+    )
     def get(self, request, author_id, post_id):
         """
         Retrieve a post.
@@ -73,6 +87,11 @@ class PostDetails(APIView):
         response["Access-Control-Allow-Origin"] = "http://localhost:3000"
         return response
     
+    @extend_schema(
+        description="Update a post.",
+        request=PostSerializer,
+        responses={200: PostSerializer()}
+    )
     def post(self, request, author_id, post_id):
         """
         Update a post.
@@ -88,6 +107,11 @@ class PostDetails(APIView):
         response["Access-Control-Allow-Origin"] = "http://localhost:3000"
         return response
     
+    @extend_schema(
+        description="Creates a post with a specific id.",
+        request=PostSerializer,
+        responses={201: PostSerializer()}
+    )
     def put(self, request, author_id, post_id):
         """
         Creates a post with a specific id.
@@ -112,6 +136,10 @@ class PostDetails(APIView):
         response["Access-Control-Allow-Origin"] = "http://localhost:3000"
         return response
     
+    @extend_schema(
+        description="Delete a post.",
+        responses={204: None}
+    )
     def delete(self, request, author_id, post_id):
         """
         Delete a post.
