@@ -17,9 +17,8 @@ export default function MyStream({props}){
 
     //This queries the user for all personal posts
     const fetchdata = async () => {
-        const res = await axios.get(API_URL + user + "/posts/")
+        const res = await axios.get(API_URL + "/authors/" + user + "/posts/")
         setPosts(res.data.items)
-        console.log(posts)
     };
     useEffect(() => {
         fetchdata();

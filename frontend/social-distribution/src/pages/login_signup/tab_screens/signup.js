@@ -12,6 +12,13 @@ import {
   Input,
   VStack
 } from "@chakra-ui/react";
+import * as Yup from "yup";
+import {API_URL} from "../../../components/api"
+
+import authSlice from "../../../store/slices/auth";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import localStorage from 'redux-persist/es/storage';
 
 const validate = values => {
     const errors = {};
@@ -31,15 +38,31 @@ const validate = values => {
   };
 
 function Signup() {
-    let navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const [error, setError] = useState(false);
+  const handleSubmit = (displayName, password) => {
+    axios.post(API_URL + "/auth/register/", { displayName, password })
+          .then((res) => {
+            dispatch(
+              authSlice.actions.setAccount({
+                displayName: res.data.displayName,
+                password: res.data.password,
+              })
+            );
+            console.log(res.data)
+            localStorage.setItem("user", res.data.uuid)
+          })
+          .catch((err) => {
+            console.log(JSON.stringify(err));
+          });
+
+    
+  }
   const formik = useFormik({
     initialValues: {username: '', password: ''},
         validate,
         onSubmit: values => {
-          navigate("/login")
-          alert(JSON.stringify("Please Login"));
+          handleSubmit(values.username, values.password)
         },
   });
   return (

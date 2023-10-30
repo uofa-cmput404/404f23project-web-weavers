@@ -18,16 +18,24 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from authors import views 
 from rest_framework import routers
+from likes.views import list_author_likes, list_post_likes
+from inbox.views import InboxView
 
 urlpatterns = [
     # Admin site
     path('admin/', admin.site.urls),
-
+    # Auth
+    path('auth/', include(('backend.routers', 'backend'), namespace='backend')),
     # Authors app
     path('authors/', include('authors.urls')),
-    # Posts
-    path('authors/<uuid:author_id>/posts/', include('post.urls')),
-
     # Followers app
     path('authors/<uuid:author_id>/followers/', include('followers.urls')),
+    # Posts
+    path('authors/<uuid:author_id>/posts/', include('post.urls')),
+    # Post Likes
+    path('authors/<uuid:author_id>/posts/<uuid:post_id>/likes/', list_post_likes),
+    # Liked
+    path('authors/<uuid:author_id>/liked/', list_author_likes),
+    # Inbox
+    path('authors/<uuid:author_id>/inbox/', InboxView.as_view()),
 ]

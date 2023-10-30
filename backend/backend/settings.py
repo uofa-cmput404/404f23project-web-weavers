@@ -9,8 +9,9 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
 from pathlib import Path
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'authors',
     'post',
     'followers',
+    'likes',
 ]
 
 MIDDLEWARE = [
@@ -134,6 +136,21 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}
+
+AUTH_USER_MODEL = 'authors.Author'
+SIMPLE_JWT = {
+    'USER_ID_FIELD': 'uuid',
+}
+
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000", 
-   ] 
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
+]
