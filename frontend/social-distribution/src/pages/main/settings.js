@@ -9,7 +9,7 @@ export default function Settings({props}){
     return(
         <div style={styles.container}>
             <LogoBar/>
-            <NavBar current='Settings' user/>
+            <NavBar current='Settings' uuid={user}/>
             <FriendsBar/>
             <h1>Explore</h1>
         </div>

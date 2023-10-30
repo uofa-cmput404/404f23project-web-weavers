@@ -9,7 +9,7 @@ export default function Explore({props}){
     return(
         <div style={styles.container}>
             <LogoBar/>
-            <NavBar current='Explore' user/>
+            <NavBar current='Explore' uuid={user}/>
             <FriendsBar/>
             <h1>Explore</h1>
         </div>

@@ -9,7 +9,7 @@ export default function Inbox({props}){
     return(
         <div style={styles.container}>
             <LogoBar/>
-            <NavBar current='Inbox' user/>
+            <NavBar current='Inbox' uuid={user}/>
             <FriendsBar/>
             <h1>Explore</h1>
         </div>
