@@ -4,9 +4,13 @@ import { Flex, Divider, IconButton, Button } from "@chakra-ui/react";
 import { FiImage } from "react-icons/fi";
 import { BeatLoader } from "react-spinners";
 import TextPost from "./TextPost.js";
+import { authorUUID, postUUID } from "../../utils/utils.js";
 
 export default function CreatePostCard() {
+  const { baseURL } = "http://127.0.0.1:8000/authors/";
   const fileInputRef = useRef(null);
+  const [showDescription, setShowDescription] = useState(false);
+  const [description, setDescription] = useState("");
   const [showTextPost, setShowTextPost] = useState(false);
   const [imageSrc, setImageSrc] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,12 +30,41 @@ export default function CreatePostCard() {
     reader.readAsDataURL(file);
   };
 
-  const post = () => {
+  const handlePost = () => {
     setIsLoading(true);
-    // Perform post operation here
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+    
+    // Get data from post
+    const description= document.getElementById("description").value;
+    const imageData= imageSrc;
+
+    const postUserUUID= authorUUID(localStorage.getItem("userID"));
+    const postID= postUUID(localStorage.getItem("postID"));
+
+    const url= baseURL + postUserUUID + "/posts/" + postID + "/";
+
+    const formData = new FormData();
+    formData.append("description", description);
+    formData.append("image", imageData);
+
+    // Send to server
+    fetch( url, {
+      method: "POST",
+      body: formData,
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log("Post created successfully!");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error creating post: ", error);
+          setIsLoading(false);
+        });
   };
 
   return (
@@ -42,6 +75,10 @@ export default function CreatePostCard() {
         <h1
           style={{ height: "40px", width: "flex",cursor: "pointer" }}
           onClick={() => setShowTextPost(!showTextPost)}
+          id="description"
+          name="description"
+          value={description}
+          onChange={(event) => setDescription(event.target.value)}
         >
           Add a description...
         </h1>
@@ -75,7 +112,7 @@ export default function CreatePostCard() {
             style={{ ...styles.icons, width: "80px", marginLeft: "100px" }}
             isLoading={isLoading} // Add the isLoading prop to the Button component
             spinner={<BeatLoader size={5} color="white" />}
-            onClick={post}
+            onClick={handlePost}
           >
             {isLoading ? "Posting..." : "Post"} {/* Change the text of the button based on isLoading */}
           </Button>
