@@ -1,30 +1,51 @@
-import React,{useState} from "react";
+import React,{useEffect, useState} from "react";
 import {colors} from '../../utils/theme.js'
 import { Avatar, Divider, Flex, Text, Heading, IconButton } from "@chakra-ui/react";
 import { FiMenu, FiHome, FiInbox, FiUser, FiSettings, FiLogOut, FiSquare, FiBook} from "react-icons/fi";
 import NavItem from "./NavItem.js";
 import Logo from "../../assets/logo.png";
 import { useNavigate } from 'react-router-dom';
-
-// TODO: get username and pictureUrl from backend   -> remove hardcoded values
+import authSlice from "../../store/slices/auth";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import localStorage from "redux-persist/es/storage";
+import { API_URL } from "../api.js";
+// TODO: pictureUrl from backend   -> remove hardcoded values
 //       OPTIMIZE TOO SLOW
 
-export default function NavBar({...props}) {  
+export default function NavBar({uuid,...props}) {
     let navigate = useNavigate();
+    let dispatch = useDispatch();
+    const userID = uuid;
+    const [displayn, setDisplayn] = useState("")
+    
+    axios.get(API_URL + "authors/")
+        .then((res) => {   
+            const authors = res.data
+            for (let i = 0; i < authors.items.length; i++) {
+                if (authors.items[i].uuid === userID) {                    
+                    // localStorage.setItem("username", authors.items[i].uuid)
+                    setDisplayn(authors.items[i].displayName)
+                }
+            }
+        })
+
+    console.log(displayn)
     const current = props.current
-    const username = "JohnDoeInfinity"
-    const pictureUrl = "https://bit.ly/dan-abramov"
+    const username = displayn
+    const pictureUrl = ""
     // Note: limit amount of characters in username
 
     const [navSize, changeNavSize] = useState("large");
     const [activeNav, setActive] = useState({current});
-    console.log(activeNav)
 
 
     const handleClick = (e) => {
         if(e== "Sign out"){
             // clear auth token
             e = "" // back to home page
+            dispatch(authSlice.actions.logout());
+            localStorage.removeItem("user")
         }
         setActive(e);
         navigate("/"+e)
@@ -33,7 +54,7 @@ export default function NavBar({...props}) {
     return (
         <Flex style={styles.container} flexDir="column" pos="sticky" w={navSize === "small" ? "75px" : "300px"}>
             <Flex p="5%" flexDir="column" alignItems={navSize == "small" ? "center" : "flex-start"} >
-                <IconButton background="none" mt={5} _hover={{background: "none"}} icon={<FiMenu />} 
+                <IconButton background="none" mt={5} _hover={{background: "none"}} icon={<FiMenu />}
                 onClick={() => navSize === "small" ? changeNavSize("large") : changeNavSize("small")} color='white' />
 
                 <NavItem navSize={navSize} icon={FiHome} title="Home" description="Home" active={current === 'Home' ? true : false } onClick={()=>{handleClick('Home')}}/>
@@ -54,7 +75,7 @@ export default function NavBar({...props}) {
                     <Avatar src={pictureUrl} />
                         <Flex flexDir="column" ml={4} display={navSize==="small"?"none":"flex"}>
                             <Heading as="h3" size='sm'>{username}</Heading>
-                        </Flex>     
+                        </Flex>
                 </Flex>
             </Flex>
         </Flex>
@@ -64,7 +85,7 @@ export default function NavBar({...props}) {
 const styles = {
     container:{
         boxShadow:"0 4px 12px 0 rgba(0,0,0,0.5)",
-        backgroundColor:colors.text.t1,      
+        backgroundColor:colors.text.t1,
         justifyContent:"space-between",
         color:colors.text.t2,
         zIndex:1,
@@ -72,5 +93,5 @@ const styles = {
         height: "100vh",
         overflow:'scroll',
     },
-   
+
 }

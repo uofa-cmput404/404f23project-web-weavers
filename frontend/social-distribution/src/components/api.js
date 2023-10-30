@@ -1,11 +1,7 @@
+
 import axios from 'axios';
 export const API_URL = "http://127.0.0.1:8000/authors/"
 export const GIT_URL = "http://api.github.com/users/:user/events"
-
-export let recieveUser = (username) => {
-    //Checks if a User exists in the database
-    return axios.get(API_URL + username + "/")
-}
 
 export let recieveEvents = (username) =>{
     //Grabs the git events of a user based on their uuid
@@ -28,4 +24,9 @@ export let recieveEvents = (username) =>{
 }
 
 
-export default recieveUser;
+function validateUser (username) {
+    //Checks if a User exists in the database
+    return axios.get(API_URL + username + "/")
+}
+
+export default validateUser;

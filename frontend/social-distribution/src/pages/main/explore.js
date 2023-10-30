@@ -10,59 +10,12 @@ import {colors, sizes, spacing} from "../../utils/theme";
 import Post from "../../components/Posts/Posted";
 
 export default function Explore({props}){
-    const [publicPosts, setPublicPosts] = useState([])
-    const [publicUsers, setPublicUsers] = useState([])
-    console.log(localStorage.getItem("user"))
-    const currentPosts = [];
-
-    //queries all available authors the database
-    //queries all posts of every author
-    //adds a post to the list if it's public TODO later
-    const getPublicUsers = async () => {
-        try {
-          const res = await axios({
-            method: "GET",
-            url: API_URL,
-          });
-
-          setPublicUsers(res.data.items)
-
-          return res.data.items;
-        } catch (err) {
-          console.log(err);
-        }
-      };
-
-      const getPosts = async () => {
-        try {
-            const postUsers= await getPublicUsers();
-            for (let i = 0; i < postUsers.length; i++){
-                const res = await axios({
-                    method: "GET",
-                    url: postUsers[i].id + "/posts/"
-
-                });
-            for(let i = 0; i < res.data.items.length; i++){
-                currentPosts.push(res.data.items[i]);
-                console.log("public post is " + i + " " + JSON.stringify(res.data.items[i]))
-            }
-
-
-            }
-          setPublicPosts(currentPosts);
-        } catch (err) {
-          console.log(err);
-        }
-      };
-
-     useEffect(() => {
-        getPosts();
-      }, []);
+    const user = localStorage.getItem("user")
 
     return(
         <div style={styles.container}>
             <LogoBar/>
-            <NavBar current='Explore'/>
+            <NavBar current='Explore' uuid={user}/>
             <FriendsBar/>
             <h1>Explore</h1>
             <h1 alignItems="center"> </h1>
