@@ -4,7 +4,7 @@ export const GIT_URL = "http://api.github.com/users/:user/events"
 
 function validateUser (username) {
     //Checks if a User exists in the database
-    return axios.get(API_URL + "authors/" + username + "/")
+    return axios.get(API_URL + username + "/")
 }
 
 export default validateUser;

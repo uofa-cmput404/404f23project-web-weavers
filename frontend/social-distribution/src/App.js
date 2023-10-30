@@ -13,8 +13,8 @@ import {EditPost} from './pages/main/editPost';
 
 import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
-import {store, persistor } from './store/index';
-import {ProtectedRoute} from "./routes/ProtectedRoute";
+import {store, persistor } from './store/index.ts';
+import {ProtectedRoute} from "./routes/ProtectedRoute.tsx";
 function App() {
 
   return (

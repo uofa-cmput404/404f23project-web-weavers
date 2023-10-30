@@ -4,7 +4,6 @@ import { Flex, Divider, IconButton, Button } from "@chakra-ui/react";
 import { FiImage } from "react-icons/fi";
 import { BeatLoader } from "react-spinners";
 import TextPost from "./TextPost.js";
-import { authorUUID, postUUID } from "../../utils/utils.js";
 import { API_URL } from "../api.js";
 import axios from "axios";
 

@@ -5,7 +5,7 @@ import { FiMenu, FiHome, FiInbox, FiUser, FiSettings, FiLogOut, FiSquare, FiBook
 import NavItem from "./NavItem.js";
 import Logo from "../../assets/logo.png";
 import { useNavigate } from 'react-router-dom';
-import authSlice from "../../store/slices/auth";
+import authSlice from "../../store/slices/auth.ts";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import localStorage from "redux-persist/es/storage";
