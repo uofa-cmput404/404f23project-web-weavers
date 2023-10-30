@@ -28,6 +28,9 @@ const authSlice = createSlice({
       state.refreshToken = null;
       state.token = null;
     },
+    register(state: State, action: PayloadAction<AuthorResponse>) {
+      state.account = action.payload;
+    }
   },
 });
 
