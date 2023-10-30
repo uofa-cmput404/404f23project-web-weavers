@@ -91,14 +91,14 @@ postgres=# \q
 ```bash
 cd frontend
 cd social-distribution
-npm install
+npm install --legacy-peer-deps
 ```
 
 #### For Running Frontend
 ```bash
 cd frontend
 cd social-distribution
-npm start --legacy-peer-deps
+npm start 
 ```
 
 #### For Windows Users
