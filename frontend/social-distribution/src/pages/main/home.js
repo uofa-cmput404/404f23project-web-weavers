@@ -9,11 +9,11 @@ import Post from "../../components/Posts/Posted";
 
 export default function Home() {
     //This is where the uuid of the user is being stored for now
-    console.log(localStorage.getItem("user"))
+    const user = localStorage.getItem("user")
     return (
         <div style={styles.container}>
             <LogoBar/>
-            <NavBar current='Home'/>
+            <NavBar current='Home' uuid={user}/>
             <FriendsBar style={styles.friendsBar}/>
             <div style={styles.content}>
                 <CreatePostCard/>

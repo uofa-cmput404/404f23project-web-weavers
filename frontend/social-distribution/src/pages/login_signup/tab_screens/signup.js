@@ -38,15 +38,13 @@ const validate = values => {
   };
 
 function Signup() {
-    let navigate = useNavigate();
   const dispatch = useDispatch();
-  const [error, setError] = useState(false);
 
   const handleSubmit = (displayName, password) => {
     axios.post(API_URL + "/auth/register/", { displayName, password })
           .then((res) => {
             dispatch(
-              authSlice.actions.register({
+              authSlice.actions.setAccount({
                 displayName: res.data.displayName,
                 password: res.data.password,
               })
