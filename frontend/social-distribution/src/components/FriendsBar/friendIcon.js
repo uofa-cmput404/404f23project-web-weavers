@@ -3,10 +3,6 @@ import { Avatar, Flex, Link, Text } from "@chakra-ui/react";
 import React from "react";
 import { useNavigate } from 'react-router-dom';
 
-/*
-    TODO: Add a link to the profile page of the friend
-          fontsize should be variable if the full name of user gets past 18 characters
-*/
 
 export default function FriendIcon({fullName, username,avatar, ...props}){
     let navigate = useNavigate();

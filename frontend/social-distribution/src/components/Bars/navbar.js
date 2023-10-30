@@ -52,7 +52,7 @@ export default function NavBar({uuid,...props}) {
     }
 
     return (
-        <Flex style={styles.container} flexDir="column" pos="sticky" w={navSize === "small" ? "75px" : "300px"}>
+        <Flex style={styles.container} flexDir="column" pos="sticky" w={navSize === "small" ? "75px" : "300px"} top={"5%"}>
             <Flex p="5%" flexDir="column" alignItems={navSize == "small" ? "center" : "flex-start"} >
                 <IconButton background="none" mt={5} _hover={{background: "none"}} icon={<FiMenu />}
                 onClick={() => navSize === "small" ? changeNavSize("large") : changeNavSize("small")} color='white' />
@@ -90,7 +90,7 @@ const styles = {
         color:colors.text.t2,
         zIndex:1,
         position:"fixed",
-        height: "100vh",
+        height: "95vh",
         overflow:'scroll',
     },
 

@@ -17,7 +17,7 @@ export const SearchBar = ({props}) => {
           pointerEvents="none"
           children={<Search2Icon color="gray.600" />}
         />
-        <Input type="text" placeholder="Search Users..." border="1px solid #949494" />
+        <Input type="text" placeholder="Search Users..." border="1px solid #949494" color="white" />
         <InputRightAddon
           p={0}
           border="none"
