@@ -13,6 +13,7 @@ export default function Explore({props}){
     const [publicPosts, setPublicPosts] = useState([])
     const [publicUsers, setPublicUsers] = useState([])
     console.log(localStorage.getItem("user"))
+    const currentPosts = [];
 
     //queries all available authors the database
     //queries all posts of every author
@@ -34,18 +35,21 @@ export default function Explore({props}){
 
       const getPosts = async () => {
         try {
-            const currentPosts = [];
             const postUsers= await getPublicUsers();
             for (let i = 0; i < postUsers.length; i++){
                 const res = await axios({
                     method: "GET",
                     url: postUsers[i].id + "/posts/"
+
                 });
-                currentPosts[i] = res.data.items;
+            for(let i = 0; i < res.data.items.length; i++){
+                currentPosts.push(res.data.items[i]);
+                console.log("public post is " + i + " " + JSON.stringify(res.data.items[i]))
+            }
+
 
             }
           setPublicPosts(currentPosts);
-          console.log("public post is " + JSON.stringify(publicPosts))
         } catch (err) {
           console.log(err);
         }
@@ -66,7 +70,7 @@ export default function Explore({props}){
             <div style={{ ...styles.postContainer }}>
                     {/* TODO: change this to be more dynamic when pulling list of posts */}
                     {publicPosts.map((e)=>{
-                        return <div style={styles.post}> <Post postData={e[0]} visibility = {"PUBLIC"}/> </div>
+                        return <div style={styles.post}> <Post postData={e} visibility = {"PUBLIC"}/> </div>
                     })}
                 </div>
             </div>
