@@ -1,9 +1,23 @@
 import ShadedClickableBox from "../../../components/shadedClickableBox";
 import { colors, spacing } from "../../../utils/theme";
-import React from "react";
+import { useState, useEffect } from 'react';
+import {API_URL} from "../../../components/api";
+import axios from 'axios';
 
 
-export default function Notifications() {    
+export default function Notifications() {
+    const user = localStorage.getItem("user")
+    const [notifs, setNotifs] = useState([])
+
+    const fetchdata = async () => {
+        const res = await axios.get(API_URL + "/authors/" + user+ "/inbox/")
+        console.log(res.data.items)
+        setNotifs(res.data.items)
+    };
+    useEffect(() => {
+        fetchdata();
+    }, [])
+
     const placeholder = [
         {content:'You have a new friend request from user1'},
         {content:'You have a new friend request from user2'},
@@ -18,11 +32,12 @@ export default function Notifications() {
         {content:'user8 liked your post'},
 
     ]
+
     return(
         <div style={styles.container}>
-                {placeholder.map((item) => (
+                {notifs.map((item) => (
                     // console.log(item.content),
-                    <ShadedClickableBox variant_='notif' text={item.content}/>
+                    <ShadedClickableBox variant_='notif' text={item.summary}/>
                 ))}
         </div>
     )

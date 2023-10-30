@@ -14,14 +14,14 @@ export default function Inbox({props}){
             <LogoBar/>
             <NavBar current='Inbox' uuid={user}/>
             <FriendsBar/>
-            
+
             <div className='tab-container' style={styles.tabContainer}>
                 <Tabs variant='soft-rounded' isFitted m={6} colorScheme="blackAlpha" size='sm' align='center'>
                     <TabList>
                         <Tab>Messages</Tab>
-                        <Tab>Notifications</Tab>    
+                        <Tab>Notifications</Tab>
                     </TabList>
-                    
+
                     <TabPanels>
                         <TabPanel>
                             <Messages />
