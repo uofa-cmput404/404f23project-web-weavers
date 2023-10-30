@@ -5,10 +5,11 @@ import LogoBar from "../../components/Bars/logoBar.js";
 import FriendsBar from "../../components/FriendsBar/friendsBar.js";
 
 export default function Settings({props}){
+    const user = localStorage.getItem("user")
     return(
         <div style={styles.container}>
             <LogoBar/>
-            <NavBar current='Settings'/>
+            <NavBar current='Settings' user/>
             <FriendsBar/>
             <h1>Explore</h1>
         </div>

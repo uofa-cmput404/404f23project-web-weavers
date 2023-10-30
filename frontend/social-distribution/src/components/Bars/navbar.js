@@ -30,7 +30,7 @@ export default function NavBar({uuid,...props}) {
             }
         })
 
-    console.log(typeof(displayn))
+    console.log(displayn)
     const current = props.current
     const username = displayn
     const pictureUrl = ""
