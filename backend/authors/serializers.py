@@ -4,4 +4,5 @@ from .models import Author
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
-        exclude = ['uuid', 'followers']
+        exclude = ['followers']
+

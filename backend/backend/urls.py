@@ -15,7 +15,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+from authors import views 
+from rest_framework import routers
 
 urlpatterns = [
     # Admin site
@@ -28,4 +30,5 @@ urlpatterns = [
 
     # Followers app
     path('authors/<uuid:author_id>/followers/', include('followers.urls')),
+    path('auth/', include(('backend.routers', 'backend'), namespace='backend')),
 ]

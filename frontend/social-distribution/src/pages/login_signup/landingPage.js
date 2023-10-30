@@ -1,55 +1,67 @@
 import React from 'react';
-import { colors, sizes, spacing } from '../../utils/theme';
-import Button from '../../components/Button';
-import {useTypewriter} from 'react-simple-typewriter';
+import { colors } from '../../utils/theme';
+import { Tabs, TabList, TabPanels, Tab, TabPanel} from '@chakra-ui/react'
+import logo from "../../assets/logo.png"
+import Welcome from './tab_screens/welcome';
+import About from './tab_screens/about';
+import UserStart from './tab_screens/user_start';
+import AdminLogin from './tab_screens/adminLogin';
 
 function LandingPage() {
-  const [typeEffect] = useTypewriter({
-    words: ['Welcome to Social Distribution!'],
-    loop: 1,
-    cursorStyle: '_',
-    deleteSpeed: 50,
-  });
-  return (
-    <div className='container' style={styles.container}>
-        <div className='text' style={styles.text}>
-          {typeEffect}
+    return (
+    <>
+    <div className='tab-container' style={styles.tabContainer}>
+        <img src={logo} alt="logo" style={styles.logo} />
+
+      <div className="tabs" style={styles.tabs}>
+        <Tabs variant='solid-rounded' m={6} colorScheme="whiteAlpha" size='sm' align='end'>
+            <TabList>
+                <Tab>Home</Tab>
+                <Tab>About</Tab>
+                <Tab>User</Tab>
+                <Tab>Login</Tab>
+            </TabList>
+
+            <TabPanels>
+                  <TabPanel>
+                      <Welcome />
+                  </TabPanel>
+                  <TabPanel>
+                      <About />
+                  </TabPanel>
+                  <TabPanel>
+                      <UserStart />
+                  </TabPanel>
+                  <TabPanel>
+                      <AdminLogin />
+                  </TabPanel>
+            </TabPanels>
+        </Tabs>
         </div>
-
-        <div style={styles.buttons}>
-          <Button type="primary" dest="">Sign Up</Button>
-          <Button type="secondary">Login</Button>
-          <Button type="tertiary">Admin</Button>
-        </div>
-
-
-
     </div>
 
+
+      </>
   );
 }
 
-const styles = { 
-  text: {
-    fontSize: sizes.xxl, 
-    color: colors.text.c1,
-  },
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.brand.c1,
-    height: '100vh',
+const styles = {
+  tabs: {
     width: '100vw',
+    boxShadow:"4px 4px 12px 0 rgba(0,0,0,0.50)",
   },
-  buttons: {
-    padding: spacing.xl,
+  logo: {
+    width: '8vw',
+    height: '8vh',
+    zIndex: '1',
+    position: 'absolute',
+    marginLeft: '45vw',
+},
+  tabContainer: {
     display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.xxl,
-  },
+    width: '100vw',
+    backgroundColor: colors.brand.c4,
+
+  }
 }
 export default LandingPage;
