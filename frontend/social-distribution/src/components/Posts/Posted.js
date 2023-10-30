@@ -26,11 +26,10 @@ import { sizes, colors } from "../../utils/theme";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {API_URL} from "../api"
-import localStorage from "redux-persist/es/storage";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 
 
-export default function Post({postData, visibility, userUUID}){
+export default function Post({postData, visibility, userUUID, displayName}){
     // const userID= localStorage.getItem()
     // const postID = 1;
     let navigate = useNavigate();
@@ -77,17 +76,17 @@ export default function Post({postData, visibility, userUUID}){
         if(postData.contentType == "text/markdown"){
             setShowImageField(false)
         }
-
      }, []);
 
     // Like handles
-    const handleLikeClick = () => {
+    const handleLikeClick =() => {
         SetIsLiked(!IsLiked); // Toggle the liked state when the button is clicked
+
         let like_values = {
             'author': userUUID,
             'type': "Like",
             'object': postData.id,
-            'summary': "" + userUUID + "liked your post"
+            'summary': "" + displayName + " liked your post"
         }
 
         axios.post(API_URL + "authors/" + postData.author.uuid + "/inbox/", like_values).then(function(response){
