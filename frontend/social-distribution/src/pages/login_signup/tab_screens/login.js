@@ -22,7 +22,7 @@ function Login() {
   const dispatch = useDispatch();
 
   const handleLogin = (displayName, password) =>{
-    axios.post(API_URL + "/auth/login/", { displayName, password })
+    axios.post(API_URL + "auth/login/", { displayName, password })
           .then((res) => {
             dispatch(
               authSlice.actions.setAuthTokens({
