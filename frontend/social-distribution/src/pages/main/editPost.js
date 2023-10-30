@@ -190,11 +190,6 @@ const styles = {
         margin: spacing.md
 
     },
-    post: {
-        width: "500px",
-        alignItems: "center",
-        marginTop: spacing.lg,
-    },
     postImage: {
       width: "100%",
       height: "auto",

@@ -13,6 +13,7 @@ export default function Home() {
     //This is where the uuid of the user is being stored for now
     const [publicPosts, setPublicPosts] = useState([])
     const [publicUsers, setPublicUsers] = useState([])
+    let [displayName, setDisplayName] = useState("")
 
     //queries all available authors the database
     //queries all posts of every author
@@ -25,6 +26,11 @@ export default function Home() {
           });
 
           setPublicUsers(res.data.items)
+          for(let i = 0; i < res.data.items.length; i++){
+            if(res.data.items[i].uuid == user){
+              setDisplayName(res.data.items[i].displayName)
+            }
+          }
 
           return res.data.items;
         } catch (err) {
@@ -67,7 +73,8 @@ export default function Home() {
                 <div style={{ ...styles.postContainer }}>
                     {/* TODO: change this to be more dynamic when pulling list of posts */}
                     {publicPosts.map((e)=>{
-                        return <div style={styles.post}> <Post postData={e} visibility = {"PUBLIC"}/> </div>
+                        return <div style={styles.post}>
+                        <Post postData={e} visibility = {"PUBLIC"} userUUID = {user} displayName={displayName}/> </div>
                     })}
                 </div>
             </div>

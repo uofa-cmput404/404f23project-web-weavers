@@ -18,7 +18,7 @@ function LandingPage() {
             <TabList>
                 <Tab>Home</Tab>
                 <Tab>About</Tab>
-                <Tab>User</Tab>
+                <Tab>Sign Up</Tab>
                 <Tab>Login</Tab>
             </TabList>
 

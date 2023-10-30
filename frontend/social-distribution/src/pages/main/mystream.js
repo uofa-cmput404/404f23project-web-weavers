@@ -6,7 +6,7 @@ import {colors, sizes, spacing} from "../../utils/theme";
 
 
 import Post from "../../components/Posts/Posted";
-import {API_URL} from "../../components/api";
+import {API_URL, getDisplayName} from "../../components/api";
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
@@ -14,11 +14,14 @@ export default function MyStream({props}){
     const user = localStorage.getItem("user")
     // need a list of all postIDS to show
     const [posts, setPosts] = useState([]);
+    const [displayName, setDisplayName] = useState("");
 
     //This queries the user for all personal posts
     const fetchdata = async () => {
         const res = await axios.get(API_URL + "/authors/" + user + "/posts/")
         setPosts(res.data.items)
+        const res2 = await getDisplayName(user)
+        setDisplayName(res2);
     };
     useEffect(() => {
         fetchdata();
@@ -37,7 +40,8 @@ export default function MyStream({props}){
                 <div style={{ ...styles.postContainer }}>
                     {/* TODO: change this to be more dynamic when pulling list of posts */}
                     {posts.map((e)=>{
-                        return <div style={styles.post}> <Post postData={e} visibility = {"PERSONAL"}/> </div>
+                        return <div style={styles.post}>
+                        <Post postData={e} visibility = {"PERSONAL"} userUUID = {user}/> </div>
                     })}
                 </div>
             </div>
