@@ -18,6 +18,11 @@ Authors:
 
 Generally everything is LICENSE'D under the GNU GPLv3.
 
+## API Documentation
+The API Documentation can be found at http://127.0.0.1:8000/api/schema/swagger-ui after running
+```bash
+python3 manage.py runserver
+```
 ## Setting up the development environment
 ### Installing dependencies
 
@@ -28,6 +33,7 @@ python3 -m venv venv
 source venv/bin/activate
 python3 -m pip install -r requirements.txt
 ```
+
 ## Setting up the database
 #### For Linux Users
 First, make sure that the PostgreSQL server is started:
@@ -80,7 +86,31 @@ postgres=# CREATE DATABASE "web-database";
 postgres=# \q
 ```
 
+## For Frontend
+#### Initialize your system
+```bash
+sudo apt install nodejs npm
+```
+
+#### Install Dependencies
+```bash
+cd frontend
+cd social-distribution
+npm install --legacy-peer-deps
+```
+
+#### For Running Frontend
+```bash
+cd frontend
+cd social-distribution
+npm start 
+```
+
 #### For Windows Users
 Pgadmin4 should be installed along with your installation of PostgreSQL.
 Follow the tutorial [here](https://www.youtube.com/watch?v=KqcS3P32s6Y)
 and create a database named "web-database", with its password being "12345".
+
+## References  
+Authentication: https://dev.to/koladev/django-rest-authentication-cmh
+Pagination: https://stackoverflow.com/questions/35830779/django-rest-framework-apiview-pagination

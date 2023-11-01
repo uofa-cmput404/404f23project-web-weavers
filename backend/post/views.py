@@ -5,10 +5,15 @@ from .models import Post
 from authors.models import Author
 from .serializers import PostSerializer
 from rest_framework.pagination import PageNumberPagination
+from drf_spectacular.utils import extend_schema
 import uuid
 
 # Create your views here.
 class PostList(APIView, PageNumberPagination):
+    @extend_schema(
+        description="List all posts.",
+        responses={200: PostSerializer(many=True)}
+    )
     def get(self, request, author_id):
         """
         List all posts.
@@ -29,11 +34,18 @@ class PostList(APIView, PageNumberPagination):
                 posts = self.paginate_queryset(posts, request)
 
         serializer = PostSerializer(posts, many=True)
-        return Response({
+        response = Response({
             "type": "posts",
             "items": serializer.data
         })
+        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+        return response
     
+    @extend_schema(
+        description="Create a new post with a new id.",
+        request=PostSerializer,
+        responses={201: PostSerializer()}
+    )
     def post(self, request, author_id):
         """
         Create a new post with a new id.
@@ -52,9 +64,15 @@ class PostList(APIView, PageNumberPagination):
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
         
-        return Response(serializer.errors)
+        response = Response(serializer.errors)
+        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+        return response
     
 class PostDetails(APIView):
+    @extend_schema(
+        description="Retrieve a post.",
+        responses={200: PostSerializer()}
+    )
     def get(self, request, author_id, post_id):
         """
         Retrieve a post.
@@ -65,8 +83,15 @@ class PostDetails(APIView):
         except:
             return Response({"error": "Post Not Found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = PostSerializer(post)
-        return Response(serializer.data)
+        response = Response(serializer.data)
+        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+        return response
     
+    @extend_schema(
+        description="Update a post.",
+        request=PostSerializer,
+        responses={200: PostSerializer()}
+    )
     def post(self, request, author_id, post_id):
         """
         Update a post.
@@ -78,8 +103,15 @@ class PostDetails(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        return Response(serializer.errors)
+        response = Response(serializer.errors)
+        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+        return response
     
+    @extend_schema(
+        description="Creates a post with a specific id.",
+        request=PostSerializer,
+        responses={201: PostSerializer()}
+    )
     def put(self, request, author_id, post_id):
         """
         Creates a post with a specific id.
@@ -100,8 +132,14 @@ class PostDetails(APIView):
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
         
-        return Response(serializer.errors)
+        response = Response(serializer.errors)
+        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+        return response
     
+    @extend_schema(
+        description="Delete a post.",
+        responses={204: None}
+    )
     def delete(self, request, author_id, post_id):
         """
         Delete a post.
@@ -110,6 +148,10 @@ class PostDetails(APIView):
         try:
             post = Post.objects.get(pk=post_id, author=author)
         except:
-            return Response({"error": "Post Not Found"}, status=status.HTTP_404_NOT_FOUND)
+            response = Response({"error": "Post Not Found"}, status=status.HTTP_404_NOT_FOUND)
+            response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+            return response
         post.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        response = Response(status=status.HTTP_204_NO_CONTENT)
+        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+        return response

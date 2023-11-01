@@ -15,18 +15,34 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+from likes.views import list_author_likes, list_post_likes
+from inbox.views import InboxView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
     # Admin site
     path('admin/', admin.site.urls),
-
+    # Auth
+    path('auth/', include(('backend.routers', 'backend'), namespace='backend')),
     # Authors app
     path('authors/', include('authors.urls')),
+    # Followers app
+    path('authors/<uuid:author_id>/followers/', include('followers.urls')),
     # Posts
     path('authors/<uuid:author_id>/posts/', include('post.urls')),
     # Comments
     path('authors/<uuid:author_id>/posts/<uuid:post_id>/comments/', include('comments.urls')),
     # Followers app
     path('authors/<uuid:author_id>/followers/', include('followers.urls')),
+    # Post Likes
+    path('authors/<uuid:author_id>/posts/<uuid:post_id>/likes/', list_post_likes),
+    # Liked
+    path('authors/<uuid:author_id>/liked/', list_author_likes),
+    # Inbox
+    path('authors/<uuid:author_id>/inbox/', InboxView.as_view()),
+
+    # API Documentation
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]
