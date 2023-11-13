@@ -13,7 +13,7 @@ export default function CreatePostCard() {
   const [title, setTitle] = useState(false);
   const [showDescriptionInput, setShowDescriptionInput] = useState(false);
   const [description, setDescription] = useState("");
-  const [showTextPost, setShowTextPost] = useState(false);
+
   const [imageSrc, setImageSrc] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -21,15 +21,8 @@ export default function CreatePostCard() {
     fileInputRef.current.click();
   };
 
-  const handleDescriptionChage = (event) => {
-    setDescription(event.target.value);
-  };
-
-  const handTitleClick = () => {
+  const handleMakePost = () => {
     setTitle(!title);
-  };
-
-  const handleHeaderClick = () => {
     setShowDescriptionInput(!showDescriptionInput);
   };
 
@@ -85,22 +78,19 @@ export default function CreatePostCard() {
   return (
     <div style={styles.container}>
       <Flex flexDir="column" w="100%" alignItems="center" align="center" >
-        <h1 style={styles.prompt}>Make a New Post</h1>
-        <Button onClick={handTitleClick} style={{ background: "none", border: "none", cursor: "pointer" }}>
-          <h1 >Add a title</h1>
+        <Button onClick={handleMakePost} style={styles.prompt}>
+          <h1 style={styles.prompt}>Make a New Post</h1>
         </Button>
         {title && (
           <textarea
             type="text"
             id="title"
-            placeholder="Add a title..."
+            placeholder="Title..."
             rows="1"
+            columns="10"
             onChange={(event) => setTitle(event.target.value)}
           />
         )}
-        <Button onClick={handleHeaderClick} style={{ background: "none", border: "none", cursor: "pointer" }}>
-          <h1 >Add a description</h1>
-        </Button>
         {showDescriptionInput && (
           <textarea
             type="text"
@@ -109,7 +99,6 @@ export default function CreatePostCard() {
             onChange={(event) => setDescription(event.target.value)}
           />
         )}
-
         {imageSrc && (
           <img
             src={imageSrc}
@@ -160,6 +149,8 @@ const styles = {
         borderRadius: '1rem',
     },
     prompt:{
+      background: "none",
+      border: "none",
       color: colors.brand.c4,
       fontSize: '1.5rem',
     },
