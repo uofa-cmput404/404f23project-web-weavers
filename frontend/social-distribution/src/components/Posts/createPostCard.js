@@ -91,14 +91,21 @@ export default function CreatePostCard() {
             <>
               <Flex flexDir="column">
                 <h1 styles={{size: "0.8rem"}}>Who can see this post?</h1>
-                <Tabs variant='solid-rounded' m={6} colorScheme="whiteAlpha" size='sm' align='end'>
-                  <TabList>
-                    <Tab>Public</Tab>
-                    <Tab>Friends</Tab>
-                    <Tab>Private</Tab>
-                    <Tab>Unlisted</Tab>
-                  </TabList>
-                </Tabs>
+                <div>
+                  <Tabs variant='solid-rounded' m={6} colorScheme="whiteAlpha" size='sm' align='end'>
+                    <TabList>
+                      {/* <Tab _selected={{ color: "white", bg: "blue.500" }} _notSelected={{ color: "gray.500" }}>Public</Tab>
+                      <Tab _selected={{ color: "white", bg: "blue.500" }} _notSelected={{ color: "gray.500" }}>Friends</Tab>
+                      <Tab _selected={{ color: "white", bg: "blue.500" }} _notSelected={{ color: "gray.500" }}>Private</Tab>
+                      <Tab _selected={{ color: "white", bg: "blue.500" }} _notSelected={{ color: "gray.500" }}>Unlisted</Tab> */}
+                      <Tab _notSelected={{ color: colors.text }}>Public</Tab>
+                      <Tab>Friends</Tab>
+                      <Tab>Private</Tab>
+                      <Tab>Unlisted</Tab>
+                    </TabList>
+                  </Tabs>
+                </div>
+
               </Flex>
 
             </>
