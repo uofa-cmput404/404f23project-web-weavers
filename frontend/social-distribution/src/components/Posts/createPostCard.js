@@ -89,7 +89,6 @@ export default function CreatePostCard() {
           </Button>
           {whoSees && (
             <>
-              
               <Flex flexDir="column">
                 <h1 styles={{size: "0.8rem"}}>Who can see this post?</h1>
                 <Tabs variant='solid-rounded' m={6} colorScheme="whiteAlpha" size='sm' align='end'>
@@ -134,44 +133,40 @@ export default function CreatePostCard() {
           )}  
         </Flex>
         
-        <Flex justifyContent="space-between">
-        {/* {showButtons && (
+        <Flex flexDirection="row" justifyContent="space-between">
+        {showButtons && (
+          <>
+            <div>
+              <input
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                ref={fileInputRef}
+                onChange={handleFileSelect}
+              />
+              <IconButton
+                style={{ ...styles.icons, width: "40px", marginRight: "10px"}}
+                icon={<FiImage />}
+                aria-label="Image Upload"
+                onClick={getPhoto}
+              />
+              <IconButton
+                style={{ ...styles.icons, width: "40px" }}
+                icon={<FiLink />}
+                aria-label="Link"
+              />            
+            </div>
 
-
-        )} */}
-          <div>
-            <input
-              type="file"
-              accept="image/*"
-              style={{ display: "none" }}
-              ref={fileInputRef}
-              onChange={handleFileSelect}
-            />
-            <IconButton
-              style={{ ...styles.icons, width: "40px"}}
-              icon={<FiImage />}
-              aria-label="Image Upload"
-              onClick={getPhoto}
-            />
-            <IconButton
-              style={{ ...styles.icons, width: "40px" }}
-              icon={<FiLink />}
-              aria-label="Link"
-            />
-
-          </div>
-
-
-
-          <Button
-            style={{ ...styles.icons, width: "80px" }}
-            isLoading={isLoading} // Add the isLoading prop to the Button component
-            spinner={<BeatLoader size={5} color="white" />}
-            onClick={handlePost}
-          >
-            {isLoading ? "Posting..." : "Post"} {/* Change the text of the button based on isLoading */}
-          </Button>
-
+            <Button
+              style={{ ...styles.icons, width: "80px" }}
+              isLoading={isLoading} // Add the isLoading prop to the Button component
+              spinner={<BeatLoader size={5} color="white" />}
+              onClick={handlePost}
+            >
+              {isLoading ? "Posting..." : "Post"} {/* Change the text of the button based on isLoading */}
+            </Button>          
+          </>
+        )}
 
         </Flex>
       </Flex>
@@ -207,7 +202,7 @@ const styles = {
         backgroundColor: colors.brand.c4,
         borderRadius: '1rem',
         boxShadow: '0 0 1rem #0001',
-        marginRight: '16vw',
-        marginLeft: '16vw',
+        // marginRight: '16vw',
+        // marginLeft: '16vw',
     }
 }
