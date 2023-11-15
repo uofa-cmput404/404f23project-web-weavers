@@ -173,7 +173,7 @@ class InboxView(APIView, PageNumberPagination):
         inbox = Inbox.objects.get(author=author_id)
         inbox.posts.clear()
         inbox.follows.all().delete()
-        inbox.likes.all().delete()
+        inbox.likes.clear()
         # inbox.comments.clear() #TODO: implement after Comments is done
 
         response = Response(status = status.HTTP_204_NO_CONTENT)
