@@ -16,6 +16,14 @@ export default function ShadedClickableBox({variant_,text,username,avatar,...pro
     }
     const handleAcceptFollower = () =>{
         console.log("accepting a new follower")
+        //Post as follower to self and other author
+        //Remove from inbox
+        //Reload
+    }
+    const handleRejectFollower = () =>{
+        console.log("rejecting a new follower")
+        //Remove from inbox
+        //Reload
     }
 
 
@@ -58,7 +66,7 @@ export default function ShadedClickableBox({variant_,text,username,avatar,...pro
                             <IconButton
                             aria-label="Comment"
                             icon={<FiUserMinus />}
-                            onClick={handleAcceptFollower}
+                            onClick={handleRejectFollower}
                             />
                             <Text marginTop="10px" as='i' ml={4} align={"bottom"}> Decline</Text>
                             </Flex>
