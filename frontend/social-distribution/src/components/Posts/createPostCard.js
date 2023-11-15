@@ -13,6 +13,7 @@ export default function CreatePostCard() {
   const fileInputRef = useRef(null);
   const [showButtons, setShowButtons] = useState(false);
   const [title, setTitle] = useState(false);
+  const [showtitle, setShowtitle] = useState(false);
   const [showDescriptionInput, setShowDescriptionInput] = useState(false);
   const [description, setDescription] = useState("");3
   const [whoSees, setWhoSees] = useState(false);
@@ -24,7 +25,7 @@ export default function CreatePostCard() {
   };
 
   const handleMakePost = () => {
-    setTitle(!title);
+    setShowtitle(!showtitle);
     setShowDescriptionInput(!showDescriptionInput);
     setWhoSees(!whoSees);
     setShowButtons(!showButtons);
@@ -98,7 +99,7 @@ export default function CreatePostCard() {
                       <Tab _selected={{ color: "white", bg: "blue.500" }} _notSelected={{ color: "gray.500" }}>Friends</Tab>
                       <Tab _selected={{ color: "white", bg: "blue.500" }} _notSelected={{ color: "gray.500" }}>Private</Tab>
                       <Tab _selected={{ color: "white", bg: "blue.500" }} _notSelected={{ color: "gray.500" }}>Unlisted</Tab> */}
-                      <Tab _notSelected={{ color: colors.text }}>Public</Tab>
+                      <Tab>Public</Tab>
                       <Tab>Friends</Tab>
                       <Tab>Private</Tab>
                       <Tab>Unlisted</Tab>
@@ -113,7 +114,7 @@ export default function CreatePostCard() {
         </Flex>
 
         <Flex style={styles.textBox}>
-          {title && (
+          {showtitle && (
             <Textarea
               type="text"
               id="title"
@@ -190,13 +191,14 @@ const styles = {
         margin: 'auto',
         padding: '1rem',
         border: '1px solid',
+        backgroundColor: colors.brand.c5,
         borderColor: colors.brand.c4,
         borderRadius: '1rem',
     },
     prompt:{
       background: "none",
       border: "none",
-      color: colors.brand.c4,
+      color: "white",
       fontSize: '1.5rem',
     },
     textBox:{
