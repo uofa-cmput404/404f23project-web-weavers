@@ -39,7 +39,6 @@ class Author(AbstractBaseUser, PermissionsMixin):
     github = models.URLField(max_length=200, blank=True)
     profileImage = models.URLField(max_length=100, blank=True)
     followers = models.ManyToManyField("self", symmetrical=False, blank=True)
-    inbox = models.JSONField(default=list, blank=True)
 
     email = models.EmailField(max_length=100, blank=True)  # do we need this? we dont even require email for registration
     password=models.CharField(max_length=100, blank=True, null=False, editable=False, default='')
