@@ -14,7 +14,7 @@ class CommentTests(APITestCase):
         self.comment2 = Comment.objects.create(author=self.author2, post=self.post1, comment="comment2")
 
     def test_get_comments(self):
-        response = self.client.get(f"{self.post1.url}/comments/")
+        response = self.client.get(f"{self.post1.id/comments/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["items"]), 2)
 
