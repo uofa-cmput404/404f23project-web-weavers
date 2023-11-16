@@ -3,6 +3,7 @@ import uuid
 from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 from authors.models import Author
+from comments.models import Comment
 
 # Create your models here.
 
@@ -44,7 +45,9 @@ class Post(models.Model):
     count = models.PositiveIntegerField(default=0)         # TODO: update this field when a comment is added
     #this should be a url field
     comments = ArrayField(models.JSONField(), blank=True, default=list, null=True)
-    commentsSrc = models.JSONField(null=True, blank=True) # TODO: will be replaced by the Comment model when implemented
+    # TODO: will be replaced by the Comment model when implemented
+    # commentsSrc = models.JSONField(null=True, blank=True)
+    commentsSrc = models.ForeignKey(Comment, null=True, blank=True, on_delete=models.CASCADE)
     published = models.DateTimeField(default=timezone.now)
     visibility = models.CharField(max_length=200, choices=VISIBILITY_CHOICES, default="PUBLIC")
     unlisted = models.BooleanField(default=False)
