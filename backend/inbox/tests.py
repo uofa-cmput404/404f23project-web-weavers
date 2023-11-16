@@ -11,6 +11,7 @@ class InboxTests(APITestCase):
         self.author2 = Author.objects.create(displayName="Bob")
         self.author3 = Author.objects.create(displayName="Mary")
         self.post1 = Post.objects.create(title="post1", description="content1", author=self.author1)
+        self.post2 = Post.objects.create(title="post2", description="content2", author=self.author1)
         self.inbox = Inbox.objects.get(author=self.author1)
 
     def test_send_and_get_inbox_post(self):
@@ -30,6 +31,23 @@ class InboxTests(APITestCase):
 
         ### Check Inbox Data
         self.assertEqual(len(self.inbox.posts.all()), 1)
+
+    def test_get_paginated_inbox(self):
+        self.client.post(f"{self.author1.url}/inbox/", {
+            "type": "post",
+            "id": self.post1.id,
+        })
+        self.client.post(f"{self.author1.url}/inbox/", {
+            "type": "post",
+            "id": self.post2.id,
+        })
+        response = self.client.get(f"{self.author1.url}/inbox/?page=2&size=1")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["author"], self.author1.id)
+        self.assertEqual(len(response.data["items"]), 1)
+        # post 2 will be the first item in the inbox because 
+        # we sort posts by reverse chronological order
+        self.assertEqual(response.data["items"][0]["id"], self.post1.id)
 
     def test_send_and_get_inbox_like(self):
         response1 = self.client.post(f"{self.author1.url}/inbox/", {
