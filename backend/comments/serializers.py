@@ -5,7 +5,6 @@ from authors.serializers import AuthorSerializer
 
 class CommentSerializer(serializers.ModelSerializer):
     author = AuthorSerializer(read_only=True)
-    post = PostSerializer(read_only=True)
 
     class Meta:
         model = Comment
