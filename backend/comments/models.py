@@ -12,6 +12,7 @@ class Comment(models.Model):
         (CT_MARKDOWN, 'Markdown'),
         (CT_PLAIN, 'Plain Text')
     ]
+    id = models.URLField(max_length=200, unique=True, editable=False)
     type = models.CharField(max_length=300, blank=True, default="comment")
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
