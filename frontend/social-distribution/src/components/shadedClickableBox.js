@@ -1,4 +1,4 @@
-import { Avatar, Link, Flex, IconButton, Text, Modal } from "@chakra-ui/react";
+import { Avatar, Link, Flex, IconButton, Text, Button } from "@chakra-ui/react";
 import { colors, spacing } from "../utils/theme";
 import {FiBell, FiUserCheck, FiUserMinus} from 'react-icons/fi'
 
@@ -54,21 +54,21 @@ export default function ShadedClickableBox({variant_,text,username,avatar,...pro
                         </Flex>
                         <Flex flexDir="row" align={"center"}>
                             <Flex style={styles.buttons}>
-                            <IconButton
-                            aria-label="Comment"
-                            icon={<FiUserCheck />}
-                            onClick={handleAcceptFollower}
-                            />
-                            <Text marginTop="10px" as='i' ml={4} align={"center"}> Accept</Text>
-
+                            <Button
+                                aria-label="Request"
+                                as="i"
+                                leftIcon={<FiUserCheck />}
+                                onClick={handleAcceptFollower}
+                            >Accept </Button>
                             </Flex>
+
                             <Flex style={styles.buttons}>
-                            <IconButton
-                            aria-label="Comment"
-                            icon={<FiUserMinus />}
-                            onClick={handleRejectFollower}
-                            />
-                            <Text marginTop="10px" as='i' ml={4} align={"bottom"}> Decline</Text>
+                            <Button
+                                aria-label="Request"
+                                as="i"
+                                leftIcon={<FiUserMinus />}
+                                onClick={handleRejectFollower}
+                            >Decline </Button>
                             </Flex>
                     </Flex>
                     </Flex>
