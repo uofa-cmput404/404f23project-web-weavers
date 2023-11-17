@@ -33,8 +33,6 @@ urlpatterns = [
     path('authors/<uuid:author_id>/posts/', include('post.urls')),
     # Comments
     path('authors/<uuid:author_id>/posts/<uuid:post_id>/comments/', include('comments.urls')),
-    # Followers app
-    path('authors/<uuid:author_id>/followers/', include('followers.urls')),
     # Post Likes
     path('authors/<uuid:author_id>/posts/<uuid:post_id>/likes/', list_post_likes),
     # Liked
