@@ -24,3 +24,10 @@ class Comment(models.Model):
         )
     published = models.DateTimeField(default=timezone.now)
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    # This allows us to create Comment instances programmatically (e.g. in tests)
+    def save(self, *args, **kwargs):
+        # When the object is instantiated, set the id field using the post URL and uuid
+        if not self.id and self.post:
+            self.id = self.post.id + "/comments/" + str(self.uuid)
+        super().save(*args, **kwargs)
