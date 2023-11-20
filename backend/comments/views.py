@@ -55,6 +55,8 @@ class CommentList(APIView, PageNumberPagination):
 
             #appending comment to post
             post.comments.append(comment_url)
+            post.comments_count += 1
+            post.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors)
 
