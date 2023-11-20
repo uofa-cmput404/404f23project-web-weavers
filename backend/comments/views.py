@@ -38,7 +38,7 @@ class CommentList(APIView, PageNumberPagination):
     
     def post(self, request, author_id, post_id):
         """
-        Create a nrew comment
+        Create a new comment
         """
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
@@ -48,7 +48,6 @@ class CommentList(APIView, PageNumberPagination):
 
             comment_url = post.url + "/comments/" + str(new_comment_id)
             serializer.validated_data['id'] = new_comment_id
-            #serializer.validated_data['author'] = author
             serializer.validated_data['post'] = post
             serializer.validated_data['id'] = comment_url
             serializer.save()
