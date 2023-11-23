@@ -32,7 +32,7 @@ class CommentList(APIView, PageNumberPagination):
             "type" : "comments",
             "page" : self.page.number,
             "size" : self.page.paginator.per_page,
-            "id" : post_id + "/comments/",
+            "id" : str(post_id) + "/comments/",
             "items" : serializer.data,
         })
     
@@ -47,7 +47,7 @@ class CommentList(APIView, PageNumberPagination):
             new_comment_id = uuid.uuid4()
 
             comment_url = post.url + "/comments/" + str(new_comment_id)
-            serializer.validated_data['id'] = new_comment_id
+            #serializer.validated_data['id'] = new_comment_id
             serializer.validated_data['post'] = post
             serializer.validated_data['id'] = comment_url
             serializer.save()
