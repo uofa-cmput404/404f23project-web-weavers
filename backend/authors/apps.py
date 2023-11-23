@@ -5,4 +5,6 @@ class AuthorsConfig(AppConfig):
    name = 'authors'
    label = "authors"
 
+   def ready(self):
+      import authors.signals
    
