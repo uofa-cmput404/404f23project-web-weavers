@@ -1,11 +1,11 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework import status
 from .models import Like
 from .serializers import LikeSerializer
 from authors.models import Author
 from post.models import Post
 from drf_spectacular.utils import extend_schema
+from nodes.permissions import IsAuthorizedNode, AllowNodeToGet
 
 # Create your views here.
 @extend_schema(
@@ -13,6 +13,7 @@ from drf_spectacular.utils import extend_schema
     responses={200: LikeSerializer(many=True)}
 )
 @api_view(['GET'])
+@permission_classes([IsAuthorizedNode])
 def list_author_likes(request, author_id):
     """
     List all likes of an author
@@ -21,18 +22,17 @@ def list_author_likes(request, author_id):
     author = Author.objects.get(pk=author_id)
     likes = Like.objects.filter(author=author).all()
     serializer = LikeSerializer(likes, many=True)
-    response = Response({
+    return Response({
         "type": "liked",
         "items": serializer.data
     })
-    response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-    return response
     
 @extend_schema(
     description="List all likes of a post.",
     responses={200: LikeSerializer(many=True)}
 )
 @api_view(['GET'])
+@permission_classes([IsAuthorizedNode])
 def list_post_likes(request, author_id, post_id):
     """
     List all likes of a post
@@ -42,18 +42,17 @@ def list_post_likes(request, author_id, post_id):
     post = Post.objects.get(pk=post_id)
     post_likes = Like.objects.filter(object=post.id).exclude(author=author).all()
     serializer = LikeSerializer(post_likes, many=True)
-    response = Response({
+    return Response({
         "type": "likes",
         "items": serializer.data
     })
-    response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-    return response
 
 @extend_schema(
     description="List all likes of a comment.",
     responses={200: LikeSerializer(many=True)}
 ) 
 @api_view(['GET'])
+@permission_classes([IsAuthorizedNode])
 def list_comment_likes(request, author_id, post_id, comment_id):
     """
     List all likes of a comment
@@ -68,9 +67,7 @@ def list_comment_likes(request, author_id, post_id, comment_id):
     
     comment_likes = Like.objects.filter(object=comment_url).exclude(author=author).all()
     serializer = LikeSerializer(comment_likes, many=True)
-    response = Response({
+    return Response({
         "type": "likes",
         "items": serializer.data
     })
-    response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-    return response

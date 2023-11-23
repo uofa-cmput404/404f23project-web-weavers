@@ -7,9 +7,12 @@ from .serializers import PostSerializer
 from rest_framework.pagination import PageNumberPagination
 from drf_spectacular.utils import extend_schema
 import uuid
+from nodes.permissions import IsAuthorizedNode, AllowNodeToGet
 
 # Create your views here.
 class PostList(APIView, PageNumberPagination):
+    permission_classes = [IsAuthorizedNode & AllowNodeToGet]
+
     @extend_schema(
         description="List all posts.",
         responses={200: PostSerializer(many=True)}
@@ -69,6 +72,8 @@ class PostList(APIView, PageNumberPagination):
         return response
     
 class PostDetails(APIView):
+    permission_classes = [IsAuthorizedNode & AllowNodeToGet]
+    
     @extend_schema(
         description="Retrieve a post.",
         responses={200: PostSerializer()}
