@@ -9,7 +9,9 @@ import {colors} from '../../utils/theme.js'
           Integration with backend is not implemented yet!
 */}
 
-export const SearchBar = ({props}) => {
+export const SearchBar = ({onSearch}) => {
+  const [input, setInput] = React.useState("");
+
   return (
     <div style={{marginBottom:'5rem'}}>
       <InputGroup borderRadius={5} size="sm">
@@ -17,13 +19,19 @@ export const SearchBar = ({props}) => {
           pointerEvents="none"
           children={<Search2Icon color="gray.600" />}
         />
-        <Input type="text" placeholder="Search Users..." border="1px solid #949494" color="white" />
+        <Input type="text" placeholder="Search Users..." border="1px solid #949494" color="white" onChange={e =>setInput(e.target.value)}/>
         <InputRightAddon
           p={0}
           border="none"
         >
-          <Button size="sm" borderLeftRadius={0} borderRightRadius={3.3} border="1px solid #949494" style={styles.colored}>
-            Search
+          <Button 
+            size="sm" 
+            borderLeftRadius={0} 
+            borderRightRadius={3.3} 
+            border="1px solid #949494" 
+            style={styles.colored} 
+            onClick={()=> onSearch(input)}>
+              Search
           </Button>
         </InputRightAddon>
       </InputGroup>

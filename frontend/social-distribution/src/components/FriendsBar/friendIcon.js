@@ -4,7 +4,9 @@ import React from "react";
 import { useNavigate } from 'react-router-dom';
 
 
-export default function FriendIcon({fullName, username,avatar, ...props}){
+export default function FriendIcon({user, ...props}){
+   const {fullName, username, avatar} = user;
+   
     let navigate = useNavigate();
     const handleClick = () => {
         navigate("/profile/"+username)
