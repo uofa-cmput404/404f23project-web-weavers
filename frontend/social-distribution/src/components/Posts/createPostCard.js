@@ -8,7 +8,7 @@ import { API_URL } from "../api.js";
 import axios from "axios";
 
 export default function CreatePostCard() {
-  const baseURL = "http://127.0.0.1:8000/authors/";
+  const baseURL = API_URL + "authors/";
   const fileInputRef = useRef(null);
   const [title, setTitle] = useState(false);
   const [showDescriptionInput, setShowDescriptionInput] = useState(false);
@@ -47,7 +47,7 @@ export default function CreatePostCard() {
   const handlePost = () => {
     // Post to server
     setIsLoading(true);
-    
+
     // Get data from post- don't get rid of the const in front of description
     const description= document.getElementById("description").value;
     const title= document.getElementById("title").value;
@@ -68,6 +68,15 @@ export default function CreatePostCard() {
       if (response.ok) {
         console.log("Post created successfully!");
         setIsLoading(false);
+
+        //Send the post to all followers inboxes
+        axios.get(baseURL + postUserUUID + "/followers").then((response) => {
+          console.log(JSON.stringify(response.data.items))
+        }).catch((error) => {
+          console.error("Error finding followers: ", error);
+          setIsLoading(false);
+        }
+        );
       }
       return response;
     })
