@@ -18,12 +18,12 @@ export default function NavBar({uuid,...props}) {
     let dispatch = useDispatch();
     const userID = uuid;
     const [displayn, setDisplayn] = useState("")
-    
+
     axios.get(API_URL + "authors/")
-        .then((res) => {   
+        .then((res) => {
             const authors = res.data
             for (let i = 0; i < authors.items.length; i++) {
-                if (authors.items[i].uuid === userID) {                    
+                if (authors.items[i].uuid === userID) {
                     // localStorage.setItem("username", authors.items[i].uuid)
                     setDisplayn(authors.items[i].displayName)
                 }
@@ -36,7 +36,7 @@ export default function NavBar({uuid,...props}) {
     const pictureUrl = ""
     // Note: limit amount of characters in username
 
-    const [navSize, changeNavSize] = useState("large");
+    const [navSize, changeNavSize] = useState("small");
     const [activeNav, setActive] = useState({current});
 
 
