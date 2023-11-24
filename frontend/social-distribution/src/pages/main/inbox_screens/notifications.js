@@ -10,7 +10,8 @@ export default function Notifications() {
     const [notifs, setNotifs] = useState([])
 
     const fetchdata = async () => {
-        const res = await axios.get(API_URL + "/authors/" + user+ "/inbox/")
+        const res = await axios.get(API_URL + "authors/" + user+ "/inbox/likes/")
+        console.log("Inbox is: ")
         console.log(res.data.items)
         setNotifs(res.data.items)
     };
@@ -21,7 +22,6 @@ export default function Notifications() {
     return(
         <div style={styles.container}>
                 {notifs.map((item) => (
-                    // console.log(item.content),
                     <ShadedClickableBox variant_='notif' text={item.summary}/>
                 ))}
         </div>

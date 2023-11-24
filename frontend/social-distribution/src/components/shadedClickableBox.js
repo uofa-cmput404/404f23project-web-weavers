@@ -1,10 +1,14 @@
 import { Avatar, Link, Flex, IconButton, Text, Button } from "@chakra-ui/react";
 import { colors, spacing } from "../utils/theme";
 import {FiBell, FiUserCheck, FiUserMinus} from 'react-icons/fi'
+import { useState, useEffect } from 'react';
+import {API_URL} from "./api";
+import axios from 'axios';
 
 
+export default function ShadedClickableBox({req_user, variant_,text,username,avatar,...props}) {
+    const curr_user = localStorage.getItem("user")
 
-export default function ShadedClickableBox({variant_,text,username,avatar,...props}) {
     const variant = {
         notif: variant_ === 'notif',
         msg: variant_ === 'msg',
@@ -16,6 +20,8 @@ export default function ShadedClickableBox({variant_,text,username,avatar,...pro
     }
     const handleAcceptFollower = () =>{
         console.log("accepting a new follower")
+        axios.put(API_URL + "authors/" + curr_user + "/followers/" + req_user + "/")
+        window.location.reload(false);
         //Post as follower to self and other author
         //Remove from inbox
         //Reload
@@ -24,6 +30,7 @@ export default function ShadedClickableBox({variant_,text,username,avatar,...pro
         console.log("rejecting a new follower")
         //Remove from inbox
         //Reload
+        window.location.reload(false);
     }
 
 

@@ -6,6 +6,7 @@ import FriendsBar from "../../components/FriendsBar/friendsBar.js";
 import { Tabs, TabList, TabPanels, Tab, TabPanel} from '@chakra-ui/react'
 import Messages from "./inbox_screens/messages.js";
 import Notifications from "./inbox_screens/notifications.js";
+import Requests from "./inbox_screens/requests.js";
 
 export default function Inbox({props}){
     const user = localStorage.getItem("user")
@@ -20,6 +21,7 @@ export default function Inbox({props}){
                     <TabList>
                         <Tab>Messages</Tab>
                         <Tab>Notifications</Tab>
+                        <Tab>Requests</Tab>
                     </TabList>
 
                     <TabPanels>
@@ -28,6 +30,9 @@ export default function Inbox({props}){
                         </TabPanel>
                         <TabPanel>
                             <Notifications />
+                        </TabPanel>
+                        <TabPanel>
+                            <Requests />
                         </TabPanel>
                     </TabPanels>
                 </Tabs>

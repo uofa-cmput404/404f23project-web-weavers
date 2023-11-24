@@ -18,7 +18,7 @@ export default function Messages() {
     return(
         <Flex flexDir="column" style={styles.container}>
             {users.map((user) => (
-                <ShadedClickableBox username={user.username} avatar={user.avatar} variant_='request' />
+                <ShadedClickableBox username={user.username} avatar={user.avatar} variant_='msg' />
             ))}
 
         </Flex>
