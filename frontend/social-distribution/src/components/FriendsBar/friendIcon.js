@@ -6,12 +6,12 @@ import { AiOutlineComment } from "react-icons/ai";
 
 
 export default function FriendIcon({user, ...props}){
-   const {fullName, username, avatar} = user;
+   const {displayName, profileImage} = user;
    const {isOpen, onToggle}= useDisclosure();
    
     let navigate = useNavigate();
     const handleClick = () => {
-        navigate("/profile/"+username)
+        navigate("/profile/"+displayName)
     }
 
     return(
@@ -22,8 +22,8 @@ export default function FriendIcon({user, ...props}){
                 // onClick={handleClick}
             >
                 <Flex style={styles.container} flexDir="row" align="right" onClick={onToggle}>
-                    <Avatar name={username} src={avatar} size="md" ml={2}/>
-                    <Text ml={5} mt={4} fontSize={14}> {username} </Text>
+                    <Avatar name={displayName} src={profileImage} size="md" ml={2}/>
+                    <Text ml={5} mt={4} fontSize={14}> {displayName} </Text>
                 </Flex>
                 <Collapse in={isOpen} animateOpacity> 
                     <IconButton

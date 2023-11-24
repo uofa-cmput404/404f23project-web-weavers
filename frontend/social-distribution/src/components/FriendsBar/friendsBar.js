@@ -3,6 +3,9 @@ import {colors} from "../../utils/theme.js";
 import { Flex, Icon } from "@chakra-ui/react";
 import { SearchBar } from "./searchBar.js";
 import FriendIcon from "./friendIcon.js";
+import { useEffect } from 'react';
+import axios from 'axios';
+import { API_URL } from '../api.js';
 
 /* { 
     TODO: Integrate with backend API to get list of friends and necessary data
@@ -13,24 +16,37 @@ export default function FriendsBar({props}) {
     // Only show 10 at a time each page or make it scrollable; Deal with the overflow
     // Add pages to the bottom of the friends bar
     const [search, setSearch] = useState("");
+    const [users, setUsers]= useState([]);
 
-    const users = [
-        {fullName: "Jane Doe", username: "janedoe", avatar: "https://bit.ly/tioluwani-kolawole"},
-        {fullName: "Kent Dodds", username: "kentcdodds", avatar: "https://bit.ly/kent-c-dodds"},
-        {fullName: "Ryan Florence", username: "ryanflorence", avatar: "https://bit.ly/ryan-florence"},
-        {fullName: "Prosper Otemuyiwa", username: "unicodeveloper", avatar: "https://bit.ly/prosper-baba"}, 
-        {fullName: "Christian Nwamba", username: "codebeast", avatar: "https://bit.ly/code-beast"}, 
-        {fullName: "Segun Adebayo", username: "thesegunadebayo", avatar: "https://bit.ly/sage-adebayo"},   
-        {fullName: "Ryan Florence", username: "ryanflorence", avatar: "https://bit.ly/ryan-florence"},
-        {fullName: "Prosper Otemuyiwa", username: "unicodeveloper", avatar: "https://bit.ly/prosper-baba"}, 
-        {fullName: "Christian Nwamba", username: "codebeast", avatar: "https://bit.ly/code-beast"}, 
-        {fullName: "Segun Adebayo", username: "thesegunadebayo", avatar: "https://bit.ly/sage-adebayo"},  
-    ]
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try{
+                const response = await axios.get(API_URL + "authors/");
+                setUsers(response.data.items.map(user => ({displayName: user.displayName, avatar: user.profileImage})));
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchUsers();
+    }
+    , [])
+
+    // const users = [
+    //     {fullName: "Jane Doe", username: "janedoe", avatar: "https://bit.ly/tioluwani-kolawole"},
+    //     {fullName: "Kent Dodds", username: "kentcdodds", avatar: "https://bit.ly/kent-c-dodds"},
+    //     {fullName: "Ryan Florence", username: "ryanflorence", avatar: "https://bit.ly/ryan-florence"},
+    //     {fullName: "Prosper Otemuyiwa", username: "unicodeveloper", avatar: "https://bit.ly/prosper-baba"}, 
+    //     {fullName: "Christian Nwamba", username: "codebeast", avatar: "https://bit.ly/code-beast"}, 
+    //     {fullName: "Segun Adebayo", username: "thesegunadebayo", avatar: "https://bit.ly/sage-adebayo"},   
+    //     {fullName: "Ryan Florence", username: "ryanflorence", avatar: "https://bit.ly/ryan-florence"},
+    //     {fullName: "Prosper Otemuyiwa", username: "unicodeveloper", avatar: "https://bit.ly/prosper-baba"}, 
+    //     {fullName: "Christian Nwamba", username: "codebeast", avatar: "https://bit.ly/code-beast"}, 
+    //     {fullName: "Segun Adebayo", username: "thesegunadebayo", avatar: "https://bit.ly/sage-adebayo"},  
+    // ]
 
     // Search bar functionality
     const filteredUsers = users.filter(user => 
-        user.fullName.toLowerCase().includes(search.toLowerCase()) ||
-        user.username.toLowerCase().includes(search.toLowerCase())
+        user.displayName.toLowerCase().includes(search.toLowerCase())
         );
 
     return (
@@ -38,7 +54,7 @@ export default function FriendsBar({props}) {
             <Flex style={styles.container} flexDir="column" pos="sticky" h="95vh" w="20px" left={'84vw'} top={'5vh'}>
                 <SearchBar onSearch={setSearch}/>
                 <Flex flexDir="column" w="100%" alignItems="center" align="center">
-                    {filteredUsers.map(user => <FriendIcon key={user.username} user={user}/>)}          
+                    {filteredUsers.map(user => <FriendIcon key={user.displayName} user={user}/>)}          
                 </Flex> 
             </Flex>
         </div>
