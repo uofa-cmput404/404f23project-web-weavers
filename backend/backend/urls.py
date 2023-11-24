@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from likes.views import list_author_likes, list_post_likes
-from inbox.views import InboxView
+from inbox.views import InboxView, list_likes_from_inbox, list_follows_from_inbox
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
@@ -37,6 +37,9 @@ urlpatterns = [
     path('authors/<uuid:author_id>/liked/', list_author_likes),
     # Inbox
     path('authors/<uuid:author_id>/inbox/', InboxView.as_view()),
+    path('authors/<uuid:author_id>/inbox/follows/', list_follows_from_inbox),
+    path('authors/<uuid:author_id>/inbox/likes/', list_likes_from_inbox),
+    # path('authors/<uuid:author_id>/inbox/comments/', InboxView.as_view()), #TODO: implement after Comments is done
 
     # API Documentation
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
