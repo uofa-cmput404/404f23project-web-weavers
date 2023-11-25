@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Post
@@ -11,7 +12,7 @@ from nodes.permissions import IsAuthorizedNode
 
 # Create your views here.
 class PostList(APIView, PageNumberPagination):
-    permission_classes = [IsAuthorizedNode]
+    permission_classes = [IsAuthenticated | IsAuthorizedNode]
 
     @extend_schema(
         description="List all posts.",
@@ -72,7 +73,7 @@ class PostList(APIView, PageNumberPagination):
         return response
     
 class PostDetails(APIView):
-    permission_classes = [IsAuthorizedNode]
+    permission_classes = [IsAuthenticated | IsAuthorizedNode]
     
     @extend_schema(
         description="Retrieve a post.",

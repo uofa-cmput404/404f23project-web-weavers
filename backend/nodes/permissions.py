@@ -21,8 +21,6 @@ class IsAuthorizedNode(permissions.BasePermission):
             if request.META["HTTP_HOST"] in ["127.0.0.1:8000", "localhost:8000"]:
                 return True
             
-        if request.user.is_authenticated:
-            return True
         raise NotAuthenticated(detail="Unauthorized Node")
 
 # class AllowNodeToPost(permissions.BasePermission):

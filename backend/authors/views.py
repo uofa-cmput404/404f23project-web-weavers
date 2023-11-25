@@ -35,7 +35,7 @@ class AuthorList(APIView, PageNumberPagination):
     """
     View to list all profiles on the server.
     """
-    permission_classes = [IsAuthorizedNode]
+    permission_classes = [IsAuthenticated | IsAuthorizedNode]
 
     @extend_schema(
         description="List all authors.",
@@ -74,7 +74,7 @@ class AuthorDetails(APIView):
     """
     View to retrieve or update a specific author's profile in the server.
     """
-    permission_classes = [IsAuthorizedNode]
+    permission_classes = [IsAuthenticated | IsAuthorizedNode]
     
     @extend_schema(
         description="Retrieve a specific author's profile.",

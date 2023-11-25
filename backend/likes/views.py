@@ -1,4 +1,5 @@
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Like
 from .serializers import LikeSerializer
@@ -13,7 +14,7 @@ from nodes.permissions import IsAuthorizedNode
     responses={200: LikeSerializer(many=True)}
 )
 @api_view(['GET'])
-@permission_classes([IsAuthorizedNode])
+@permission_classes([IsAuthenticated | IsAuthorizedNode])
 def list_author_likes(request, author_id):
     """
     List all likes of an author
@@ -32,7 +33,7 @@ def list_author_likes(request, author_id):
     responses={200: LikeSerializer(many=True)}
 )
 @api_view(['GET'])
-@permission_classes([IsAuthorizedNode])
+@permission_classes([IsAuthenticated | IsAuthorizedNode])
 def list_post_likes(request, author_id, post_id):
     """
     List all likes of a post
@@ -52,7 +53,7 @@ def list_post_likes(request, author_id, post_id):
     responses={200: LikeSerializer(many=True)}
 ) 
 @api_view(['GET'])
-@permission_classes([IsAuthorizedNode])
+@permission_classes([IsAuthenticated | IsAuthorizedNode])
 def list_comment_likes(request, author_id, post_id, comment_id):
     """
     List all likes of a comment
