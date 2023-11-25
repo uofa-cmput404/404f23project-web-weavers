@@ -7,6 +7,7 @@ class AuthorTests(APITestCase):
         self.author1 = Author.objects.create(displayName="author1")
         self.author2 = Author.objects.create(displayName="author2")
         self.author3 = Author.objects.create(displayName="author3")
+        self.client.force_authenticate(user=self.author1)
     
     def test_list_authors(self):
         response = self.client.get("/authors/")

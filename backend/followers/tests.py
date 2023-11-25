@@ -9,6 +9,7 @@ class FollowersTests(APITestCase):
         self.author3 = Author.objects.create(displayName="author3")
         self.author1.followers.add(self.author2)
         self.author1.followers.add(self.author3)
+        self.client.force_authenticate(user=self.author1)
 
     def test_list_followers(self):
         response = self.client.get(f"{self.author1.id}/followers/")

@@ -9,6 +9,7 @@ class PostTests(APITestCase):
         self.post1 = Post.objects.create(title="post1", description="content1", author=self.author1)
         self.post2 = Post.objects.create(title="post2", description="content2", author=self.author1)
         self.post3 = Post.objects.create(title="post3", description="content3", author=self.author1)
+        self.client.force_authenticate(user=self.author1)
 
     # This is the POST to /posts/ endpoint
     def test_post_posts(self):

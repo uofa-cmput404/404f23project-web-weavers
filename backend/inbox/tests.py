@@ -10,6 +10,7 @@ class InboxTests(APITestCase):
         self.author2 = Author.objects.create(displayName="Bob")
         self.author3 = Author.objects.create(displayName="Mary")
         self.post1 = Post.objects.create(title="post1", description="content1", author=self.author1)
+        self.client.force_authenticate(user=self.author1)
 
     def test_get_inbox(self):
         response1 = self.client.post(f"{self.author1.url}/inbox/", {
