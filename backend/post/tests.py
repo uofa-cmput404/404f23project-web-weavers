@@ -88,3 +88,9 @@ class PostTests(APITestCase):
     def test_delete_nonexistent_post(self):
         response = self.client.delete(f"{self.author1.url}/posts/99999999/")
         self.assertEqual(response.status_code, 404)
+
+    def test_list_public_posts(self):
+        response = self.client.get("/public-posts/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["items"]), 3)
+        self.assertEqual(response.data["items"][0]["title"], "post3")
