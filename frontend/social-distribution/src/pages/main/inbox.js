@@ -1,26 +1,30 @@
-import React from "react";
+import {React, useState} from "react";
 import NavBar from "../../components/Bars/navbar.js";
 import { colors, spacing, sizes, fonts} from "../../utils/theme.js";
 import LogoBar from "../../components/Bars/logoBar.js";
 import FriendsBar from "../../components/FriendsBar/friendsBar.js";
 import { Tabs, TabList, TabPanels, Tab, TabPanel, Text, Button} from '@chakra-ui/react'
 import Messages from "./inbox_screens/messages.js";
-import Notifications from "./inbox_screens/notifications.js";
+import Likes from "./inbox_screens/likes.js";
 import Requests from "./inbox_screens/requests.js";
+import Posts from "./inbox_screens/posts.js"
 
 import {API_URL} from "../../components/api";
 import axios from 'axios';
 
 export default function Inbox({props}){
-    const user = localStorage.getItem("user")
+
+    //grab userUUID and displayName for mapping purposes
+    const userUUID = localStorage.getItem("user")
+
     const handleDeleteClick = () => {
-        axios.delete(API_URL + "authors/" + user  + "/inbox/")
+        axios.delete(API_URL + "authors/" + userUUID  + "/inbox/")
         window.location.reload(false);
     };
     return(
         <div style={styles.container}>
             <LogoBar/>
-            <NavBar current='Inbox' uuid={user}/>
+            <NavBar current='Inbox' uuid={userUUID}/>
             <FriendsBar/>
 
             <div className='tab-container' style={styles.tabContainer}>
@@ -43,10 +47,10 @@ export default function Inbox({props}){
                             <Messages />
                         </TabPanel>
                         <TabPanel>
-                            <Notifications />
+                            <Likes />
                         </TabPanel>
                         <TabPanel>
-                            <Notifications />
+                            <Posts />
                         </TabPanel>
                         <TabPanel>
                             <Requests />
