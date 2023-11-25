@@ -4,13 +4,13 @@ from rest_framework.response import Response
 from authors.models import Author
 from authors.serializers import AuthorSerializer
 from drf_spectacular.utils import extend_schema
-from nodes.permissions import IsAuthorizedNode, AllowNodeToGet
+from nodes.permissions import IsAuthorizedNode
 
 class FollowersList(APIView):
     """
     View to list all followers of a user on the server.
     """
-    permission_classes = [IsAuthorizedNode & AllowNodeToGet]
+    permission_classes = [IsAuthorizedNode]
 
     @extend_schema(
         description="Get all followers of an author",
@@ -30,7 +30,7 @@ class FollowersList(APIView):
         })
 
 class FollowerDetails(APIView):
-    permission_classes = [IsAuthorizedNode & AllowNodeToGet]
+    permission_classes = [IsAuthorizedNode]
     
     @extend_schema(
         description="Returns true if the foreign author is a follower of the author, false otherwise",

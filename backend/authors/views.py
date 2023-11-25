@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from drf_spectacular.utils import extend_schema
-from nodes.permissions import IsAuthorizedNode, AllowNodeToGet
+from nodes.permissions import IsAuthorizedNode
 
 class AuthorViewSet(viewsets.ModelViewSet):
     http_method_names = ['get']
@@ -35,7 +35,7 @@ class AuthorList(APIView, PageNumberPagination):
     """
     View to list all profiles on the server.
     """
-    permission_classes = [IsAuthorizedNode & AllowNodeToGet]
+    permission_classes = [IsAuthorizedNode]
 
     @extend_schema(
         description="List all authors.",
@@ -74,7 +74,7 @@ class AuthorDetails(APIView):
     """
     View to retrieve or update a specific author's profile in the server.
     """
-    permission_classes = [IsAuthorizedNode & AllowNodeToGet]
+    permission_classes = [IsAuthorizedNode]
     
     @extend_schema(
         description="Retrieve a specific author's profile.",

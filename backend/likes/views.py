@@ -5,7 +5,7 @@ from .serializers import LikeSerializer
 from authors.models import Author
 from post.models import Post
 from drf_spectacular.utils import extend_schema
-from nodes.permissions import IsAuthorizedNode, AllowNodeToGet
+from nodes.permissions import IsAuthorizedNode
 
 # Create your views here.
 @extend_schema(
