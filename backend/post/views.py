@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Post
@@ -161,3 +162,19 @@ class PostDetails(APIView):
         response = Response(status=status.HTTP_204_NO_CONTENT)
         response["Access-Control-Allow-Origin"] = "http://localhost:3000"
         return response
+
+@api_view(['GET'])
+@extend_schema(
+    description="List all public posts on the node.",
+    responses={200: PostSerializer(many=True)}
+)
+def list_public_posts(request):
+    """
+    List all public posts on the node.
+    """
+    public_posts = Post.objects.filter(visibility="PUBLIC").order_by('-published').all()
+    serializer = PostSerializer(public_posts, many=True)
+    return Response({
+        "type": "posts",
+        "items": serializer.data
+    })
