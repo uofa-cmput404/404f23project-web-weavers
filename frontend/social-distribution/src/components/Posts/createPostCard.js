@@ -64,21 +64,40 @@ export default function CreatePostCard() {
 
     // Send to server
     axios.post(url, fields)
-    .then((response) => {
-      if (response.ok) {
+    .then((response1) => {
+      if (response1.status >= 200 <= 299) {
         console.log("Post created successfully!");
         setIsLoading(false);
 
-        //Send the post to all followers inboxes
-        axios.get(baseURL + postUserUUID + "/followers").then((response) => {
-          console.log(JSON.stringify(response.data.items))
-        }).catch((error) => {
-          console.error("Error finding followers: ", error);
+        //get all followers
+        axios.get(baseURL + postUserUUID + "/followers/").then((followersResponse) => {
+          if(followersResponse.status >= 200 <= 299){
+            console.log("Followers found");
+            const followers = followersResponse.data.items;
+
+            //Send to each Inbox
+            if(followers){
+              for(let i = 0; i < followers.length; i++){
+                axios.post(followers[i].id + "/inbox/", response1.data).then((inboxResponse) => {
+                  console.log("Successfully sent post to follower " + followers[i].displayName);
+                }).catch((error) =>{
+                  console.log(error);
+                })
+              }}
+          }
+
+        }).then((data) => {
+          console.log(data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error creating post: ", error);
           setIsLoading(false);
         }
         );
+
       }
-      return response;
+      //return response;
     })
     .then((data) => {
       console.log(data);
