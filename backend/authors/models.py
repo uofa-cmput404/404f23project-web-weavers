@@ -34,7 +34,7 @@ class Author(AbstractBaseUser, PermissionsMixin):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     type = models.CharField(max_length=50, default="author")
     id = models.URLField(max_length=200, unique=True, null=True,editable=False)
-    host = models.URLField(max_length=200)
+    host = models.URLField(max_length=200, blank=True)
     displayName = models.CharField(max_length=100, default="displayName", unique=True)
     url = models.URLField(max_length=200, unique=True, editable=False) 
     github = models.URLField(max_length=200, blank=True)
