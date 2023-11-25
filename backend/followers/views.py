@@ -102,8 +102,3 @@ def list_friends(request, author_id):
         "items": serializer.data
     })
 
-    
-@api_view(['DELETE'])
-def delete_friend_request(request):
-    pass
-
