@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
+from post.views import list_public_posts
 from likes.views import list_author_likes, list_post_likes
 from inbox.views import InboxView, list_likes_from_inbox, list_follows_from_inbox
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
@@ -30,6 +31,7 @@ urlpatterns = [
     # Followers app
     path('authors/<uuid:author_id>/followers/', include('followers.urls')),
     # Posts
+    path('public-posts/', list_public_posts),
     path('authors/<uuid:author_id>/posts/', include('post.urls')),
     # Post Likes
     path('authors/<uuid:author_id>/posts/<uuid:post_id>/likes/', list_post_likes),
