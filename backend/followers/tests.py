@@ -45,3 +45,10 @@ class FollowersTests(APITestCase):
         self.assertEqual(response.status_code, 404)
         self.assertFalse(self.author1.followers.filter(pk=self.author1.uuid).exists())
 
+    def test_get_friends(self):
+        self.author2.followers.add(self.author1)
+        self.author3.followers.add(self.author1)
+        response = self.client.get(f"{self.author1.id}/friends/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["items"]), 2)
+

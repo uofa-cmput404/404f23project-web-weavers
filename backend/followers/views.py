@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from authors.models import Author
@@ -78,4 +79,31 @@ class FollowerDetails(APIView):
             return Response({"error": "Follower not found"}, status=status.HTTP_404_NOT_FOUND)
         
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@extend_schema(
+    description="Returns true if the foreign author is a follower of the author, false otherwise",
+    responses={200: bool}
+)
+@api_view(['GET'])
+def list_friends(request, author_id):
+    try:
+        author = Author.objects.get(pk=author_id)
+    except Author.DoesNotExist:
+        return Response({"error": "Author not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    friends = []
+    for follower in author.followers.all():
+        if author in follower.followers.all():
+            friends.append(follower)
+
+    serializer = AuthorSerializer(friends, many=True)
+    return Response({
+        "type": "friends", 
+        "items": serializer.data
+    })
+
+    
+@api_view(['DELETE'])
+def delete_friend_request(request):
+    pass
 
