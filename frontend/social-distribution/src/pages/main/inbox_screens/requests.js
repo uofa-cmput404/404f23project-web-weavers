@@ -2,7 +2,7 @@ import {Flex, Text } from "@chakra-ui/react";
 import React from "react";
 import { colors } from "../../../utils/theme";
 import ShadedClickableBox from "../../../components/shadedClickableBox";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, handleState } from 'react';
 import {API_URL} from "../../../components/api";
 import axios from 'axios';
 
@@ -14,7 +14,7 @@ export default function Requests() {
 
     const fetchdata = async () => {
         const res = await axios.get(API_URL + "authors/" + user+ "/inbox/follows/")
-        console.log("Inbox is: ")
+        console.log("Req Inbox is: ")
         console.log(res.data.items)
         setRequests(res.data.items)
     };
@@ -27,9 +27,11 @@ export default function Requests() {
             {requests.map((user) => (
                 <ShadedClickableBox
                 req_user = {user.actor.uuid}
+                request = {user}
                 username={user.actor.displayName}
                 avatar={user.avatar}
-                variant_='request' />
+                variant_='request'
+                change = {handleState} />
             ))}
 
         </Flex>

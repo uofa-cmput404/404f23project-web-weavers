@@ -1,12 +1,15 @@
 import { Avatar, Link, Flex, IconButton, Text, Button } from "@chakra-ui/react";
 import { colors, spacing } from "../utils/theme";
 import {FiBell, FiUserCheck, FiUserMinus} from 'react-icons/fi'
-import { useState, useEffect } from 'react';
+import {useState} from 'react';
 import {API_URL} from "./api";
 import axios from 'axios';
 
-
-export default function ShadedClickableBox({req_user, variant_,text,username,avatar,...props}) {
+// TODO
+// Render parent component from child component instead of re-rendering full page
+export default function ShadedClickableBox({
+        request, req_user, variant_,text,username,avatar,...props
+    }) {
     const curr_user = localStorage.getItem("user")
 
     const variant = {
@@ -22,12 +25,51 @@ export default function ShadedClickableBox({req_user, variant_,text,username,ava
         console.log("accepting a new follower")
         axios.put(API_URL + "authors/" + curr_user + "/followers/" + req_user + "/")
         window.location.reload(false);
+
         //Post as follower to self and other author
         //Remove from inbox
+        const type = request.type;
+        const summary = request.summary;
+        const actor = request.actor.id;
+        const object = request.object.id;
+        //from our server
+        const body = {
+            'type': type,
+            'summary' : summary,
+            'actor' : actor,
+            'object' : object
+        }
+        if(request.actor.host == API_URL){
+            axios.delete(API_URL + "follow-requests/", {data: body}).then((response) => {
+                console.log(response)
+
+            }).catch((err) => {
+                console.log(err)
+            })
+        }
         //Reload
     }
     const handleRejectFollower = () =>{
         console.log("rejecting a new follower")
+        const type = request.type;
+        const summary = request.summary;
+        const actor = request.actor.id;
+        const object = request.object.id;
+        //from our server
+        const body = {
+            'type': type,
+            'summary' : summary,
+            'actor' : actor,
+            'object' : object
+        }
+        if(request.actor.host == API_URL){
+            axios.delete(API_URL + "follow-requests/", {data: body}).then((response) => {
+                console.log(response)
+
+            }).catch((err) => {
+                console.log(err)
+            })
+        }
         //Remove from inbox
         //Reload
         window.location.reload(false);
