@@ -26,7 +26,7 @@ def list_follows_from_inbox(request, author_id):
     inbox_owner = Author.objects.get(pk=author_id)
     if request.user != inbox_owner:
         return Response({"error": "You are not authorized to access this inbox"}, status = status.HTTP_403_FORBIDDEN)
-    
+
     inbox = Inbox.objects.get(author=author_id)
     inbox_follows = inbox.follows.all()
 
@@ -47,7 +47,7 @@ def list_likes_from_inbox(request, author_id):
     inbox_owner = Author.objects.get(pk=author_id)
     if request.user != inbox_owner:
         return Response({"error": "You are not authorized to access this inbox"}, status = status.HTTP_403_FORBIDDEN)
-    
+
     inbox = Inbox.objects.get(author=author_id)
     inbox_likes = inbox.likes.all()
 
@@ -77,6 +77,7 @@ class InboxView(APIView, PageNumberPagination):
         # if the author is not the owner of the inbox, they cannot access it
         inbox_owner = Author.objects.get(pk=author_id)
         if request.user != inbox_owner:
+            print("hit wrong owner")
             return Response({"error": "You are not authorized to access this inbox"}, status = status.HTTP_403_FORBIDDEN)
 
         # Pagination settings
@@ -86,7 +87,7 @@ class InboxView(APIView, PageNumberPagination):
 
         inbox = Inbox.objects.get(author=author_id)
         inbox_posts = inbox.posts.all().order_by('-published')
-        
+
         # if a page query is provided, paginate the results
         if self.get_page_number(request, self):
             # results are paginated either by the default page size or the page size query parameter
@@ -99,7 +100,7 @@ class InboxView(APIView, PageNumberPagination):
             "author": inbox.author.url,
             "items": post_serializer.data
         })
-    
+
     @extend_schema(
         description="Send a post, follow request, like or comment to the author's inbox.",
         request=PostSerializer,
@@ -131,12 +132,12 @@ class InboxView(APIView, PageNumberPagination):
             like_author = Author.objects.get(id=request.data["author"])
             if inbox.likes.filter(author=like_author, object=request.data["object"]).exists():
                 return Response({"error": "Like already sent to inbox"}, status = status.HTTP_409_CONFLICT)
-            
+
             else:
                 # Need to determine if the object being liked is a post or a comment
                 if Post.objects.filter(id=request.data["object"]).exists():
                     object = Post.objects.get(id=request.data["object"])
-                # else: 
+                # else:
                     #TODO: implement after Comments is done
                 like = Like.objects.create(
                     summary=request.data["summary"],
@@ -147,7 +148,7 @@ class InboxView(APIView, PageNumberPagination):
 
                 like_serializer = LikeSerializer(like)
                 return Response(like_serializer.data, status = status.HTTP_200_OK)
-            
+
         elif request.data["type"] == "post":
             # I am assuming that the post is already created
 
@@ -155,13 +156,13 @@ class InboxView(APIView, PageNumberPagination):
             inbox.posts.add(post)
             post_serializer = PostSerializer(post)
             return Response(post_serializer.data, status = status.HTTP_200_OK)
-            
+
         elif request.data["type"] == "comment":
             #TODO: implement after Comments is done
             return Response({"error": "Not implemented"}, status = status.HTTP_501_NOT_IMPLEMENTED)
-        
+
         return Response(status = status.HTTP_400_BAD_REQUEST)
-    
+
     @extend_schema(
         description="Clear the author's inbox.",
         responses={204: None}
@@ -177,4 +178,3 @@ class InboxView(APIView, PageNumberPagination):
         # inbox.comments.clear() #TODO: implement after Comments is done
 
         return Response(status = status.HTTP_204_NO_CONTENT)
-        

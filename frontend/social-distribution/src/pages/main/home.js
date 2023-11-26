@@ -8,22 +8,23 @@ import Post from "../../components/Posts/Posted";
 
 import {API_URL} from "../../components/api";
 import axios from 'axios';
+import axiosService from "../../utils/axios"
+import authSlice from "../../store/slices/auth";
+import store from '../../store';
 
 export default function Home() {
     //This is where the uuid of the user is being stored for now
     const [publicPosts, setPublicPosts] = useState([])
     const [publicUsers, setPublicUsers] = useState([])
     let [displayName, setDisplayName] = useState("")
-
+    const { token } = store.getState().auth;
+    console.log("authslice token is " + token)
     //queries all available authors the database
     //queries all posts of every author
     //adds a post to the list if it's public TODO later
     const getPublicUsers = async () => {
         try {
-          const res = await axios({
-            method: "GET",
-            url: API_URL + "authors/",
-          });
+          const res = await axiosService.get("authors/");
 
           setPublicUsers(res.data.items)
           for(let i = 0; i < res.data.items.length; i++){
