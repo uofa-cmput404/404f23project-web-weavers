@@ -24,8 +24,8 @@ export default function Inbox({props}){
     return(
         <div style={styles.container}>
             <LogoBar/>
-            <NavBar current='Inbox' uuid={user}/>
-            <FriendsBar user={user}/>
+            <NavBar current='Inbox' uuid={userUUID}/>
+            <FriendsBar user={userUUID}/>
 
             <div className='tab-container' style={styles.tabContainer}>
 

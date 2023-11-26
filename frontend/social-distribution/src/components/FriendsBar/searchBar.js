@@ -2,7 +2,7 @@ import React from "react";
 import {Button,Input,InputGroup,InputLeftElement,InputRightAddon} from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import {colors} from '../../utils/theme.js';
-import { useFormik} from 'formik';;
+import {Formik} from 'formik';;
 
 {/*
     TODO: May be change the color of the search bar when clicked -> not blue!
@@ -15,7 +15,7 @@ export const SearchBar = ({onSearch}) => {
 
   return (
     <div style={{marginBottom:'5rem'}}>
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={Formik.handleSubmit}>
       <InputGroup borderRadius={5} size="sm">
         <InputLeftElement
           pointerEvents="none"
@@ -26,12 +26,12 @@ export const SearchBar = ({onSearch}) => {
           p={0}
           border="none"
         >
-          <Button 
-            size="sm" 
-            borderLeftRadius={0} 
-            borderRightRadius={3.3} 
-            border="1px solid #949494" 
-            style={styles.colored} 
+          <Button
+            size="sm"
+            borderLeftRadius={0}
+            borderRightRadius={3.3}
+            border="1px solid #949494"
+            style={styles.colored}
             onClick={()=> onSearch(input)}>
               Search
           </Button>

@@ -11,6 +11,8 @@ export default function ShadedClickableBox({
         request, req_user, variant_,text,username,avatar,...props
     }) {
     const curr_user = localStorage.getItem("user")
+    const [showButtons, setShowButtons] = useState(true);
+    const [requestText, setRequestText] = useState(username + " would like to follow you" );
 
     const variant = {
         notif: variant_ === 'notif',
@@ -24,8 +26,8 @@ export default function ShadedClickableBox({
     const handleAcceptFollower = () =>{
         console.log("accepting a new follower")
         axios.put(API_URL + "authors/" + curr_user + "/followers/" + req_user + "/")
-        window.location.reload(false);
-
+        setShowButtons(false)
+        setRequestText(username + "'s request was accepted")
         //Post as follower to self and other author
         //Remove from inbox
         const type = request.type;
@@ -42,7 +44,6 @@ export default function ShadedClickableBox({
         if(request.actor.host == API_URL){
             axios.delete(API_URL + "follow-requests/", {data: body}).then((response) => {
                 console.log(response)
-
             }).catch((err) => {
                 console.log(err)
             })
@@ -65,14 +66,14 @@ export default function ShadedClickableBox({
         if(request.actor.host == API_URL){
             axios.delete(API_URL + "follow-requests/", {data: body}).then((response) => {
                 console.log(response)
-
+                setShowButtons(false)
+                setRequestText(username + "'s request was denied")
             }).catch((err) => {
                 console.log(err)
             })
         }
         //Remove from inbox
         //Reload
-        window.location.reload(false);
     }
 
 
@@ -99,8 +100,9 @@ export default function ShadedClickableBox({
 
                         <Flex flexDir="row" align={"center"}>
                             <Avatar name={username} src={avatar} size="md" ml={2}/>
-                            <Text ml={5} align={"left"}> {username} would like to follow you </Text>
+                            <Text ml={5} align={"left"}> {requestText}</Text>
                         </Flex>
+                        { showButtons &&
                         <Flex flexDir="row" align={"center"}>
                             <Flex style={styles.buttons}>
                             <Button
@@ -120,6 +122,7 @@ export default function ShadedClickableBox({
                             >Decline </Button>
                             </Flex>
                     </Flex>
+                    }
                     </Flex>
                 </Flex>
             :
