@@ -1,7 +1,7 @@
 from rest_framework.test import APITestCase
 from authors.models import Author
 from post.models import Post
-from likes.models import Like
+from followers.models import Follow
 from inbox.models import Inbox
 
 # Create your tests here.
@@ -90,6 +90,24 @@ class InboxTests(APITestCase):
 
         ### Check Inbox Data
         self.assertEqual(len(self.inbox.follows.all()), 1)
+
+    def test_delete_follow_request(self):
+        response1 = self.client.post(f"{self.author1.url}/inbox/", {
+            "summary": "Bob follows Alice",
+            "type": "Follow",
+            "actor": self.author2.id,
+            "object": self.author1.id,
+        })
+        self.assertEqual(response1.status_code, 200)
+
+        response2 = self.client.delete(f"/follow-requests/", {
+            "actor": self.author2.id,
+            "object": self.author1.id,
+        })
+        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(len(self.inbox.follows.all()), 0)
+        self.assertEqual(len(self.author1.followers.all()), 0)
+        self.assertEqual(Follow.objects.count(), 0)
 
     def test_delete_inbox(self):
         # send a post to the inbox

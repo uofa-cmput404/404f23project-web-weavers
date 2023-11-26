@@ -60,6 +60,17 @@ def list_likes_from_inbox(request, author_id):
 # def list_comments_from_inbox(self, request, author_id):
 #     pass
 
+@api_view(['DELETE'])
+def delete_follow_request(request):
+    follow_requester = Author.objects.get(id=request.data["actor"])
+    author_to_follow = Author.objects.get(id=request.data["object"])
+    if Follow.objects.filter(actor=follow_requester, object=author_to_follow).exists():
+        Follow.objects.get(actor=follow_requester, object=author_to_follow).delete()
+
+        return Response({"message": "Follow request deleted"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "Follow request not found"}, status=status.HTTP_404_NOT_FOUND)
+    
 class InboxView(APIView, PageNumberPagination):
     # TODO add authentication
     @extend_schema(
