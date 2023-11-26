@@ -1,4 +1,5 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from post.serializers import PostSerializer
@@ -10,6 +11,7 @@ from inbox.models import Inbox
 from followers.models import Follow
 from post.models import Post
 from likes.models import Like
+from nodes.permissions import IsAuthorizedNode
 from followers.serializers import FollowSerializer
 from drf_spectacular.utils import extend_schema
 
@@ -19,7 +21,11 @@ from drf_spectacular.utils import extend_schema
     responses={200: FollowSerializer(many=True)}
 )
 @api_view(['GET'])
+@permission_classes([IsAuthenticated | IsAuthorizedNode])
 def list_follows_from_inbox(request, author_id):
+    inbox_owner = Author.objects.get(pk=author_id)
+    if request.user != inbox_owner:
+        return Response({"error": "You are not authorized to access this inbox"}, status = status.HTTP_403_FORBIDDEN)
     
     inbox = Inbox.objects.get(author=author_id)
     inbox_follows = inbox.follows.all()
@@ -38,7 +44,12 @@ def list_follows_from_inbox(request, author_id):
     responses={200: LikeSerializer(many=True)}
 )
 @api_view(['GET'])
+@permission_classes([IsAuthenticated | IsAuthorizedNode])
 def list_likes_from_inbox(request, author_id):
+    inbox_owner = Author.objects.get(pk=author_id)
+    if request.user != inbox_owner:
+        return Response({"error": "You are not authorized to access this inbox"}, status = status.HTTP_403_FORBIDDEN)
+    
     inbox = Inbox.objects.get(author=author_id)
     inbox_likes = inbox.likes.all()
 
@@ -61,12 +72,17 @@ def list_likes_from_inbox(request, author_id):
 #     pass
 
 class InboxView(APIView, PageNumberPagination):
-    # TODO add authentication
+    permission_classes = [IsAuthenticated | IsAuthorizedNode]
     @extend_schema(
         description="List all posts sent to the author's inbox.",
         responses={200: PostSerializer(many=True)}
     )
     def get(self, request, author_id):
+        # if the author is not the owner of the inbox, they cannot access it
+        inbox_owner = Author.objects.get(pk=author_id)
+        if request.user != inbox_owner:
+            return Response({"error": "You are not authorized to access this inbox"}, status = status.HTTP_403_FORBIDDEN)
+
         # Pagination settings
         self.page_size_query_param = 'size'
         self.page_size = 10 # default page size

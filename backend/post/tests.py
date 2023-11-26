@@ -48,6 +48,18 @@ class PostTests(APITestCase):
         self.assertEqual(response.data["title"], "post1")
         self.assertEqual(response.data["description"], "new description")
 
+    def test_update_post_permissions(self):
+        self.author2 = Author.objects.create(displayName="author2")
+        self.post4 = Post.objects.create(title="post4", description="content4", author=self.author2)
+
+        response = self.client.post(f"{self.author2.url}/posts/{self.post4.uuid}/", {
+            "title": "new title",
+            "description": "new description"
+        }, format="json")
+
+        # author1 should not be able to update author2's post
+        self.assertEqual(response.status_code, 403)
+
     def test_delete_post(self):
         response = self.client.delete(f"{self.author1.url}/posts/{self.post1.uuid}/")
         self.assertEqual(response.status_code, 204)

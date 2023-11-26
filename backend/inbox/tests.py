@@ -33,6 +33,17 @@ class InboxTests(APITestCase):
         ### Check Inbox Data
         self.assertEqual(len(self.inbox.posts.all()), 1)
 
+    def test_inbox_permissions(self):
+        response1 = self.client.post(f"{self.author2.url}/inbox/", {
+            "type": "post",
+            "id": self.post1.id,
+        })
+        self.assertEqual(response1.status_code, 200)
+
+        # author1 should not be able to access author2's inbox
+        response2 = self.client.get(f"{self.author2.url}/inbox/")
+        self.assertEqual(response2.status_code, 403)
+
     def test_get_paginated_inbox(self):
         self.client.post(f"{self.author1.url}/inbox/", {
             "type": "post",

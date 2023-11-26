@@ -103,7 +103,10 @@ class PostDetails(APIView):
         """
         Update a post.
         """
-        # TODO: Implement authentication for this endpoint
+        post_owner = Author.objects.get(pk=author_id)
+        if request.user != post_owner:
+            return Response({"error": "You are not authorized to update this post"}, status=status.HTTP_403_FORBIDDEN)
+        
         author = Author.objects.get(pk=author_id)
         post = Post.objects.get(pk=post_id, author=author)
         serializer = PostSerializer(post, data=request.data, partial=True)

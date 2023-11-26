@@ -53,7 +53,10 @@ class FollowerDetails(APIView):
         responses={200: "Successfully added follower"}
     )
     def put(self, request, author_id, foreign_author_id):
-        #TODO implement authentication for this route
+        follow_recipient = Author.objects.get(pk=author_id)
+        if request.user != follow_recipient:
+            return Response({"error": "You are not authorized to add followers to this author"}, status=status.HTTP_403_FORBIDDEN)
+        
         try:
             author = Author.objects.get(pk=author_id)
         except Author.DoesNotExist:
