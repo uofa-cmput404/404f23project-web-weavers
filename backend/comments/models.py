@@ -14,7 +14,8 @@ class Comment(models.Model):
     ]
     id = models.URLField(max_length=200, unique=True, editable=False)
     type = models.CharField(max_length=300, blank=True, default="comment")
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    #post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
     comment = models.TextField()
     contentType = models.CharField(
