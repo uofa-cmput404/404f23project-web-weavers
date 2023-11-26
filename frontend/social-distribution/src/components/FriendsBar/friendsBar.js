@@ -17,12 +17,13 @@ export default function FriendsBar({props}) {
     // Add pages to the bottom of the friends bar
     const [search, setSearch] = useState("");
     const [users, setUsers]= useState([]);
+    
 
     useEffect(() => {
         const fetchUsers = async () => {
             try{
                 const response = await axios.get(API_URL + "authors/");
-                setUsers(response.data.items.map(user => ({displayName: user.displayName, avatar: user.profileImage})));
+                setUsers(response.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage})));
             } catch (error) {
                 console.log(error);
             }
@@ -30,19 +31,6 @@ export default function FriendsBar({props}) {
         fetchUsers();
     }
     , [])
-
-    // const users = [
-    //     {fullName: "Jane Doe", username: "janedoe", avatar: "https://bit.ly/tioluwani-kolawole"},
-    //     {fullName: "Kent Dodds", username: "kentcdodds", avatar: "https://bit.ly/kent-c-dodds"},
-    //     {fullName: "Ryan Florence", username: "ryanflorence", avatar: "https://bit.ly/ryan-florence"},
-    //     {fullName: "Prosper Otemuyiwa", username: "unicodeveloper", avatar: "https://bit.ly/prosper-baba"}, 
-    //     {fullName: "Christian Nwamba", username: "codebeast", avatar: "https://bit.ly/code-beast"}, 
-    //     {fullName: "Segun Adebayo", username: "thesegunadebayo", avatar: "https://bit.ly/sage-adebayo"},   
-    //     {fullName: "Ryan Florence", username: "ryanflorence", avatar: "https://bit.ly/ryan-florence"},
-    //     {fullName: "Prosper Otemuyiwa", username: "unicodeveloper", avatar: "https://bit.ly/prosper-baba"}, 
-    //     {fullName: "Christian Nwamba", username: "codebeast", avatar: "https://bit.ly/code-beast"}, 
-    //     {fullName: "Segun Adebayo", username: "thesegunadebayo", avatar: "https://bit.ly/sage-adebayo"},  
-    // ]
 
     // Search bar functionality
     const filteredUsers = users.filter(user => 
@@ -54,7 +42,7 @@ export default function FriendsBar({props}) {
             <Flex style={styles.container} flexDir="column" pos="sticky" h="95vh" w="20px" left={'84vw'} top={'5vh'}>
                 <SearchBar onSearch={setSearch}/>
                 <Flex flexDir="column" w="100%" alignItems="center" align="center">
-                    {filteredUsers.map(user => <FriendIcon key={user.displayName} user={user}/>)}          
+                    {filteredUsers.map(user => <FriendIcon key={user.displayName} user={user} />)}          
                 </Flex> 
             </Flex>
         </div>
