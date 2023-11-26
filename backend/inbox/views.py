@@ -31,13 +31,11 @@ def list_follows_from_inbox(request, author_id):
     inbox_follows = inbox.follows.all()
 
     follow_serializer = FollowSerializer(inbox_follows, many=True)
-    response = Response({
+    return Response({
         "type": "inbox",
         "author": inbox.author.url,
         "items": follow_serializer.data
     })
-    response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-    return response
 
 @extend_schema(
     description="List all likes sent to the author's inbox.",
@@ -54,13 +52,11 @@ def list_likes_from_inbox(request, author_id):
     inbox_likes = inbox.likes.all()
 
     like_serializer = LikeSerializer(inbox_likes, many=True)
-    response = Response({
+    return Response({
         "type": "inbox",
         "author": inbox.author.url,
         "items": like_serializer.data
     })
-    response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-    return response
 
 # TODO: implement after Comments is done
 # @extend_schema(
@@ -98,13 +94,11 @@ class InboxView(APIView, PageNumberPagination):
                 inbox_posts = self.paginate_queryset(inbox_posts, request)
 
         post_serializer = PostSerializer(inbox_posts, many=True)
-        response = Response({
+        return Response({
             "type": "inbox",
             "author": inbox.author.url,
             "items": post_serializer.data
         })
-        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-        return response
     
     @extend_schema(
         description="Send a post, follow request, like or comment to the author's inbox.",
@@ -131,9 +125,7 @@ class InboxView(APIView, PageNumberPagination):
                 inbox.follows.add(follow)
 
                 follow_serializer = FollowSerializer(follow)
-                response = Response(follow_serializer.data, status = status.HTTP_200_OK)
-                response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-                return response
+                return Response(follow_serializer.data, status = status.HTTP_200_OK)
 
         elif request.data["type"] == "Like":
             like_author = Author.objects.get(id=request.data["author"])
@@ -154,9 +146,7 @@ class InboxView(APIView, PageNumberPagination):
                 inbox.likes.add(like)
 
                 like_serializer = LikeSerializer(like)
-                response = Response(like_serializer.data, status = status.HTTP_200_OK)
-                response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-                return response
+                return Response(like_serializer.data, status = status.HTTP_200_OK)
             
         elif request.data["type"] == "post":
             # I am assuming that the post is already created
@@ -164,19 +154,13 @@ class InboxView(APIView, PageNumberPagination):
             post = Post.objects.get(id=request.data["id"])
             inbox.posts.add(post)
             post_serializer = PostSerializer(post)
-            response = Response(post_serializer.data, status = status.HTTP_200_OK)
-            response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-            return response
+            return Response(post_serializer.data, status = status.HTTP_200_OK)
             
         elif request.data["type"] == "comment":
             #TODO: implement after Comments is done
-            response = Response({"error": "Not implemented"}, status = status.HTTP_501_NOT_IMPLEMENTED)
-            response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-            return response
+            return Response({"error": "Not implemented"}, status = status.HTTP_501_NOT_IMPLEMENTED)
         
-        response = Response(status = status.HTTP_400_BAD_REQUEST)
-        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-        return response
+        return Response(status = status.HTTP_400_BAD_REQUEST)
     
     @extend_schema(
         description="Clear the author's inbox.",
@@ -192,7 +176,5 @@ class InboxView(APIView, PageNumberPagination):
         inbox.likes.clear()
         # inbox.comments.clear() #TODO: implement after Comments is done
 
-        response = Response(status = status.HTTP_204_NO_CONTENT)
-        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-        return response
+        return Response(status = status.HTTP_204_NO_CONTENT)
         

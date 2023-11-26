@@ -95,8 +95,6 @@ class AuthorDetails(APIView):
         serializer = AuthorSerializer(author, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            response = Response(serializer.data)
-            response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-            return response
+            return Response(serializer.data)
             
         return Response(serializer.errors)
