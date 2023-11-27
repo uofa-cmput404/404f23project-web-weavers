@@ -4,9 +4,10 @@ import {React, useState} from "react";
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineComment } from "react-icons/ai";
 import { API_URL } from "../api.js";
-import axiosService from "../../utils/axios";
 import { current } from "@reduxjs/toolkit";
 import Login from "../../pages/login_signup/tab_screens/login.js";
+import axiosService from "../../utils/axios";
+import { aTeamService, BeegYoshiService } from "../../../utils/axios.js";
 
 
 

@@ -1,8 +1,5 @@
+// Library Imports
 import React, { useState, useEffect, } from "react";
-import NavBar from "../../components/Bars/navbar.js";
-import LogoBar from "../../components/Bars/logoBar.js";
-import FriendsBar from "../../components/FriendsBar/friendsBar.js";
-import {colors, sizes, spacing} from "../../utils/theme";
 import {
     Menu,
     MenuButton,
@@ -14,21 +11,39 @@ import {
     MenuDivider,
     Button,
   } from '@chakra-ui/react'
-
 import {aTeamService} from "../../utils/axios";
 import axiosService from "../../utils/axios";
-import Post from "../../components/Posts/Posted";
 import {ChevronDownIcon} from '@chakra-ui/icons';
+// File Imports
+import {colors, sizes, spacing} from "../../utils/theme";
+// Component Imports
+import NavBar from "../../components/Bars/navbar.js";
+import LogoBar from "../../components/Bars/logoBar.js";
+import FriendsBar from "../../components/FriendsBar/friendsBar.js";
+import Post from "../../components/Posts/Posted";
+// OtherServers Component Imports
+// import OSNavBar from "../../components/OtherServers/Bars/navbar";
+// import OSLogoBar from "../../components/OtherServers/Bars/logoBar";
+// import OSFriendsBar from "../../components/OtherServers/FriendsBar/friendsBar";
+// import OSPost from "../../components/OtherServers/Posts/Posted";
+
 
 export default function Explore({props}){
     const user = localStorage.getItem("user")
     const [open, setOpen] = useState(true)
     const [publicPosts, setPublicPosts] = useState([]);
     const[displayName, setDisplayName] = useState("")
+    const [selectedServer, setSelectedServer] = useState("All")
+
     const handleOpen = () => {
         setOpen(!open);
       };
-    const getPosts = async () => {
+
+    const handleServerChange = (server) => {
+        setSelectedServer(server);
+    }
+
+      const getPosts = async () => {
         try {
           const res = await aTeamService.get("getAllPublicPosts/");
           console.log("recieved response")
@@ -38,6 +53,7 @@ export default function Explore({props}){
           console.log(err);
         }
       };
+
       useEffect(() => {
         getPosts();
       }, []);
@@ -45,18 +61,21 @@ export default function Explore({props}){
       axiosService.get("authors/" + user + "/").then((response) => {
           setDisplayName(response.data.displaName)
       })
-    return(
+
+      return(
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='Explore' uuid={user}/>
+            <FriendsBar user={user}/>
             <div style = {styles.dropdown}>
             <Menu>
                 <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
                     Teams
                 </MenuButton>
                 <MenuList>
-                    <MenuItem>A Team</MenuItem>
-                    <MenuItem>Beeg Yoshi</MenuItem>
+                    <MenuItem onClick={() => handleServerChange('All')}>All</MenuItem>
+                    <MenuItem onClick={() => handleServerChange('A Team')}>A Team</MenuItem>
+                    <MenuItem onClick={() => handleServerChange('Beeg Yoshi')}>Beeg Yoshi </MenuItem>
                 </MenuList>
             </Menu>
             </div>

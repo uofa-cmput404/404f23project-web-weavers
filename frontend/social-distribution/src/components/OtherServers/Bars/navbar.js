@@ -12,7 +12,7 @@ import axiosService from "../../utils/axios"
 // TODO: pictureUrl from backend   -> remove hardcoded values
 //       OPTIMIZE TOO SLOW
 
-export default function NavBar({uuid,...props}) {
+export default function OSNavBar({uuid,...props}) {
     let navigate = useNavigate();
     let dispatch = useDispatch();
     const userID = uuid;

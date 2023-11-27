@@ -1,7 +1,7 @@
 import {colors} from "../../utils/theme.js";
 import logo from "../../assets/logo.png";
 
-export default function LogoBar() {
+export default function OSLogoBar() {
     return (
         <div style={styles.container}>
             <img src={logo} alt="logo" style={styles.logo} />

@@ -29,7 +29,7 @@ import axiosService from "../../utils/axios";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 
 
-export default function Post({postData, visibility, userUUID, displayName}){
+export default function OSPost({postData, visibility, userUUID, displayName}){
     // const userID= localStorage.getItem()
     // const postID = 1;
     let navigate = useNavigate();

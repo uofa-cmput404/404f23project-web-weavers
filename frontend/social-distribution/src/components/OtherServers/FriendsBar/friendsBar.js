@@ -10,7 +10,7 @@ import axiosService from "../../utils/axios";
     TODO: Integrate with backend API to get list of friends and necessary data
 } */
 
-export default function FriendsBar({user, ...props}) {
+export default function OSFriendsBar({user, ...props}) {
     // Note: only placeholder data for now
     // Only show 10 at a time each page or make it scrollable; Deal with the overflow
     // Add pages to the bottom of the friends bar
