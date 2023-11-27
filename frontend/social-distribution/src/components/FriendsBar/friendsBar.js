@@ -40,7 +40,7 @@ export default function FriendsBar({user, ...props}) {
 
     return (
         <div >
-            <Flex style={styles.container} flexDir="column" pos="sticky" h="95vh" w="20px" left={'84vw'} top={'5vh'}>
+            <Flex style={styles.container} flexDir="column" pos="sticky">
                 <SearchBar onSearch={setSearch}/>
                 <Flex flexDir="column" w="100%" alignItems="center" align="center">
                     {filteredUsers.map(user => <FriendIcon 
@@ -59,12 +59,13 @@ const styles = {
         backgroundColor:colors.text.t1,
         zIndex:1,
         position:"fixed",
+        right: 0,
         paddingTop:'1rem',
-//        padding:'1rem',
         overflow:'scroll',
         overflowX:'hidden',
         width:'230px',
         height: '100vh',
+        scrollbarWidth: 'none',
     },
    
 }
