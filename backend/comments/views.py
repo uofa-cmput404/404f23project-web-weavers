@@ -30,9 +30,7 @@ class CommentList(APIView, PageNumberPagination):
         serializer = CommentSerializer(comments, many=True)
         return Response({
             "type" : "comments",
-            "page" : self.page.number,
-            "size" : self.page.paginator.per_page,
-            "id" : str(post_id) + "/comments/",
+            "id" : str(post.id) + "/comments/",
             "items" : serializer.data,
         })
     
@@ -52,10 +50,8 @@ class CommentList(APIView, PageNumberPagination):
             serializer.validated_data['id'] = comment_url
             serializer.save()
 
-            #appending comment to post
-            post.comments.create(**serializer.validated_data)
-            #Comment.objects.create(post=post, **serializer.validated_data)
-            post.comments_count += 1
+            post.comments = comment_url
+            post.count += 1
             post.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors)

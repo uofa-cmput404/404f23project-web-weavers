@@ -7,4 +7,4 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        exclude = ['uuid']
+        exclude = ['uuid', 'post']
