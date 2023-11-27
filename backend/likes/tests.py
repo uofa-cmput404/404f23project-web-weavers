@@ -2,6 +2,7 @@ from rest_framework.test import APITestCase
 from .models import Like
 from authors.models import Author
 from post.models import Post
+from comments.models import Comment
 
 # Create your tests here.
 class LikeTests(APITestCase):
@@ -26,7 +27,17 @@ class LikeTests(APITestCase):
         self.assertEqual(response.data["items"][1]["summary"], "Alice likes your post")
 
     def test_list_comment_likes(self):
-        pass
+        self.comment1 = Comment.objects.create(post=self.post1, author=self.author1, comment="comment1")
+        # Bob likes Mary's comment
+        self.comment_like1 = Like.objects.create(summary="Bob likes your comment", author=self.author2, object=self.comment1.id)
+        # Alice likes Mary's comment
+        self.comment_like2 = Like.objects.create(summary="Alice likes your comment", author=self.author3, object=self.comment1.id)
+
+        response = self.client.get(f"{self.comment1.id}/likes/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["items"]), 2)
+        self.assertEqual(response.data["items"][0]["summary"], "Bob likes your comment")
+        self.assertEqual(response.data["items"][1]["summary"], "Alice likes your comment")
 
     def test_list_author_likes(self):
         response = self.client.get(f"{self.author2.url}/liked/")

@@ -42,7 +42,7 @@ class Post(models.Model):
     content = models.TextField(default="")
     author = models.ForeignKey(Author, null=True, on_delete=models.CASCADE)
     categories = ArrayField(models.CharField(), blank=True, default=list, null=True)
-    count = models.PositiveIntegerField(default=0)         # TODO: update this field when a comment is added
+    count = models.PositiveIntegerField(default=0)
     comments = models.URLField(blank=True, null=True)
     published = models.DateTimeField(default=timezone.now)
     visibility = models.CharField(max_length=200, choices=VISIBILITY_CHOICES, default="PUBLIC")
