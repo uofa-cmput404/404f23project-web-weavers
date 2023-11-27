@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from .models import Like
 from .serializers import LikeSerializer
 from authors.models import Author
+from comments.models import Comment
 from post.models import Post
 from drf_spectacular.utils import extend_schema
 from nodes.permissions import IsAuthorizedNode
@@ -58,15 +59,10 @@ def list_comment_likes(request, author_id, post_id, comment_id):
     """
     List all likes of a comment
     """
-    # TODO: Change implementation to use Comment model instead of getting
-    # the comment url from the full url
     author = Author.objects.get(pk=author_id)
     # get the comment url
-    url = request.build_absolute_uri()
-    likes_index = url.rindex("/likes")
-    comment_url = url[:likes_index]
-    
-    comment_likes = Like.objects.filter(object=comment_url).exclude(author=author).all()
+    comment = Comment.objects.get(pk=comment_id)
+    comment_likes = Like.objects.filter(object=comment.id).exclude(author=author).all()
     serializer = LikeSerializer(comment_likes, many=True)
     return Response({
         "type": "likes",

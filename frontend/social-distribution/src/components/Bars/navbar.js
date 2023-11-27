@@ -18,7 +18,11 @@ export default function NavBar({uuid,...props}) {
     const userID = uuid;
     const [displayn, setDisplayn] = useState("")
 
+<<<<<<< HEAD
     axiosService.get("authors/")
+=======
+    axios.get(API_URL + "authors/")
+>>>>>>> main
         .then((res) => {
             const authors = res.data
             for (let i = 0; i < authors.items.length; i++) {
@@ -35,7 +39,7 @@ export default function NavBar({uuid,...props}) {
     const pictureUrl = ""
     // Note: limit amount of characters in username
 
-    const [navSize, changeNavSize] = useState("large");
+    const [navSize, changeNavSize] = useState("small");
     const [activeNav, setActive] = useState({current});
 
 

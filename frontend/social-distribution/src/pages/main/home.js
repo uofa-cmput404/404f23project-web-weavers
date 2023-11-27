@@ -64,7 +64,7 @@ export default function Home() {
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='Home' uuid={user}/>
-            <FriendsBar style={styles.friendsBar}/>
+            <FriendsBar user={user} />
             <div style={styles.content}>
                 <CreatePostCard/>
 

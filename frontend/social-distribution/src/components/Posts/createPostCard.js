@@ -7,6 +7,10 @@ import TextPost from "./TextPost.js";
 import axiosService from "../../utils/axios"
 
 export default function CreatePostCard() {
+<<<<<<< HEAD
+=======
+  const baseURL = API_URL + "authors/";
+>>>>>>> main
   const fileInputRef = useRef(null);
   const [title, setTitle] = useState(false);
   const [showDescriptionInput, setShowDescriptionInput] = useState(false);
@@ -61,13 +65,47 @@ export default function CreatePostCard() {
     console.log("fields: " + JSON.stringify(fields));
 
     // Send to server
+<<<<<<< HEAD
     axiosService.post(url, fields)
     .then((response) => {
       if (response.ok) {
+=======
+    axios.post(url, fields)
+    .then((response1) => {
+      if (response1.status >= 200 <= 299) {
+>>>>>>> main
         console.log("Post created successfully!");
         setIsLoading(false);
+
+        //get all followers
+        axios.get(baseURL + postUserUUID + "/followers/").then((followersResponse) => {
+          if(followersResponse.status >= 200 <= 299){
+            console.log("Followers found");
+            const followers = followersResponse.data.items;
+
+            //Send to each Inbox
+            if(followers){
+              for(let i = 0; i < followers.length; i++){
+                axios.post(followers[i].id + "/inbox/", response1.data).then((inboxResponse) => {
+                  console.log("Successfully sent post to follower " + followers[i].displayName);
+                }).catch((error) =>{
+                  console.log(error);
+                })
+              }}
+          }
+
+        }).then((data) => {
+          console.log(data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error creating post: ", error);
+          setIsLoading(false);
+        }
+        );
+
       }
-      return response;
+      //return response;
     })
     .then((data) => {
       console.log(data);

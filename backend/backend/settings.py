@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'authors',
     'post',
     'followers',
+    'comments',
     'likes',
     'nodes',
     'inbox',
@@ -172,6 +173,7 @@ SIMPLE_JWT = {
 CORS_ORIGIN_ALLOW_ALL = True
 
 django_on_heroku.settings(locals())
+
 
 # disable ssl for local development
 options = DATABASES['default'].get('OPTIONS', {})

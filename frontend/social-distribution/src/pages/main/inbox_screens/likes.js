@@ -3,15 +3,15 @@ import { colors, spacing } from "../../../utils/theme";
 import { useState, useEffect } from 'react';
 import {API_URL} from "../../../components/api";
 import axios from 'axios';
-import axiosService from "../../../utils/axios"
 
 
-export default function Notifications() {
+export default function Likes() {
     const user = localStorage.getItem("user")
     const [notifs, setNotifs] = useState([])
 
     const fetchdata = async () => {
-        const res = await axiosService.get("authors/" + user+ "/inbox/likes/")
+        const res = await axios.get(API_URL + "authors/" + user+ "/inbox/likes/")
+        console.log("Inbox is: ")
         console.log(res.data.items)
         setNotifs(res.data.items)
     };
@@ -22,7 +22,6 @@ export default function Notifications() {
     return(
         <div style={styles.container}>
                 {notifs.map((item) => (
-                    // console.log(item.content),
                     <ShadedClickableBox variant_='notif' text={item.summary}/>
                 ))}
         </div>
