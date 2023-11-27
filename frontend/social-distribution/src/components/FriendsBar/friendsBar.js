@@ -6,7 +6,7 @@ import FriendIcon from "./friendIcon.js";
 import { useEffect } from 'react';
 import axios, { formToJSON } from 'axios';
 import { API_URL } from '../api.js';
-import { Tabs, Tab } from "@chakra-ui/react";
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
 /* { 
     TODO: Integrate with backend API to get list of friends and necessary data
@@ -44,7 +44,15 @@ export default function FriendsBar({user, ...props}) {
     // Search bar functionality
     const filteredUsers = users.filter(user => 
         user.displayName.toLowerCase().includes(search.toLowerCase())
-        );
+    );
+
+    console.log("followers: ", followers);
+
+    const followersFiltered = followers.filter(user =>
+        user.displayName.toLowerCase().includes(search.toLowerCase())
+    );
+
+    console.log("followersFiltered: ", followersFiltered);
     
     const handleTabChange = (event, newvalue) => {
         setValue(newvalue);
@@ -54,18 +62,31 @@ export default function FriendsBar({user, ...props}) {
         <div >
             <Flex style={styles.container} flexDir="column" pos="sticky">
                 <SearchBar onSearch={setSearch}/>
-                <Tabs value={selectedTab} onChange={handleTabChange} variant="soft-rounded" isFitted m={6} style={styles.tabs}>
-                    <Tab label='All' value='All' style={{color: 'white'}}/>
-                    <Tab label='Followers' value='Followers' style={{color: 'white'}}/>
+                <Tabs value={selectedTab} onChange={handleTabChange} variant="soft-rounded" isFitted m={6} mt={2} style={styles.tabs}>
+                    <TabList>
+                        <Tab _selected={{ color: "white", bg: colors.brand.c2 }} _focus={{boxShadow: "none"}}>All</Tab>
+                        <Tab _selected={{ color: "white", bg: colors.brand.c2 }} _focus={{boxShadow: "none"}}>Followers</Tab>
+                    </TabList>
+                    <TabPanels>
+                        <TabPanel>
+                            <Flex flexDir="column" w="100%" alignItems="center" align="start">
+                                {filteredUsers.map(user => <FriendIcon 
+                                    key={user.displayName} 
+                                    user={user} 
+                                    currentUser={currentUser}/>)}          
+                            </Flex> 
+                        </TabPanel>
+                        <TabPanel>
+                            <Flex flexDir="column" w="100%" alignItems="center" align="center">
+                                {followersFiltered.map(user => <FriendIcon 
+                                    key={user.displayName} 
+                                    user={user} 
+                                    currentUser={currentUser}/>)}          
+                            </Flex> 
+                        </TabPanel>
+                    </TabPanels>
+
                 </Tabs>
-
-
-                <Flex flexDir="column" w="100%" alignItems="center" align="center">
-                    {filteredUsers.map(user => <FriendIcon 
-                        key={user.displayName} 
-                        user={user} 
-                        currentUser={currentUser}/>)}          
-                </Flex> 
             </Flex>
         </div>
     )
@@ -86,10 +107,14 @@ const styles = {
         scrollbarWidth: 'none',
     },
     tabs: {
-        color: 'green',
+        width: '100%',
+        position: 'sticky',
         textAlign: 'center',
         fontSize: '1rem',
         display: 'flex',
         justifyContent: 'space-around',
+        flexDirection:'column',
+        padding: 0,
+        margin: 0,
     }
 }

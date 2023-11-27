@@ -19,8 +19,8 @@ export default function FollowerIcon({user, displayedUser, currentUser, ...props
         const data= {
             "summary": displayName + " wants to follow you",
             "type": "Follow",
-            "actor": API_URL + "authors/" + current,           // P2User    2b0144ac-e6a4-40c9-9c5e-b3eff71297bb 
-            "object": API_URL + "authors/" + user.id           // P2Test     e737be90-bb87-4dbd-8840-209d422e83e7
+            "actor": API_URL + "authors/" + current,           
+            "object": API_URL + "authors/" + user.id
         }
         const url= API_URL + "authors/" + user.id + "/inbox/";     
         
@@ -56,7 +56,6 @@ export default function FollowerIcon({user, displayedUser, currentUser, ...props
                         icon={<AiOutlineComment />}
                         onClick={handleClick}   
                     /> */}
-                    <Button onClick= {() => handleFollow()}>Follow</Button>
                 </Collapse>
             </Link>
         </Flex>
