@@ -11,13 +11,14 @@ import { API_URL } from '../api.js';
     TODO: Integrate with backend API to get list of friends and necessary data
 } */
 
-export default function FriendsBar({props}) {
+export default function FriendsBar({user, ...props}) {
     // Note: only placeholder data for now
     // Only show 10 at a time each page or make it scrollable; Deal with the overflow
     // Add pages to the bottom of the friends bar
     const [search, setSearch] = useState("");
     const [users, setUsers]= useState([]);
-    
+    const currentUser= user;
+    //console.log("user: "+ user);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -42,7 +43,10 @@ export default function FriendsBar({props}) {
             <Flex style={styles.container} flexDir="column" pos="sticky" h="95vh" w="20px" left={'84vw'} top={'5vh'}>
                 <SearchBar onSearch={setSearch}/>
                 <Flex flexDir="column" w="100%" alignItems="center" align="center">
-                    {filteredUsers.map(user => <FriendIcon key={user.displayName} user={user} />)}          
+                    {filteredUsers.map(user => <FriendIcon 
+                        key={user.displayName} 
+                        user={user} 
+                        currentUser={currentUser}/>)}          
                 </Flex> 
             </Flex>
         </div>

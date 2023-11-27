@@ -34,7 +34,7 @@ export default function MyStream({props}){
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='My Stream'/>
-            <FriendsBar/>
+            <FriendsBar user={user}/>
             <h1>My Stream</h1>
             <div style={styles.content}>
                 <div style={{ ...styles.postContainer }}>

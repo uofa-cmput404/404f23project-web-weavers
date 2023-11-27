@@ -1,74 +1,50 @@
 import {colors} from "../../utils/theme.js";
 import { Avatar, Collapse, Flex, Link, Text, Button, useDisclosure, IconButton } from "@chakra-ui/react";
-import React from "react";
+import React, {useContext} from "react";
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineComment } from "react-icons/ai";
 import { API_URL } from "../api.js";
 import axios from "axios";
+import { current } from "@reduxjs/toolkit";
+import Login from "../../pages/login_signup/tab_screens/login.js";
 
 
-export default function FriendIcon({user, ...props}){
-   const {id, displayName, profileImage} = user;
+
+export default function FriendIcon({user, displayedUser, currentUser, ...props}){
+   const {displayName, profileImage} = user;
    const {isOpen, onToggle}= useDisclosure();
-   
-    let navigate = useNavigate();
-    const handleClick = () => {
-        navigate("/profile/"+displayName)
-    }
+   const current= currentUser;
 
     const handleFollow = async () => {
-        const sender= JSON.parse(localStorage.getItem("user"));
         const data= {
             "summary": displayName + " wants to follow you",
             "type": "Follow",
-            "actor": sender.uuid,           // P2User    2b0144ac-e6a4-40c9-9c5e-b3eff71297bb 
-            "object": user.uuid           // P2Test     e737be90-bb87-4dbd-8840-209d422e83e7
+            "actor": API_URL + "authors/" + current,           // P2User    2b0144ac-e6a4-40c9-9c5e-b3eff71297bb 
+            "object": API_URL + "authors/" + user.id           // P2Test     e737be90-bb87-4dbd-8840-209d422e83e7
         }
-        const url= "http://127.0.0.1:8000/authors/e737be90-bb87-4dbd-8840-209d422e83e7/inbox/follows";
+        const url= API_URL + "authors/" + user.id + "/inbox/";     
+        
+        console.log("actor: " + current);
+        console.log("object: " + user.id);
 
         try{
             const response = await axios.post(url, data);
+            console.log(response);
         } catch (error) {
-            console.log(error);
+            console.error('Error message:', error.message);
+            if (error.response) {
+                console.error('Response data:', error.response.data);
+                console.error('Response status:', error.response.status);
+                console.error('Config:', error.response.config)
+            }
         }
     };
-
-    // const handleFollow = () => {
-    //     // send request to P2Test's inbox
-    //     try{
-    //         // grab P2User's uuid
-    //         const sender= JSON.parse(localStorage.getItem("user"));
-
-    //         const url= API_URL + "authors/" + user.uuid + "/inbox/follows/";
-
-    //         const fields= {
-    //             "summary": sender.displayName + " wants to follow " + displayName,
-    //             "type": "Follow",
-    //             "actor": sender.uuid,           // P2User     
-    //             "object": user.uuid           // P2Test
-    //         }
-
-    //         axios.post(url, fields)
-    //         .then((response) => {
-    //             if (response.status === 200){
-    //                 console.log("success");
-    //             } else{
-    //                 console.log("failed to send follow request to inbox");
-    //             }
-    //             return response;
-    //         })
-    //     }
-    //     catch(error){
-    //         console.log(error);
-    //     }
-    // }
 
     return(
         <Flex align ="center">
             <Link
                 _hover={{ textDecor: 'none',  color: colors.brand.c1, backgroundColor: 'transparent' }}
                 alignItems="left"
-                // onClick={handleClick}
             >
                 <Flex style={styles.container} flexDir="row" align="right" onClick={onToggle}>
                     <Avatar name={displayName} src={profileImage} size="md" ml={2}/>
@@ -80,7 +56,7 @@ export default function FriendIcon({user, ...props}){
                         icon={<AiOutlineComment />}
                         onClick={handleClick}   
                     /> */}
-                    <Button onCkick= {handleFollow}>Follow</Button>
+                    <Button onClick= {() => handleFollow()}>Follow</Button>
                 </Collapse>
             </Link>
         </Flex>

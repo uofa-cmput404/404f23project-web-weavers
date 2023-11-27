@@ -13,7 +13,7 @@ export default function Inbox({props}){
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='Inbox' uuid={user}/>
-            <FriendsBar/>
+            <FriendsBar user={user}/>
 
             <div className='tab-container' style={styles.tabContainer}>
                 <Tabs variant='soft-rounded' isFitted m={6} colorScheme="blackAlpha" size='sm' align='center'>
