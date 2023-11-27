@@ -16,8 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
+from post.views import list_public_posts
 from likes.views import list_author_likes, list_post_likes
-from inbox.views import InboxView
+from inbox.views import InboxView, list_likes_from_inbox, list_follows_from_inbox
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
@@ -30,6 +31,7 @@ urlpatterns = [
     # Followers app
     path('authors/<uuid:author_id>/followers/', include('followers.urls')),
     # Posts
+    path('public-posts/', list_public_posts),
     path('authors/<uuid:author_id>/posts/', include('post.urls')),
     # Comments
     path('authors/<uuid:author_id>/posts/<uuid:post_id>/comments/', include('comments.urls')),
@@ -39,6 +41,9 @@ urlpatterns = [
     path('authors/<uuid:author_id>/liked/', list_author_likes),
     # Inbox
     path('authors/<uuid:author_id>/inbox/', InboxView.as_view()),
+    path('authors/<uuid:author_id>/inbox/follows/', list_follows_from_inbox),
+    path('authors/<uuid:author_id>/inbox/likes/', list_likes_from_inbox),
+    # path('authors/<uuid:author_id>/inbox/comments/', InboxView.as_view()), #TODO: implement after Comments is done
 
     # API Documentation
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

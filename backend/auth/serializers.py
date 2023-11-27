@@ -14,7 +14,6 @@ class LoginSerializer(TokenObtainPairSerializer):
         data = super().validate(attrs)
         
         refresh = self.get_token(self.user)
-        print("refresh: ",refresh)
 
         data['user'] = AuthorSerializer(self.user).data
         data['refresh'] = str(refresh)

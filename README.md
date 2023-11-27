@@ -112,5 +112,6 @@ Follow the tutorial [here](https://www.youtube.com/watch?v=KqcS3P32s6Y)
 and create a database named "web-database", with its password being "12345".
 
 ## References  
-Authentication: https://dev.to/koladev/django-rest-authentication-cmh
-Pagination: https://stackoverflow.com/questions/35830779/django-rest-framework-apiview-pagination
+Authentication: https://dev.to/koladev/django-rest-authentication-cmh  
+Pagination: https://stackoverflow.com/questions/35830779/django-rest-framework-apiview-pagination  
+Deployment: https://dev.to/mdrhmn/deploying-react-django-app-using-heroku-2gfa  

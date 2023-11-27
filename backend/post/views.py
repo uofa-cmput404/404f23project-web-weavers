@@ -1,4 +1,6 @@
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Post
@@ -7,9 +9,12 @@ from .serializers import PostSerializer
 from rest_framework.pagination import PageNumberPagination
 from drf_spectacular.utils import extend_schema
 import uuid
+from nodes.permissions import IsAuthorizedNode
 
 # Create your views here.
 class PostList(APIView, PageNumberPagination):
+    permission_classes = [IsAuthenticated | IsAuthorizedNode]
+
     @extend_schema(
         description="List all posts.",
         responses={200: PostSerializer(many=True)}
@@ -34,12 +39,10 @@ class PostList(APIView, PageNumberPagination):
                 posts = self.paginate_queryset(posts, request)
 
         serializer = PostSerializer(posts, many=True)
-        response = Response({
+        return Response({
             "type": "posts",
             "items": serializer.data
         })
-        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-        return response
     
     @extend_schema(
         description="Create a new post with a new id.",
@@ -64,11 +67,11 @@ class PostList(APIView, PageNumberPagination):
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
         
-        response = Response(serializer.errors)
-        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-        return response
+        return Response(serializer.errors)
     
 class PostDetails(APIView):
+    permission_classes = [IsAuthenticated | IsAuthorizedNode]
+    
     @extend_schema(
         description="Retrieve a post.",
         responses={200: PostSerializer()}
@@ -83,9 +86,7 @@ class PostDetails(APIView):
         except:
             return Response({"error": "Post Not Found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = PostSerializer(post)
-        response = Response(serializer.data)
-        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-        return response
+        return Response(serializer.data)
     
     @extend_schema(
         description="Update a post.",
@@ -96,16 +97,17 @@ class PostDetails(APIView):
         """
         Update a post.
         """
-        # TODO: Implement authentication for this endpoint
+        post_owner = Author.objects.get(pk=author_id)
+        if request.user != post_owner:
+            return Response({"error": "You are not authorized to update this post"}, status=status.HTTP_403_FORBIDDEN)
+        
         author = Author.objects.get(pk=author_id)
         post = Post.objects.get(pk=post_id, author=author)
         serializer = PostSerializer(post, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        response = Response(serializer.errors)
-        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-        return response
+        return Response(serializer.errors)
     
     @extend_schema(
         description="Creates a post with a specific id.",
@@ -132,9 +134,7 @@ class PostDetails(APIView):
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
         
-        response = Response(serializer.errors)
-        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-        return response
+        return Response(serializer.errors)
     
     @extend_schema(
         description="Delete a post.",
@@ -148,10 +148,23 @@ class PostDetails(APIView):
         try:
             post = Post.objects.get(pk=post_id, author=author)
         except:
-            response = Response({"error": "Post Not Found"}, status=status.HTTP_404_NOT_FOUND)
-            response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-            return response
+            return Response({"error": "Post Not Found"}, status=status.HTTP_404_NOT_FOUND)
+
         post.delete()
-        response = Response(status=status.HTTP_204_NO_CONTENT)
-        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-        return response
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+@extend_schema(
+    description="List all public posts on the node.",
+    responses={200: PostSerializer(many=True)}
+)
+def list_public_posts(request):
+    """
+    List all public posts on the node.
+    """
+    public_posts = Post.objects.filter(visibility="PUBLIC").order_by('-published').all()
+    serializer = PostSerializer(public_posts, many=True)
+    return Response({
+        "type": "posts",
+        "items": serializer.data
+    })
