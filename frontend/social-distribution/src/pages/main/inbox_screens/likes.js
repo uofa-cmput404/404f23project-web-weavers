@@ -5,7 +5,7 @@ import {API_URL} from "../../../components/api";
 import axios from 'axios';
 
 
-export default function Notifications() {
+export default function Likes() {
     const user = localStorage.getItem("user")
     const [notifs, setNotifs] = useState([])
 
