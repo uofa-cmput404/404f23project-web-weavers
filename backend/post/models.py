@@ -4,6 +4,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 from authors.models import Author
 
+
 # Create your models here.
 
 class Post(models.Model):
@@ -41,9 +42,8 @@ class Post(models.Model):
     content = models.TextField(default="")
     author = models.ForeignKey(Author, null=True, on_delete=models.CASCADE)
     categories = ArrayField(models.CharField(), blank=True, default=list, null=True)
-    count = models.PositiveIntegerField(default=0)         # TODO: update this field when a comment is added
-    comments = ArrayField(models.JSONField(), blank=True, default=list, null=True)
-    commentsSrc = models.JSONField(null=True, blank=True) # TODO: will be replaced by the Comment model when implemented
+    count = models.PositiveIntegerField(default=0)
+    comments = models.URLField(blank=True, null=True)
     published = models.DateTimeField(default=timezone.now)
     visibility = models.CharField(max_length=200, choices=VISIBILITY_CHOICES, default="PUBLIC")
     unlisted = models.BooleanField(default=False)

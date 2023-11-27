@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'authors',
     'post',
     'followers',
+    'comments',
     'likes',
     'nodes',
     'inbox',

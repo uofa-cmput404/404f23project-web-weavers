@@ -33,6 +33,8 @@ urlpatterns = [
     # Posts
     path('public-posts/', list_public_posts),
     path('authors/<uuid:author_id>/posts/', include('post.urls')),
+    # Comments
+    path('authors/<uuid:author_id>/posts/<uuid:post_id>/comments/', include('comments.urls')),
     # Post Likes
     path('authors/<uuid:author_id>/posts/<uuid:post_id>/likes/', list_post_likes),
     # Liked
