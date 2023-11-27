@@ -12,7 +12,8 @@ from nodes.permissions import IsAuthorizedNode
 # Create your views here.
 @extend_schema(
     description="List all likes of an author.",
-    responses={200: LikeSerializer(many=True)}
+    responses={200: LikeSerializer(many=True)},
+    tags=["likes"]
 )
 @api_view(['GET'])
 @permission_classes([IsAuthenticated | IsAuthorizedNode])
@@ -31,7 +32,8 @@ def list_author_likes(request, author_id):
     
 @extend_schema(
     description="List all likes of a post.",
-    responses={200: LikeSerializer(many=True)}
+    responses={200: LikeSerializer(many=True)},
+    tags=["likes"]
 )
 @api_view(['GET'])
 @permission_classes([IsAuthenticated | IsAuthorizedNode])
@@ -51,7 +53,8 @@ def list_post_likes(request, author_id, post_id):
 
 @extend_schema(
     description="List all likes of a comment.",
-    responses={200: LikeSerializer(many=True)}
+    responses={200: LikeSerializer(many=True)},
+    tags=["likes"]
 ) 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated | IsAuthorizedNode])
