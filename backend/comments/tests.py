@@ -12,6 +12,7 @@ class CommentTests(APITestCase):
         self.post1 = Post.objects.create(title="post1", description="post1", author=self.author1)
         self.comment1 = Comment.objects.create(author=self.author2, post=self.post1, comment="comment1")
         self.comment2 = Comment.objects.create(author=self.author1, post=self.post1, comment="comment2")
+        self.client.force_authenticate(user=self.author1)
 
     def test_get_comments(self):
         response = self.client.get(f"{self.author1.url}/posts/{self.post1.uuid}/comments/")

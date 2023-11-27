@@ -1,16 +1,20 @@
-from django.shortcuts import render
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Comment
 from post.models import Post
 from authors.models import Author
+from nodes.permissions import IsAuthorizedNode
 from .serializers import CommentSerializer
 from rest_framework.pagination import PageNumberPagination
 import uuid
 
+
 # Create your views here.
 class CommentList(APIView, PageNumberPagination):
+    permission_classes = [IsAuthenticated | IsAuthorizedNode]
+
     def get(self, request, author_id, post_id):
         """
         Get all comments for a post
