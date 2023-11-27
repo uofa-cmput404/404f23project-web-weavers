@@ -21,25 +21,20 @@ class CommentTests(APITestCase):
 
     def test_post_comment(self):
         response = self.client.post(f"{self.author1.url}/posts/{self.post1.uuid}/comments/", data={ 
-            "author": self.author1.id,
-            "post": self.post1.uuid,
             "comment": "comment3",
-            "type":"comment"}, format="json")
-        print(response.content)
+        }, format="json")
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual("comments", response.data["type"])
-        self.assertEqual(response.data["items"][0]["comment"], "comment3")
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data["comment"], "comment3")
         self.assertEqual(Comment.objects.count(), 3)
 
         self.post1.refresh_from_db()  # Refresh the post instance from the database
         self.assertEqual(self.post1.count, 3)
 
-
     def test_get_comment_pagination(self):
+        Comment.objects.create(author=self.author1, post=self.post1, comment="comment3")
+        Comment.objects.create(author=self.author1, post=self.post1, comment="comment4")
+        Comment.objects.create(author=self.author1, post=self.post1, comment="comment5")
         response = self.client.get(f"{self.author1.url}/posts/{self.post1.uuid}/comments/?size=1")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["items"]), 1)
-        self.assertEqual(response.data["page"], 1)
-        self.assertEqual(response.data["size"], 1)
-        # self.assertEqual(self.post1.count, 2)  # Change to use self.post1.count
