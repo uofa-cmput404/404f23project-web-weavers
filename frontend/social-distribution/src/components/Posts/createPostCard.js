@@ -7,10 +7,6 @@ import TextPost from "./TextPost.js";
 import axiosService from "../../utils/axios"
 
 export default function CreatePostCard() {
-<<<<<<< HEAD
-=======
-  const baseURL = API_URL + "authors/";
->>>>>>> main
   const fileInputRef = useRef(null);
   const [title, setTitle] = useState(false);
   const [showDescriptionInput, setShowDescriptionInput] = useState(false);

@@ -11,12 +11,7 @@ export default function Likes() {
     const [notifs, setNotifs] = useState([])
 
     const fetchdata = async () => {
-<<<<<<< HEAD:frontend/social-distribution/src/pages/main/inbox_screens/notifications.js
         const res = await axiosService.get("authors/" + user+ "/inbox/likes/")
-=======
-        const res = await axios.get(API_URL + "authors/" + user+ "/inbox/likes/")
-        console.log("Inbox is: ")
->>>>>>> main:frontend/social-distribution/src/pages/main/inbox_screens/Likes.js
         console.log(res.data.items)
         setNotifs(res.data.items)
     };
