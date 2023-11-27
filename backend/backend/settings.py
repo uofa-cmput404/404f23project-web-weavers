@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'post',
     'followers',
     'likes',
+    'nodes',
     'inbox',
 ]
 

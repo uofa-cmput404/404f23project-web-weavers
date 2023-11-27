@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from drf_spectacular.utils import extend_schema
-
+from nodes.permissions import IsAuthorizedNode
 
 class AuthorViewSet(viewsets.ModelViewSet):
     http_method_names = ['get']
@@ -31,11 +31,12 @@ class AuthorViewSet(viewsets.ModelViewSet):
         return obj
     
 
-
 class AuthorList(APIView, PageNumberPagination):
     """
     View to list all profiles on the server.
     """
+    permission_classes = [IsAuthenticated | IsAuthorizedNode]
+
     @extend_schema(
         description="List all authors.",
         responses={200: AuthorSerializer(many=True)}
@@ -54,13 +55,12 @@ class AuthorList(APIView, PageNumberPagination):
             if self.get_page_size(request):
                 authors = self.paginate_queryset(authors, request)
         serializer = AuthorSerializer(authors, many=True)
-        response = Response({
+        return Response({
             "type": "authors",
             "items": serializer.data
         })
-        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-        return response
 
+    # used for testing purposes
     def post(self, request):
         serializer = AuthorSerializer(data=request.data)
         if serializer.is_valid():
@@ -74,6 +74,8 @@ class AuthorDetails(APIView):
     """
     View to retrieve or update a specific author's profile in the server.
     """
+    permission_classes = [IsAuthenticated | IsAuthorizedNode]
+    
     @extend_schema(
         description="Retrieve a specific author's profile.",
         responses={200: AuthorSerializer()}
@@ -81,9 +83,7 @@ class AuthorDetails(APIView):
     def get(self, request, pk):
         author = Author.objects.get(pk=pk)
         serializer = AuthorSerializer(author)
-        response = Response(serializer.data)
-        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-        return response
+        return Response(serializer.data)
 
     @extend_schema(
         description="Update a specific author's profile.",
@@ -95,10 +95,6 @@ class AuthorDetails(APIView):
         serializer = AuthorSerializer(author, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            response = Response(serializer.data)
-            response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-            return response
+            return Response(serializer.data)
             
-        response = Response(serializer.errors)
-        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-        return response
+        return Response(serializer.errors)

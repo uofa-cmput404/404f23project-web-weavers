@@ -1,14 +1,18 @@
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from authors.models import Author
 from authors.serializers import AuthorSerializer
 from drf_spectacular.utils import extend_schema
+from nodes.permissions import IsAuthorizedNode
 
 class FollowersList(APIView):
     """
     View to list all followers of a user on the server.
     """
+    permission_classes = [IsAuthenticated | IsAuthorizedNode]
+
     @extend_schema(
         description="Get all followers of an author",
         responses={200: AuthorSerializer(many=True)}
@@ -27,6 +31,8 @@ class FollowersList(APIView):
         })
 
 class FollowerDetails(APIView):
+    permission_classes = [IsAuthenticated | IsAuthorizedNode]
+    
     @extend_schema(
         description="Returns true if the foreign author is a follower of the author, false otherwise",
         responses={200: bool}
@@ -47,7 +53,10 @@ class FollowerDetails(APIView):
         responses={200: "Successfully added follower"}
     )
     def put(self, request, author_id, foreign_author_id):
-        #TODO implement authentication for this route
+        follow_recipient = Author.objects.get(pk=author_id)
+        if request.user != follow_recipient:
+            return Response({"error": "You are not authorized to add followers to this author"}, status=status.HTTP_403_FORBIDDEN)
+        
         try:
             author = Author.objects.get(pk=author_id)
         except Author.DoesNotExist:

@@ -1,4 +1,5 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from post.serializers import PostSerializer
@@ -10,6 +11,7 @@ from inbox.models import Inbox
 from followers.models import Follow
 from post.models import Post
 from likes.models import Like
+from nodes.permissions import IsAuthorizedNode
 from followers.serializers import FollowSerializer
 from drf_spectacular.utils import extend_schema
 
@@ -19,37 +21,42 @@ from drf_spectacular.utils import extend_schema
     responses={200: FollowSerializer(many=True)}
 )
 @api_view(['GET'])
+@permission_classes([IsAuthenticated | IsAuthorizedNode])
 def list_follows_from_inbox(request, author_id):
+    inbox_owner = Author.objects.get(pk=author_id)
+    if request.user != inbox_owner:
+        return Response({"error": "You are not authorized to access this inbox"}, status = status.HTTP_403_FORBIDDEN)
     
     inbox = Inbox.objects.get(author=author_id)
     inbox_follows = inbox.follows.all()
 
     follow_serializer = FollowSerializer(inbox_follows, many=True)
-    response = Response({
+    return Response({
         "type": "inbox",
         "author": inbox.author.url,
         "items": follow_serializer.data
     })
-    response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-    return response
 
 @extend_schema(
     description="List all likes sent to the author's inbox.",
     responses={200: LikeSerializer(many=True)}
 )
 @api_view(['GET'])
+@permission_classes([IsAuthenticated | IsAuthorizedNode])
 def list_likes_from_inbox(request, author_id):
+    inbox_owner = Author.objects.get(pk=author_id)
+    if request.user != inbox_owner:
+        return Response({"error": "You are not authorized to access this inbox"}, status = status.HTTP_403_FORBIDDEN)
+    
     inbox = Inbox.objects.get(author=author_id)
     inbox_likes = inbox.likes.all()
 
     like_serializer = LikeSerializer(inbox_likes, many=True)
-    response = Response({
+    return Response({
         "type": "inbox",
         "author": inbox.author.url,
         "items": like_serializer.data
     })
-    response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-    return response
 
 # TODO: implement after Comments is done
 # @extend_schema(
@@ -61,12 +68,17 @@ def list_likes_from_inbox(request, author_id):
 #     pass
 
 class InboxView(APIView, PageNumberPagination):
-    # TODO add authentication
+    permission_classes = [IsAuthenticated | IsAuthorizedNode]
     @extend_schema(
         description="List all posts sent to the author's inbox.",
         responses={200: PostSerializer(many=True)}
     )
     def get(self, request, author_id):
+        # if the author is not the owner of the inbox, they cannot access it
+        inbox_owner = Author.objects.get(pk=author_id)
+        if request.user != inbox_owner:
+            return Response({"error": "You are not authorized to access this inbox"}, status = status.HTTP_403_FORBIDDEN)
+
         # Pagination settings
         self.page_size_query_param = 'size'
         self.page_size = 10 # default page size
@@ -82,13 +94,11 @@ class InboxView(APIView, PageNumberPagination):
                 inbox_posts = self.paginate_queryset(inbox_posts, request)
 
         post_serializer = PostSerializer(inbox_posts, many=True)
-        response = Response({
+        return Response({
             "type": "inbox",
             "author": inbox.author.url,
             "items": post_serializer.data
         })
-        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-        return response
     
     @extend_schema(
         description="Send a post, follow request, like or comment to the author's inbox.",
@@ -115,9 +125,7 @@ class InboxView(APIView, PageNumberPagination):
                 inbox.follows.add(follow)
 
                 follow_serializer = FollowSerializer(follow)
-                response = Response(follow_serializer.data, status = status.HTTP_200_OK)
-                response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-                return response
+                return Response(follow_serializer.data, status = status.HTTP_200_OK)
 
         elif request.data["type"] == "Like":
             like_author = Author.objects.get(id=request.data["author"])
@@ -138,9 +146,7 @@ class InboxView(APIView, PageNumberPagination):
                 inbox.likes.add(like)
 
                 like_serializer = LikeSerializer(like)
-                response = Response(like_serializer.data, status = status.HTTP_200_OK)
-                response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-                return response
+                return Response(like_serializer.data, status = status.HTTP_200_OK)
             
         elif request.data["type"] == "post":
             # I am assuming that the post is already created
@@ -148,19 +154,13 @@ class InboxView(APIView, PageNumberPagination):
             post = Post.objects.get(id=request.data["id"])
             inbox.posts.add(post)
             post_serializer = PostSerializer(post)
-            response = Response(post_serializer.data, status = status.HTTP_200_OK)
-            response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-            return response
+            return Response(post_serializer.data, status = status.HTTP_200_OK)
             
         elif request.data["type"] == "comment":
             #TODO: implement after Comments is done
-            response = Response({"error": "Not implemented"}, status = status.HTTP_501_NOT_IMPLEMENTED)
-            response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-            return response
+            return Response({"error": "Not implemented"}, status = status.HTTP_501_NOT_IMPLEMENTED)
         
-        response = Response(status = status.HTTP_400_BAD_REQUEST)
-        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-        return response
+        return Response(status = status.HTTP_400_BAD_REQUEST)
     
     @extend_schema(
         description="Clear the author's inbox.",
@@ -176,7 +176,5 @@ class InboxView(APIView, PageNumberPagination):
         inbox.likes.clear()
         # inbox.comments.clear() #TODO: implement after Comments is done
 
-        response = Response(status = status.HTTP_204_NO_CONTENT)
-        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
-        return response
+        return Response(status = status.HTTP_204_NO_CONTENT)
         

@@ -15,6 +15,7 @@ class LikeTests(APITestCase):
         self.post_like1 = Like.objects.create(summary="Bob likes your post", author=self.author2, object=self.post1.id)
         # Alice likes Mary's post
         self.post_like2 = Like.objects.create(summary="Alice likes your post", author=self.author3, object=self.post1.id)
+        self.client.force_authenticate(user=self.author1)
 
     def test_list_post_likes(self):
         response = self.client.get(f"{self.post1.id}/likes/")
