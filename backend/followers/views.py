@@ -16,7 +16,8 @@ class FollowersList(APIView):
 
     @extend_schema(
         description="Get all followers of an author",
-        responses={200: AuthorSerializer(many=True)}
+        responses={200: AuthorSerializer(many=True)},
+        tags=["followers"]
     )
     def get(self, request, author_id):
         try:
@@ -36,7 +37,8 @@ class FollowerDetails(APIView):
     
     @extend_schema(
         description="Returns true if the foreign author is a follower of the author, false otherwise",
-        responses={200: bool}
+        responses={200: bool},
+        tags=["followers"]
     )
     def get(self, request, author_id, foreign_author_id):
         try:
@@ -51,7 +53,8 @@ class FollowerDetails(APIView):
 
     @extend_schema(
         description="Adds the foreign author as a follower of the author",
-        responses={200: "Successfully added follower"}
+        responses={200: "Successfully added follower"},
+        tags=["followers"]
     )
     def put(self, request, author_id, foreign_author_id):
         follow_recipient = Author.objects.get(pk=author_id)
@@ -73,7 +76,8 @@ class FollowerDetails(APIView):
 
     @extend_schema(
         description="Removes the foreign author as a follower of the author",
-        responses={204: None}
+        responses={204: None},
+        tags=["followers"]
     )
     def delete(self, request, author_id, foreign_author_id):
         try:
@@ -90,8 +94,9 @@ class FollowerDetails(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 @extend_schema(
-    description="Returns true if the foreign author is a follower of the author, false otherwise",
-    responses={200: bool}
+    description="List all friends of the author",
+    responses={200: AuthorSerializer(many=True)},
+    tags=["followers"]
 )
 @api_view(['GET'])
 def list_friends(request, author_id):
