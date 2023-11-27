@@ -41,18 +41,14 @@ export default function FriendsBar({user, ...props}) {
     }
     , [])
 
-    // Search bar functionality
+    // Search bar functionality- for all users and followers
     const filteredUsers = users.filter(user => 
         user.displayName.toLowerCase().includes(search.toLowerCase())
     );
 
-    console.log("followers: ", followers);
-
     const followersFiltered = followers.filter(user =>
         user.displayName.toLowerCase().includes(search.toLowerCase())
     );
-
-    console.log("followersFiltered: ", followersFiltered);
     
     const handleTabChange = (event, newvalue) => {
         setValue(newvalue);
