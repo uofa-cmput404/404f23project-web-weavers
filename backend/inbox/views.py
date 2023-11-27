@@ -77,7 +77,7 @@ def delete_follow_request(request):
         return Response({"message": "Follow request deleted"}, status=status.HTTP_200_OK)
     else:
         return Response({"error": "Follow request not found"}, status=status.HTTP_404_NOT_FOUND)
-    
+
 class InboxView(APIView, PageNumberPagination):
     permission_classes = [IsAuthenticated | IsAuthorizedNode]
     @extend_schema(
@@ -88,7 +88,6 @@ class InboxView(APIView, PageNumberPagination):
         # if the author is not the owner of the inbox, they cannot access it
         inbox_owner = Author.objects.get(pk=author_id)
         if request.user != inbox_owner:
-            print("hit wrong owner")
             return Response({"error": "You are not authorized to access this inbox"}, status = status.HTTP_403_FORBIDDEN)
 
         # Pagination settings
