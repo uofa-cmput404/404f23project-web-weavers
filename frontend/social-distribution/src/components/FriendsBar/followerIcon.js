@@ -15,30 +15,6 @@ export default function FollowerIcon({user, displayedUser, currentUser, ...props
    const {isOpen, onToggle}= useDisclosure();
    const current= currentUser;
 
-    const handleFollow = async () => {
-        const data= {
-            "summary": displayName + " wants to follow you",
-            "type": "Follow",
-            "actor": API_URL + "authors/" + current,           
-            "object": API_URL + "authors/" + user.id
-        }
-        const url= API_URL + "authors/" + user.id + "/inbox/";     
-        
-        console.log("actor: " + current);
-        console.log("object: " + user.id);
-
-        try{
-            const response = await axios.post(url, data);
-            console.log(response);
-        } catch (error) {
-            console.error('Error message:', error.message);
-            if (error.response) {
-                console.error('Response data:', error.response.data);
-                console.error('Response status:', error.response.status);
-                console.error('Config:', error.response.config)
-            }
-        }
-    };
 
     return(
         <Flex align ="center">
