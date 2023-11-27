@@ -54,14 +54,15 @@ export default function Explore({props}){
       const getBEEGPosts = async () => {
         try {
           const currentPosts = [];
-            const postUsers= await getPublicBEEGUsers();
+            let postUsers= await getPublicBEEGUsers();
             for (let i = 0; i < postUsers.length; i++){
                 const res = await BeegYoshiService.get("service/authors/" + postUsers[i].id + "/posts/" )
-            for(let i = 0; i < postUsers.length; i++){
-                let postPush = res.data[i];
-                postPush.author = postUsers[i];
-                currentPosts.push(postPush);
-            }
+                for(let i = 0; i < res.data.length; i++){
+                    let postPush = res.data[i];
+                    postPush["author"] = postUsers[i];
+                    console.log(JSON.stringify(postPush))
+                    currentPosts.push(postPush);
+                }
             }
           setPublicPosts(currentPosts);
         } catch (err) {
