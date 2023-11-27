@@ -7,59 +7,31 @@ import FriendsBar from "../../components/FriendsBar/friendsBar";
 import Post from "../../components/Posts/Posted";
 
 import axiosService from "../../utils/axios"
-import authSlice from "../../store/slices/auth";
-import store from '../../store';
 
 export default function Home() {
     //This is where the uuid of the user is being stored for now
     const [publicPosts, setPublicPosts] = useState([])
-    const [publicUsers, setPublicUsers] = useState([])
     let [displayName, setDisplayName] = useState("")
-    const { token } = store.getState().auth;
-    console.log("authslice token is " + token)
-    //queries all available authors the database
-    //queries all posts of every author
-    //adds a post to the list if it's public TODO later
-    const getPublicUsers = async () => {
-        try {
-          const res = await axiosService.get("authors/");
 
-          setPublicUsers(res.data.items)
-          for(let i = 0; i < res.data.items.length; i++){
-            if(res.data.items[i].uuid == user){
-              setDisplayName(res.data.items[i].displayName)
-            }
-          }
 
-          return res.data.items;
-        } catch (err) {
-          console.log(err);
-        }
-      };
-
-      const getPosts = async () => {
-        try {
-          const currentPosts = [];
-            const postUsers= await getPublicUsers();
-            for (let i = 0; i < postUsers.length; i++){
-                const res = await axiosService.get({
-                    url: postUsers[i].id + "/posts/"
-
-                });
-            for(let i = 0; i < res.data.items.length; i++){
-                currentPosts.push(res.data.items[i]);
-            }
-            }
-          setPublicPosts(currentPosts);
-        } catch (err) {
-          console.log(err);
-        }
-      };
+    const getPosts = async () => {
+      try {
+        const res = await axiosService.get("public-posts/");
+        setPublicPosts(res.data.items);
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
      useEffect(() => {
         getPosts();
       }, []);
     const user = localStorage.getItem("user")
+
+    axiosService.get("authors/" + user + "/").then((response) => {
+        setDisplayName(response.data.displaName)
+    })
+
     return (
         <div style={styles.container}>
             <LogoBar/>

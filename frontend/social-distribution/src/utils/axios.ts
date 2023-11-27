@@ -13,7 +13,6 @@ const axiosService = axios.create({
 
 axiosService.interceptors.request.use(async (config) => {
     const { token } = store.getState().auth;
-    console.log("in interception token is " + token)
     if (token !== null) {
         config.headers["Authorization"] = 'Bearer ' + token;
         // @ts-ignore

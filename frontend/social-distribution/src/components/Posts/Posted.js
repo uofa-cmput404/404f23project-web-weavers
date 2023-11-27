@@ -23,6 +23,7 @@ import {
 } from "react-icons/ai";
 import "./Posting.css"
 import { sizes, colors } from "../../utils/theme";
+import {API_URL} from "../api";
 import { useNavigate } from 'react-router-dom';
 import axiosService from "../../utils/axios";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
@@ -44,20 +45,6 @@ export default function Post({postData, visibility, userUUID, displayName}){
     const[showImageField, setShowImageField] = useState(false);
 
     const[showEditPOST, setShowEditPOST] = useState(false)
-
-    // Check likes of the post (THIS WILL BE MODULARIZED LATER)
-    /*
-    const fetchLikes= async () => {
-        const res = await axios.get(postData.id + "/likes/")
-        setLikes(res.data.items)
-        for(let i = 0; i < likes.length; i++){
-            console.log(JSON.stringify(likes))
-        }
-    };
-    useEffect(() => {
-        fetchLikes();
-    }, [])
-    */
 
     useEffect(() => {
         //This always get set to false initially

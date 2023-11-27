@@ -3,9 +3,11 @@ import NavBar from "../../components/Bars/navbar.js";
 import LogoBar from "../../components/Bars/logoBar.js";
 import FriendsBar from "../../components/FriendsBar/friendsBar.js";
 import {colors, sizes, spacing} from "../../utils/theme";
-import axiosService from "../../utils/axios";
+
 
 import Post from "../../components/Posts/Posted";
+import {getDisplayName} from "../../components/api";
+import axiosService from "../../utils/axios";
 import { useState, useEffect } from 'react';
 
 export default function MyStream({props}){
@@ -32,7 +34,7 @@ export default function MyStream({props}){
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='My Stream'/>
-            <FriendsBar user={user}/>
+            <FriendsBar/>
             <h1>My Stream</h1>
             <div style={styles.content}>
                 <div style={{ ...styles.postContainer }}>

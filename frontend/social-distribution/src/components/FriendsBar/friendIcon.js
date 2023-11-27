@@ -4,7 +4,7 @@ import {React, useState} from "react";
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineComment } from "react-icons/ai";
 import { API_URL } from "../api.js";
-import axios from "axios";
+import axiosService from "../../utils/axios";
 import { current } from "@reduxjs/toolkit";
 import Login from "../../pages/login_signup/tab_screens/login.js";
 
@@ -25,13 +25,13 @@ export default function FriendIcon({user, displayedUser, currentUser, ...props})
             "actor": API_URL + "authors/" + current,           // P2User    2b0144ac-e6a4-40c9-9c5e-b3eff71297bb
             "object": API_URL + "authors/" + user.id           // P2Test     e737be90-bb87-4dbd-8840-209d422e83e7
         }
-        const url= API_URL + "authors/" + user.id + "/inbox/";
+        const url= "authors/" + user.id + "/inbox/";
 
         console.log("actor: " + current);
         console.log("object: " + user.id);
 
         try{
-            const response = await axios.post(url, data);
+            const response = await axiosService.post(url, data);
             setButtonText(buttonText === 'Follow' ? 'Request Sent' : 'Follow');
             console.log(response);
         } catch (error) {
