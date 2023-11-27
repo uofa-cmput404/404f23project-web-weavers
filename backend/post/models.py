@@ -43,11 +43,7 @@ class Post(models.Model):
     author = models.ForeignKey(Author, null=True, on_delete=models.CASCADE)
     categories = ArrayField(models.CharField(), blank=True, default=list, null=True)
     count = models.PositiveIntegerField(default=0)         # TODO: update this field when a comment is added
-    #this should be a url field
-    comments = ArrayField(models.JSONField(), blank=True, default=list, null=True)
-    # TODO: will be replaced by the Comment model when implemented
-    # commentsSrc = models.JSONField(null=True, blank=True)
-    # commentsSrc = models.ForeignKey(Comment, null=True, blank=True, on_delete=models.CASCADE)
+    comments = models.URLField(blank=True, null=True)
     published = models.DateTimeField(default=timezone.now)
     visibility = models.CharField(max_length=200, choices=VISIBILITY_CHOICES, default="PUBLIC")
     unlisted = models.BooleanField(default=False)

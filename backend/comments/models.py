@@ -14,8 +14,7 @@ class Comment(models.Model):
     ]
     id = models.URLField(max_length=200, unique=True, editable=False)
     type = models.CharField(max_length=300, blank=True, default="comment")
-    #post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
     comment = models.TextField()
     contentType = models.CharField(
@@ -31,4 +30,9 @@ class Comment(models.Model):
         # When the object is instantiated, set the id field using the post URL and uuid
         if not self.id and self.post:
             self.id = self.post.id + "/comments/" + str(self.uuid)
+
+            # When the object is created, increment the post's comment count
+            self.post.count += 1
+            self.post.save()
+            
         super().save(*args, **kwargs)
