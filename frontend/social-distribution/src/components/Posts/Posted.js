@@ -29,7 +29,7 @@ import axiosService from "../../utils/axios";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 
 
-export default function Post({postData, visibility, userUUID, displayName}){
+export default function Post({postData, visibility, userUUID, displayName, team}){
     // const userID= localStorage.getItem()
     // const postID = 1;
     let navigate = useNavigate();
@@ -145,6 +145,7 @@ export default function Post({postData, visibility, userUUID, displayName}){
                         <Avatar name={postData.author.displayName} src='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80' />
                         <Box>
                             <Heading size={sizes.md}>{postData.author.displayName}</Heading>
+                            <Heading size={sizes.md}>{team}</Heading>
                         </Box>
                         {showEditField && (
                             <Flex style={styles.buttons}>

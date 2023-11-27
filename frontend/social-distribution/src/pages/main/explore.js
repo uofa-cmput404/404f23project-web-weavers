@@ -15,7 +15,7 @@ import {
     Button,
   } from '@chakra-ui/react'
 
-import {aTeamService} from "../../utils/axios";
+import {aTeamService, BeegYoshiService} from "../../utils/axios";
 import axiosService from "../../utils/axios";
 import Post from "../../components/Posts/Posted";
 import {ChevronDownIcon} from '@chakra-ui/icons';
@@ -23,24 +23,68 @@ import {ChevronDownIcon} from '@chakra-ui/icons';
 export default function Explore({props}){
     const user = localStorage.getItem("user")
     const [open, setOpen] = useState(true)
-    const [publicPosts, setPublicPosts] = useState([]);
+    const [publicPosts, setPublicPosts] = useState([])
+    const [publicUsers, setPublicUsers] = useState([])
     const[displayName, setDisplayName] = useState("")
+    const [currServer, setCurrServer] = useState("A Team")
     const handleOpen = () => {
         setOpen(!open);
       };
-    const getPosts = async () => {
+
+      const switchServer = (newServer) => {
+        //switch server and call the list to reload
+        setCurrServer(newServer);
+        if(newServer == "Beeg Yoshi"){
+            getBEEGPosts();
+        } else if (newServer == "A Team"){
+            getATeamPosts();
+        }
+      }
+      const getPublicBEEGUsers = async () => {
         try {
-          const res = await aTeamService.get("getAllPublicPosts/");
-          console.log("recieved response")
-          console.log(res)
-          setPublicPosts(res.data.results.items);
+            const res = await BeegYoshiService.get("service/authors/");
+          setPublicUsers(res.data)
+          console.log(res.data)
+          return res.data;
         } catch (err) {
           console.log(err);
         }
       };
-      useEffect(() => {
-        getPosts();
-      }, []);
+
+      const getBEEGPosts = async () => {
+        try {
+          const currentPosts = [];
+            const postUsers= await getPublicBEEGUsers();
+            for (let i = 0; i < postUsers.length; i++){
+                const res = await BeegYoshiService.get("service/authors/" + postUsers[i].id + "/posts/" )
+            for(let i = 0; i < postUsers.length; i++){
+                let postPush = res.data[i];
+                postPush.author = postUsers[i];
+                currentPosts.push(postPush);
+            }
+            }
+          setPublicPosts(currentPosts);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      //Getting Beeg Yoshi's Posts
+
+
+
+
+    const getATeamPosts = async () => {
+        try {
+        const res = await aTeamService.get("getAllPublicPosts/");
+        console.log("recieved response")
+        console.log(res)
+        setPublicPosts(res.data.results.items);
+        } catch (err) {
+        console.log(err);
+        }
+        };
+
 
       axiosService.get("authors/" + user + "/").then((response) => {
           setDisplayName(response.data.displaName)
@@ -55,19 +99,19 @@ export default function Explore({props}){
                     Teams
                 </MenuButton>
                 <MenuList>
-                    <MenuItem>A Team</MenuItem>
-                    <MenuItem>Beeg Yoshi</MenuItem>
+                    <MenuItem onClick={() => switchServer("A Team")}>A Team</MenuItem>
+                    <MenuItem onClick={() => switchServer("Beeg Yoshi")}>Beeg Yoshi</MenuItem>
                 </MenuList>
             </Menu>
             </div>
-            <h1>Explore</h1>
+            <h1 style = {styles.header}>Now Exploring {currServer}</h1>
             <h1 alignItems="center"> </h1>
             <div style={styles.content}>
             <div style={{ ...styles.postContainer }}>
                     {/* TODO: change this to be more dynamic when pulling list of posts */}
                     {publicPosts.map((e)=>{
                         return <div style={styles.post}>
-                        <Post postData={e} visibility = {"PUBLIC"} userUUID = {user} displayName={displayName}/> </div>
+                        <Post postData={e} visibility = {"PUBLIC"} userUUID = {user} displayName={displayName} team = {currServer}/> </div>
                     })}
                 </div>
             </div>
@@ -102,10 +146,12 @@ const styles = {
         width: sizes.contentWidth,
         paddingTop: '5rem',
         height: `calc(100vh - ${navbarHeight})`, // set height to remaining viewport height
-        marginBottom: "20px",
 
     },
     dropdown: {
         paddingTop: "10vh"
+    },
+    header: {
+        fontSize: sizes.lg,
     }
 }
