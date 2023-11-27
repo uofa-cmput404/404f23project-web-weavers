@@ -24,8 +24,7 @@ import {
 import "./Posting.css"
 import { sizes, colors } from "../../utils/theme";
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import {API_URL} from "../api"
+import axiosService from "../../utils/axios";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 
 
@@ -89,7 +88,7 @@ export default function Post({postData, visibility, userUUID, displayName}){
             'summary': "" + displayName + " liked your post"
         }
 
-        axios.post(API_URL + "authors/" + postData.author.uuid + "/inbox/", like_values).then(function(response){
+        axiosService.post("authors/" + postData.author.uuid + "/inbox/", like_values).then(function(response){
             console.log(response)
         }).catch(function(error){
             console.log(error)
@@ -147,7 +146,7 @@ export default function Post({postData, visibility, userUUID, displayName}){
 
     // Delete Handles
     const handleDeleteClick = () => {
-        axios.delete(postData.id + "/")
+        axiosService.delete(postData.id + "/")
         window.location.reload(false);
     };
 

@@ -6,8 +6,6 @@ import CreatePostCard from "../../components/Posts/createPostCard";
 import FriendsBar from "../../components/FriendsBar/friendsBar";
 import Post from "../../components/Posts/Posted";
 
-import {API_URL} from "../../components/api";
-import axios from 'axios';
 import axiosService from "../../utils/axios"
 import authSlice from "../../store/slices/auth";
 import store from '../../store';
@@ -44,8 +42,7 @@ export default function Home() {
           const currentPosts = [];
             const postUsers= await getPublicUsers();
             for (let i = 0; i < postUsers.length; i++){
-                const res = await axios({
-                    method: "GET",
+                const res = await axiosService.get({
                     url: postUsers[i].id + "/posts/"
 
                 });

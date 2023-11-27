@@ -3,11 +3,9 @@ import NavBar from "../../components/Bars/navbar.js";
 import LogoBar from "../../components/Bars/logoBar.js";
 import FriendsBar from "../../components/FriendsBar/friendsBar.js";
 import {colors, sizes, spacing} from "../../utils/theme";
-
+import axiosService from "../../utils/axios";
 
 import Post from "../../components/Posts/Posted";
-import {API_URL, getDisplayName} from "../../components/api";
-import axios from 'axios';
 import { useState, useEffect } from 'react';
 
 export default function MyStream({props}){
@@ -18,7 +16,7 @@ export default function MyStream({props}){
 
     //This queries the user for all personal posts
     const fetchdata = async () => {
-        const res = await axios.get(API_URL + "/authors/" + user + "/posts/")
+        const res = await axiosService.get("authors/" + user + "/posts/")
         setPosts(res.data.items)
         const res2 = await getDisplayName(user)
         setDisplayName(res2);

@@ -4,11 +4,9 @@ import { Flex, Divider, IconButton, Button } from "@chakra-ui/react";
 import { FiImage } from "react-icons/fi";
 import { BeatLoader } from "react-spinners";
 import TextPost from "./TextPost.js";
-import { API_URL } from "../api.js";
-import axios from "axios";
+import axiosService from "../../utils/axios"
 
 export default function CreatePostCard() {
-  const baseURL = "http://127.0.0.1:8000/authors/";
   const fileInputRef = useRef(null);
   const [title, setTitle] = useState(false);
   const [showDescriptionInput, setShowDescriptionInput] = useState(false);
@@ -47,13 +45,13 @@ export default function CreatePostCard() {
   const handlePost = () => {
     // Post to server
     setIsLoading(true);
-    
+
     // Get data from post- don't get rid of the const in front of description
     const description= document.getElementById("description").value;
     const title= document.getElementById("title").value;
     const imageData= imageSrc;
     const postUserUUID= localStorage.getItem("user");
-    const url= baseURL + postUserUUID + "/posts/";
+    const url= "authors/" + postUserUUID + "/posts/";
 
     const fields= {
       "title": title,
@@ -63,7 +61,7 @@ export default function CreatePostCard() {
     console.log("fields: " + JSON.stringify(fields));
 
     // Send to server
-    axios.post(url, fields)
+    axiosService.post(url, fields)
     .then((response) => {
       if (response.ok) {
         console.log("Post created successfully!");
