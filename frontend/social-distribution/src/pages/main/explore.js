@@ -14,7 +14,7 @@ export default function Explore({props}){
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='Explore' uuid={user}/>
-            <FriendsBar/>
+            <FriendsBar user= {user}/>
             <h1>Explore</h1>
             <h1 alignItems="center"> </h1>
             <div style={styles.content}>

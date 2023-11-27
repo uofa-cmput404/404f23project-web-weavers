@@ -10,22 +10,9 @@ import { useFormik} from 'formik';;
           Integration with backend is not implemented yet!
 */}
 
-export const SearchBar = ({props}) => {
-  const formik = useFormik({
-    initialValues: {search_input: ''},
-        onSubmit: (values) => {
-          handleSearchUsers(values.search_input)
-        }
-      })
+export const SearchBar = ({onSearch}) => {
+  const [input, setInput] = React.useState("");
 
-
-  const handleSearchUsers = (search_input) =>{
-    //'Grab the information from the bar
-    //If nothing search all users
-    // else find that specific user and respond if they do or dont exist
-
-    console.log("searching all users with" + JSON.stringify({search_input}))
-}
   return (
     <div style={{marginBottom:'5rem'}}>
       <form onSubmit={formik.handleSubmit}>
@@ -34,26 +21,19 @@ export const SearchBar = ({props}) => {
           pointerEvents="none"
           children={<Search2Icon color="gray.600" />}
         />
-        <Input
-          id="search_input"
-          type="text"
-          placeholder="Search Users..."
-          border="1px solid #949494"
-          onChange={formik.handleChange}
-          values = {formik.values.search_input}
-          color="white" />
+        <Input type="text" placeholder="Search Users..." border="1px solid #949494" color="white" onChange={e =>setInput(e.target.value)}/>
         <InputRightAddon
           p={0}
           border="none"
         >
-          <Button
-            size="sm"
-            type="submit"
-            borderLeftRadius={0}
-            borderRightRadius={3.3}
-            border="1px solid #949494"
-            style={styles.colored}>
-            Search
+          <Button 
+            size="sm" 
+            borderLeftRadius={0} 
+            borderRightRadius={3.3} 
+            border="1px solid #949494" 
+            style={styles.colored} 
+            onClick={()=> onSearch(input)}>
+              Search
           </Button>
         </InputRightAddon>
       </InputGroup>
