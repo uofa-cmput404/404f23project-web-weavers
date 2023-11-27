@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-gn+4vkfh)lu+ur=%vzveu_a@9t!&&y_gky*mh^b*apgmbe%#fp'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -168,13 +168,11 @@ SIMPLE_JWT = {
     'USER_ID_FIELD': 'uuid',
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000"
-]
 CORS_ORIGIN_ALLOW_ALL = True
 
 django_on_heroku.settings(locals())
 
+
+# disable ssl for local development
 options = DATABASES['default'].get('OPTIONS', {})
 options.pop('sslmode', None)

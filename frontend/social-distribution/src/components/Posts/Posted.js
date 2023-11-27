@@ -83,7 +83,7 @@ export default function Post({postData, visibility, userUUID, displayName}){
         SetIsLiked(!IsLiked); // Toggle the liked state when the button is clicked
 
         let like_values = {
-            'author': userUUID,
+            'author': API_URL + "authors/" + userUUID,
             'type': "Like",
             'object': postData.id,
             'summary': "" + displayName + " liked your post"
