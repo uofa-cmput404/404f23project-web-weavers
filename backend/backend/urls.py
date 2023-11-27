@@ -18,7 +18,8 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from post.views import list_public_posts
 from likes.views import list_author_likes, list_post_likes
-from inbox.views import InboxView, list_likes_from_inbox, list_follows_from_inbox
+from followers.views import list_friends
+from inbox.views import InboxView, list_likes_from_inbox, list_follows_from_inbox, delete_follow_request
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
@@ -30,6 +31,8 @@ urlpatterns = [
     path('authors/', include('authors.urls')),
     # Followers app
     path('authors/<uuid:author_id>/followers/', include('followers.urls')),
+    path('authors/<uuid:author_id>/friends/', list_friends),
+    path('follow-requests/', delete_follow_request),
     # Posts
     path('public-posts/', list_public_posts),
     path('authors/<uuid:author_id>/posts/', include('post.urls')),

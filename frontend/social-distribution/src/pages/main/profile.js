@@ -10,7 +10,7 @@ export default function Profile({props}){
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='Profile' uuid={user}/>
-            <FriendsBar/>
+            <FriendsBar user= {user}/>
             <h1>Explore</h1>
         </div>
     )

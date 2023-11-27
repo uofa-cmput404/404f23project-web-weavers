@@ -8,7 +8,7 @@ import { API_URL } from "../api.js";
 import axios from "axios";
 
 export default function CreatePostCard() {
-  const baseURL = "http://127.0.0.1:8000/authors/";
+  const baseURL = API_URL + "authors/";
   const fileInputRef = useRef(null);
   const [title, setTitle] = useState(false);
   const [showDescriptionInput, setShowDescriptionInput] = useState(false);
@@ -47,7 +47,7 @@ export default function CreatePostCard() {
   const handlePost = () => {
     // Post to server
     setIsLoading(true);
-    
+
     // Get data from post- don't get rid of the const in front of description
     const description= document.getElementById("description").value;
     const title= document.getElementById("title").value;
@@ -64,12 +64,40 @@ export default function CreatePostCard() {
 
     // Send to server
     axios.post(url, fields)
-    .then((response) => {
-      if (response.ok) {
+    .then((response1) => {
+      if (response1.status >= 200 <= 299) {
         console.log("Post created successfully!");
         setIsLoading(false);
+
+        //get all followers
+        axios.get(baseURL + postUserUUID + "/followers/").then((followersResponse) => {
+          if(followersResponse.status >= 200 <= 299){
+            console.log("Followers found");
+            const followers = followersResponse.data.items;
+
+            //Send to each Inbox
+            if(followers){
+              for(let i = 0; i < followers.length; i++){
+                axios.post(followers[i].id + "/inbox/", response1.data).then((inboxResponse) => {
+                  console.log("Successfully sent post to follower " + followers[i].displayName);
+                }).catch((error) =>{
+                  console.log(error);
+                })
+              }}
+          }
+
+        }).then((data) => {
+          console.log(data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error creating post: ", error);
+          setIsLoading(false);
+        }
+        );
+
       }
-      return response;
+      //return response;
     })
     .then((data) => {
       console.log(data);
