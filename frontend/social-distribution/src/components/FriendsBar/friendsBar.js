@@ -86,7 +86,7 @@ const styles = {
         scrollbarWidth: 'none',
     },
     tabs: {
-        color: 'black',
+        color: 'green',
         textAlign: 'center',
         fontSize: '1rem',
         display: 'flex',
