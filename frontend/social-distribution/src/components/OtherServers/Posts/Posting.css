@@ -1,0 +1,21 @@
+.post.like-comment-area{
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+}
+
+.post-card.card-header {
+    width: 40em;
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--slightly-darker-blue);
+    box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
+    border: 2px solid var(--dark-blue);
+}
+
+.post.card-content{
+    padding: 1em;
+    width: 100%;
+    white-space: pre-line;
+    font-family: "Readex Pro Light";
+}

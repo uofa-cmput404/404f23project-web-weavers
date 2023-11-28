@@ -4,8 +4,7 @@ import { Flex, Icon } from "@chakra-ui/react";
 import { SearchBar } from "./searchBar.js";
 import FriendIcon from "./friendIcon.js";
 import { useEffect } from 'react';
-import axiosService from "../../utils/axios";
-import { API_URL } from '../api.js';
+import axiosService, { formToJSON } from "../../utils/axios";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
 /* {
@@ -25,7 +24,6 @@ export default function FriendsBar({user, ...props}) {
     useEffect(() => {
         const fetchUsers = async () => {
             try{
-                // All users
                 const response = await axiosService.get("authors/");
                 setUsers(response.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage})));
 
@@ -41,7 +39,7 @@ export default function FriendsBar({user, ...props}) {
     }
     , [])
 
-    // Search bar functionality- for all users and followers
+    // Search bar functionality
     const filteredUsers = users.filter(user =>
         user.displayName.toLowerCase().includes(search.toLowerCase())
     );
