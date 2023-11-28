@@ -25,7 +25,7 @@ import "./Posting.css"
 import { sizes, colors } from "../../utils/theme";
 import {API_URL} from "../api";
 import { useNavigate } from 'react-router-dom';
-import axiosService from "../../utils/axios";
+import axiosService, { aTeamService } from "../../utils/axios";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 
 
@@ -57,6 +57,11 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             setShowLikeField(true)
             setShowEditField(false)
             setShowDeleteField(false)
+        } else if(visibility == "INBOX"){
+            setShowLikeField(false)
+            setShowDeleteField(false)
+            setShowEditField(false)
+            setShowCommentField(false)
         }
 
         if(postData.contentType == "text/markdown"){
@@ -65,19 +70,28 @@ export default function Post({postData, visibility, userUUID, displayName, team}
      }, []);
 
     //Check for likes based on server
-    //For our server
     if(!team){
+        //For Web Weaver Server
         let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
         axiosService.get(url).then( (response) => {
             for(let i = 0; i < response.data.items.length; i++){
-                console.log("Found liked User: " + JSON.stringify(response.data.items[i]))
                 if(response.data.items[i].author.uuid == userUUID){
-                    console.log("User has liked this post")
+                    console.log("User has liked this post "+ postData.id)
                     SetIsLiked(true);
                 }
             }
         })
+    } else if (team == "A Team"){
+        // For A Team
+        /*
+        let url = "authors/" + postData.id.split("/authors/")[1]
+        console.log("sending to url " + url)
+        aTeamService.get(url).then( (response) => {
+            console.log(JSON.stringify(response.data))
+        })
+        */
     }
+
     // Like handles
     const handleLikeClick =() => {
         if(IsLiked){
@@ -85,19 +99,40 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         }
         SetIsLiked(!IsLiked); // Toggle the liked state when the button is clicked
 
-        let like_values = {
-            'author': API_URL + "authors/" + userUUID,
-            'type': "Like",
-            'object': postData.id,
-            'summary': "" + displayName + " liked your post"
-        }
+        if(!team){
+        //our server
+            let like_values = {
+                'author': API_URL + "authors/" + userUUID,
+                'type': "Like",
+                'object': postData.id,
+                'summary': "" + displayName + " liked your post"
+            }
 
-        axiosService.post("authors/" + postData.author.uuid + "/inbox/", like_values).then(function(response){
-            console.log(response)
-        }).catch(function(error){
-            console.log(error)
-            console.log(like_values)
-        })
+            axiosService.post("authors/" + postData.author.uuid + "/inbox/", like_values).then(function(response){
+                console.log(response)
+            }).catch(function(error){
+                console.log(error)
+                console.log(like_values)
+            })
+        } else if (team == "A Team"){
+            // A Team's Server
+            let like_values = {
+                'author': API_URL + "authors/" + userUUID,
+                'post': postData.id,
+                'summary': "" + displayName + " liked your post"
+            }
+            let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
+            aTeamService.post(url, like_values).then(function(response){
+                console.log(response)
+            }).catch(function(error){
+                console.log(error)
+                console.log(like_values)
+            })
+
+        }else if (team == "Beeg Yoshi"){
+            //NO IDEA HOW THIS WORKS OR IF THERE IS SUPPORT FOR REMOTE AUTHORS
+            //CODING LATER
+        }
 
 
       };

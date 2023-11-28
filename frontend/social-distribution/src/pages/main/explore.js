@@ -88,7 +88,7 @@ export default function Explore({props}){
 
 
       axiosService.get("authors/" + user + "/").then((response) => {
-          setDisplayName(response.data.displaName)
+          setDisplayName(response.data.displayName)
       })
     return(
         <div style={styles.container}>

@@ -8,7 +8,7 @@ export const aTeamService = axios.create({
     baseURL: A_TEAM_URL,
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer 06c591151b14e0462efd2ad9c91888a530967c7f'
+        'Authorization': 'Token 06c591151b14e0462efd2ad9c91888a530967c7f'
     },
 })
 

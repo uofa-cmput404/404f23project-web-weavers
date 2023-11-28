@@ -2,7 +2,7 @@ import { Avatar, Link, Flex, IconButton, Text, Button } from "@chakra-ui/react";
 import { colors, spacing } from "../utils/theme";
 import {FiBell, FiUserCheck, FiUserMinus} from 'react-icons/fi'
 import {useState} from 'react';
-import {API_URL} from "./api";
+import {API_URL, A_TEAM_URL} from "./api";
 import axiosService from '../utils/axios';
 
 // TODO
@@ -42,6 +42,12 @@ export default function ShadedClickableBox({
             'object' : object
         }
         if(request.actor.host == API_URL){
+            axiosService.delete("follow-requests/", {data: body}).then((response) => {
+                console.log(response)
+            }).catch((err) => {
+                console.log(err)
+            })
+        } else if(request.actor.host == A_TEAM_URL){
             axiosService.delete("follow-requests/", {data: body}).then((response) => {
                 console.log(response)
             }).catch((err) => {

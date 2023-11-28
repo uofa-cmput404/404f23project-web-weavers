@@ -1,6 +1,6 @@
 import axios from 'axios';
 import axiosService from '../utils/axios';
-export const API_URL = "http://127.0.0.1:8000/";
+export const API_URL = "https://web-weavers-backend-fb4af7963149.herokuapp.com/";
 export const A_TEAM_URL = "https://c404-5f70eb0b3255.herokuapp.com/";
 export const BEEG_YOSHI_URL = "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/";
 
