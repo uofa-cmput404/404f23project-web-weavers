@@ -149,10 +149,11 @@ class InboxView(APIView, PageNumberPagination):
                     author_serializer = AuthorSerializer(data=remote_author)
                     if author_serializer.is_valid():
                         author_serializer.validated_data["id"] = remote_author_url     # id is not the URL for all teams
+                        author_serializer.validated_data["url"] = remote_author_url
                         author_serializer.validated_data["host"] = remote_author["host"]
                         author_serializer.save()
                     else:
-                        return Response({"error": "Invalid author"}, status = status.HTTP_400_BAD_REQUEST)
+                        return Response(author_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                     
                 follow_requester = Author.objects.get(displayName=remote_author["displayName"], host=remote_author["host"])
 
