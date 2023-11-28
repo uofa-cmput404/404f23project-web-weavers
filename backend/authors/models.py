@@ -56,10 +56,11 @@ class Author(AbstractBaseUser, PermissionsMixin):
     def save(self, *args, **kwargs):             
         # When the object is instantiated, set the id and url fields using the host and uuid
         if not self.id:
-            if settings.DEBUG:
-                self.host = "http://127.0.0.1:8000/"
-            else:
-                self.host = "https://web-weavers-backend-fb4af7963149.herokuapp.com/"
+            if not self.host:
+                if settings.DEBUG:
+                    self.host = "http://127.0.0.1:8000/"
+                else:
+                    self.host = "https://web-weavers-backend-fb4af7963149.herokuapp.com/"
             self.id = self.host + "authors/" + str(self.uuid)
             self.url = self.host + "authors/" + str(self.uuid)
         super().save(*args, **kwargs)

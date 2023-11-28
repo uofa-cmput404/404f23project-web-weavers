@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
+from authors.serializers import AuthorSerializer
 from post.serializers import PostSerializer
 from likes.serializers import LikeSerializer
 from rest_framework.response import Response
@@ -14,6 +15,7 @@ from likes.models import Like
 from nodes.permissions import IsAuthorizedNode
 from followers.serializers import FollowSerializer
 from drf_spectacular.utils import extend_schema
+import requests
 
 # Create your views here.
 @extend_schema(
@@ -133,8 +135,28 @@ class InboxView(APIView, PageNumberPagination):
         inbox = Inbox.objects.get(author=author_id)
 
         if request.data["type"] == "Follow":
-            follow_requester = Author.objects.get(id=request.data["actor"])
+            try:
+                follow_requester = Author.objects.get(id=request.data["actor"])
+            except Author.DoesNotExist:
+                remote_author_url = request.data["actor"]
+                # Most teams will require a trailing slash because of the Django backend
+                if not remote_author_url.endswith("/"):
+                    remote_author_url += "/"
+                    
+                remote_author = requests.get(remote_author_url).json()
+
+                if not Author.objects.filter(displayName=remote_author["displayName"], host=remote_author["host"]).exists():
+                    author_serializer = AuthorSerializer(data=remote_author)
+                    if author_serializer.is_valid():
+                        author_serializer.validated_data["host"] = remote_author["host"]
+                        author_serializer.save()
+                    else:
+                        return Response({"error": "Invalid author"}, status = status.HTTP_400_BAD_REQUEST)
+                    
+                follow_requester = Author.objects.get(displayName=remote_author["displayName"], host=remote_author["host"])
+
             author_to_follow = Author.objects.get(id=request.data["object"])
+
             if inbox.follows.filter(actor=follow_requester, object=author_to_follow).exists():
                 return Response({"error": "Follow already sent to inbox"}, status = status.HTTP_409_CONFLICT)
             else:
