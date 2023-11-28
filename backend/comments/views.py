@@ -9,12 +9,18 @@ from nodes.permissions import IsAuthorizedNode
 from .serializers import CommentSerializer
 from rest_framework.pagination import PageNumberPagination
 import uuid
+from drf_spectacular.utils import extend_schema
 
 
 # Create your views here.
 class CommentList(APIView, PageNumberPagination):
     permission_classes = [IsAuthenticated | IsAuthorizedNode]
 
+    @extend_schema(
+        description="List all comments for a post.",
+        responses={200: CommentSerializer(many=True)},
+        tags=["comments"]
+    )
     def get(self, request, author_id, post_id):
         """
         Get all comments for a post
@@ -38,6 +44,12 @@ class CommentList(APIView, PageNumberPagination):
             "items" : serializer.data,
         })
     
+    @extend_schema(
+        description="Create a new comment",
+        request=CommentSerializer,
+        responses={201: CommentSerializer()},
+        tags=["comments"]
+    )
     def post(self, request, author_id, post_id):
         """
         Create a new comment
