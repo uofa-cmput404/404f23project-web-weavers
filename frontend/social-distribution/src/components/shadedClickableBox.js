@@ -77,6 +77,15 @@ export default function ShadedClickableBox({
             }).catch((err) => {
                 console.log(err)
             })
+        } else if(request.actor.host == A_TEAM_URL){
+            axiosService.delete("follow-requests/", {data: body}).then((response) => {
+                console.log(response)
+                setShowButtons(false)
+                setRequestText(username + "'s request was denied")
+            }).catch((err) => {
+                console.log(err)
+            })
+
         }
         //Remove from inbox
         //Reload

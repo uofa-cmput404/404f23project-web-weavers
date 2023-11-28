@@ -83,13 +83,15 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         })
     } else if (team == "A Team"){
         // For A Team
-        /*
-        let url = "authors/" + postData.id.split("/authors/")[1]
-        console.log("sending to url " + url)
+        let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
         aTeamService.get(url).then( (response) => {
-            console.log(JSON.stringify(response.data))
+            for(let i = 0; i < response.data.results.items.length; i++){
+                if(response.data.results.items[i].author.id == userUUID){
+                    console.log("User has liked this post "+ postData.id)
+                    SetIsLiked(true);
+                }
+            }
         })
-        */
     }
 
     // Like handles
@@ -117,7 +119,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         } else if (team == "A Team"){
             // A Team's Server
             let like_values = {
-                'author': API_URL + "authors/" + userUUID,
+                'author_id': userUUID,
                 'post': postData.id,
                 'summary': "" + displayName + " liked your post"
             }
