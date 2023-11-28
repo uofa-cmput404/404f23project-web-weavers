@@ -4,11 +4,11 @@ import { Flex, Icon } from "@chakra-ui/react";
 import { SearchBar } from "./searchBar.js";
 import FriendIcon from "./friendIcon.js";
 import { useEffect } from 'react';
-import axios, { formToJSON } from 'axios';
+import axiosService from "../../utils/axios";
 import { API_URL } from '../api.js';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
-/* { 
+/* {
     TODO: Integrate with backend API to get list of friends and necessary data
 } */
 
@@ -26,11 +26,11 @@ export default function FriendsBar({user, ...props}) {
         const fetchUsers = async () => {
             try{
                 // All users
-                const response = await axios.get(API_URL + "authors/");
+                const response = await axiosService.get("authors/");
                 setUsers(response.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage})));
-            
+
                 // Just followers
-                const res= await axios.get(API_URL + "authors/" + currentUser + "/followers/");
+                const res= await axiosService.get("authors/" + currentUser + "/followers/");
                 setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage})));
 
             } catch (error) {
@@ -42,14 +42,14 @@ export default function FriendsBar({user, ...props}) {
     , [])
 
     // Search bar functionality- for all users and followers
-    const filteredUsers = users.filter(user => 
+    const filteredUsers = users.filter(user =>
         user.displayName.toLowerCase().includes(search.toLowerCase())
     );
 
     const followersFiltered = followers.filter(user =>
         user.displayName.toLowerCase().includes(search.toLowerCase())
     );
-    
+
     const handleTabChange = (event, newvalue) => {
         setValue(newvalue);
     }
@@ -66,19 +66,19 @@ export default function FriendsBar({user, ...props}) {
                     <TabPanels>
                         <TabPanel>
                             <Flex flexDir="column" w="100%" alignItems="center" align="start">
-                                {filteredUsers.map(user => <FriendIcon 
-                                    key={user.displayName} 
-                                    user={user} 
-                                    currentUser={currentUser}/>)}          
-                            </Flex> 
+                                {filteredUsers.map(user => <FriendIcon
+                                    key={user.displayName}
+                                    user={user}
+                                    currentUser={currentUser}/>)}
+                            </Flex>
                         </TabPanel>
                         <TabPanel>
                             <Flex flexDir="column" w="100%" alignItems="center" align="center">
-                                {followersFiltered.map(user => <FriendIcon 
-                                    key={user.displayName} 
-                                    user={user} 
-                                    currentUser={currentUser}/>)}          
-                            </Flex> 
+                                {followersFiltered.map(user => <FriendIcon
+                                    key={user.displayName}
+                                    user={user}
+                                    currentUser={currentUser}/>)}
+                            </Flex>
                         </TabPanel>
                     </TabPanels>
 
