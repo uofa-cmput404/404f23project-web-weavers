@@ -66,7 +66,10 @@ export default function Explore({props}){
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='Explore' uuid={user}/>
-            <FriendsBar user={user}/>
+            {/* <FriendsBar user={user}/> */}
+            {selectedServer === "All" && <FriendsBar user={user}/> }
+            {selectedServer === "ATeam" && <FriendsBar user={user}/> }
+            {selectedServer === "Beeg Yoshi" && <FriendsBar user={user}/> }
             <div style = {styles.dropdown}>
             <Menu>
                 <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
