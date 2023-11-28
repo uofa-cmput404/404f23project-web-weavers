@@ -64,8 +64,25 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         }
      }, []);
 
+    //Check for likes based on server
+    //For our server
+    if(!team){
+        let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
+        axiosService.get(url).then( (response) => {
+            for(let i = 0; i < response.data.items.length; i++){
+                console.log("Found liked User: " + JSON.stringify(response.data.items[i]))
+                if(response.data.items[i].author.uuid == userUUID){
+                    console.log("User has liked this post")
+                    SetIsLiked(true);
+                }
+            }
+        })
+    }
     // Like handles
     const handleLikeClick =() => {
+        if(IsLiked){
+            return;
+        }
         SetIsLiked(!IsLiked); // Toggle the liked state when the button is clicked
 
         let like_values = {

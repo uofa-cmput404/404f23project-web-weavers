@@ -29,7 +29,7 @@ export default function Home() {
     const user = localStorage.getItem("user")
 
     axiosService.get("authors/" + user + "/").then((response) => {
-        setDisplayName(response.data.displaName)
+        setDisplayName(response.data.displayName)
     })
 
     return (
