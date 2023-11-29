@@ -37,6 +37,7 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
         if(selectedServer === "WebWeavers" && isFollower){
             setButtonText(buttonText === 'Remove Follower' ? 'Removed' : 'Remove Follower');
             deleteWebWeaversFollow();
+            //deleteBeegYoshiFollow();
         } else if (selectedServer === "ATeam"&& isFollower){
             setButtonText(buttonText === 'Remove Follower' ? 'Removed' : 'Remove Follower');
             deleteATeamFollow();
@@ -101,7 +102,7 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
             "server": "Web Weavers",
             "displayName" : userDisplayName
         }
-        const url= "service/remote/authors/" + current + "/request/" + user.id + "/";
+        let url= "service/remote/authors/" + current + "/request/" + user.id + "/";
         console.log("sending to url: " + url)
         console.log("sending data: " + JSON.stringify(data))
         try{
@@ -138,16 +139,22 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
     };
 
     const deleteBeegYoshiFollow = async () => {
+        /*
         let url = "authors/" + current + "/followers/" + user.id + "/";
         axiosService.delete(url).then((response) => {
             console.log("Removed " + displayName + " as a Follower")
         }).catch((err) => {console.log(err)})
 
-        let url2 = "service/authors/" + current + "/followers/" + user.id + "/";
+        */
+       console.log("displayed User" + JSON.stringify(displayedUser))
+       console.log("user" + JSON.stringify(user))
+        let url2 = "service/remote/authors/" + current + "/followers/" + user.id + "/";
+        console.log("sending to url " + url2)
+        /*
         BeegYoshiService.delete(url2).then((response) => {
             console.log("Deleted Beeg Yoshi Follower " + displayName)
         }).catch((err) => {console.log(err)})
-
+        */
 
     };
     return(

@@ -70,7 +70,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
      }, []);
 
     //Check for likes based on server
-    if(!team){
+    if(team === "WebWeavers"){
         //For Web Weaver Server
         let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
         axiosService.get(url).then( (response) => {
@@ -81,7 +81,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 }
             }
         })
-    } else if (team == "ATeam"){
+    } else if (team === "ATeam"){
         // For A Team
         let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
         aTeamService.get(url).then( (response) => {
@@ -101,7 +101,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         }
         SetIsLiked(!IsLiked); // Toggle the liked state when the button is clicked
 
-        if(!team){
+        if(team === "WebWeavers"){
         //our server
             let like_values = {
                 'author': API_URL + "authors/" + userUUID,
@@ -109,7 +109,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 'object': postData.id,
                 'summary': "" + displayName + " liked your post"
             }
-
+            console.log("Finding liked posts")
             axiosService.post("authors/" + postData.author.uuid + "/inbox/", like_values).then(function(response){
                 console.log(response)
             }).catch(function(error){
@@ -131,7 +131,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 console.log(like_values)
             })
 
-        }else if (team == "Beeg Yoshi"){
+        }else if (team == "BeegYoshi"){
             //NO IDEA HOW THIS WORKS OR IF THERE IS SUPPORT FOR REMOTE AUTHORS
             //CODING LATER
         }
