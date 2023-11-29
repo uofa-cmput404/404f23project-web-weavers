@@ -13,12 +13,11 @@ import {
   VStack
 } from "@chakra-ui/react";
 import * as Yup from "yup";
-import {API_URL} from "../../../components/api"
 
 import authSlice from "../../../store/slices/auth.ts";
 import { useDispatch } from "react-redux";
-import axios from "axios";
 import localStorage from 'redux-persist/es/storage';
+import axiosService from "../../../utils/axios";
 
 const validate = values => {
     const errors = {};
@@ -41,7 +40,7 @@ function Signup() {
   const dispatch = useDispatch();
 
   const handleSubmit = (displayName, password) => {
-    axios.post(API_URL + "auth/register/", { displayName, password })
+    axiosService.post("auth/register/", { displayName, password })
           .then((res) => {
             dispatch(
               authSlice.actions.setAccount({
@@ -56,7 +55,7 @@ function Signup() {
             console.log(JSON.stringify(err));
           });
 
-    
+
   }
   const formik = useFormik({
     initialValues: {username: '', password: ''},

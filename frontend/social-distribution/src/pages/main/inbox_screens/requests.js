@@ -3,8 +3,7 @@ import React from "react";
 import { colors } from "../../../utils/theme";
 import ShadedClickableBox from "../../../components/shadedClickableBox";
 import { useState, useEffect, handleState } from 'react';
-import {API_URL} from "../../../components/api";
-import axios from 'axios';
+import axiosService from "../../../utils/axios";
 
 // TODO
 // replace mapped avatar to the user specific image
@@ -13,7 +12,7 @@ export default function Requests() {
     const [requests, setRequests] = useState([])
 
     const fetchdata = async () => {
-        const res = await axios.get(API_URL + "authors/" + user+ "/inbox/follows/")
+        const res = await axiosService.get("authors/" + user+ "/inbox/follows/")
         console.log("Req Inbox is: ")
         console.log(res.data.items)
         setRequests(res.data.items)

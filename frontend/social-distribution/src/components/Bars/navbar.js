@@ -7,9 +7,8 @@ import Logo from "../../assets/logo.png";
 import { useNavigate } from 'react-router-dom';
 import authSlice from "../../store/slices/auth.ts";
 import { useDispatch } from "react-redux";
-import axios from "axios";
 import localStorage from "redux-persist/es/storage";
-import { API_URL } from "../api.js";
+import axiosService from "../../utils/axios"
 // TODO: pictureUrl from backend   -> remove hardcoded values
 //       OPTIMIZE TOO SLOW
 
@@ -19,7 +18,7 @@ export default function NavBar({uuid,...props}) {
     const userID = uuid;
     const [displayn, setDisplayn] = useState("")
 
-    axios.get(API_URL + "authors/")
+    axiosService.get("authors/")
         .then((res) => {
             const authors = res.data
             for (let i = 0; i < authors.items.length; i++) {

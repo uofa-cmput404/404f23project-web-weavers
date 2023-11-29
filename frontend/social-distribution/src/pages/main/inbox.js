@@ -9,8 +9,7 @@ import Likes from "./inbox_screens/likes.js";
 import Requests from "./inbox_screens/requests.js";
 import Posts from "./inbox_screens/posts.js"
 
-import {API_URL} from "../../components/api";
-import axios from 'axios';
+import axiosService from "../../utils/axios";
 
 export default function Inbox({props}){
 
@@ -18,7 +17,7 @@ export default function Inbox({props}){
     const userUUID = localStorage.getItem("user")
 
     const handleDeleteClick = () => {
-        axios.delete(API_URL + "authors/" + userUUID  + "/inbox/")
+        axiosService.delete("authors/" + userUUID  + "/inbox/")
         window.location.reload(false);
     };
     return(

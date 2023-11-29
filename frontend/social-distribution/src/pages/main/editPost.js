@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import {Flex, Divider, IconButton, Button, Card, Textarea} from '@chakra-ui/react'
 import {colors, sizes, spacing } from "../../utils/theme";
-import axios from 'axios';
+import axiosService from "../../utils/axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FiImage } from "react-icons/fi";
 import {FormControl,FormLabel,Input,VStack} from "@chakra-ui/react";
@@ -56,7 +56,8 @@ export function EditPost(){
             content: location.state.postData.content,
         },
         onSubmit: values => {
-                axios.post(location.state.postData.id + "/", values).then((response) => {
+            const url = "authors/" + location.state.postData.id.split("/authors/")[1] + "/"
+                axiosService.post(url, values).then((response) => {
                 navigate("/mystream")
             }).catch(function(error){
                 console.log(JSON.stringify(error))
