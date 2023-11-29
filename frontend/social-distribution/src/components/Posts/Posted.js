@@ -26,19 +26,18 @@ import { sizes, colors } from "../../utils/theme";
 import {API_URL} from "../api";
 import { useNavigate } from 'react-router-dom';
 import axiosService from "../../utils/axios";
+import Comment from "./comment.js";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 
 
 export default function Post({postData, visibility, userUUID, displayName}){
-    // const userID= localStorage.getItem()
-    // const postID = 1;
     let navigate = useNavigate();
     const [IsLiked, SetIsLiked]= useState(false);
     const [likes, setLikes] = useState([])
-    // const [postcontent, SetpostContent]= useState("")
-    // const [postImage, SetpostImage]= useState(props.post.image);
     const [ comment, setComment ] = useState("");
     const [showCommentField, setShowCommentField] = useState(false);
+    const [comments, setComments] = useState([])
+    const [ postComments, setPostComments ] = useState([]);
     const[showLikeField, setShowLikeField] = useState(false);
     const[showEditField, setShowEditField] = useState(false);
     const[showDeleteField, setShowDeleteField] = useState(false);
@@ -63,6 +62,18 @@ export default function Post({postData, visibility, userUUID, displayName}){
             setShowImageField(false)
         }
      }, []);
+
+     useEffect(() => {
+        const getPostComments = async () => {
+            try{
+                const response = await axiosService.get(postData.id + "/comments/");
+                setPostComments(response.data.items.map(comment => ({id: comment.id, author: comment.author, comment: comment.comment})));            
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        getPostComments();
+    }, [])
 
     // Like handles
     const handleLikeClick =() => {
@@ -165,7 +176,7 @@ export default function Post({postData, visibility, userUUID, displayName}){
             <CardHeader>
                 <Flex spacing='4'>
                     <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
-                        <Avatar name={postData.author.displayName} src='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80' />
+                        <Avatar name={postData.author.displayName} src={postData.author.profileImage} />
                         <Box>
                             <Heading size={sizes.md}>{postData.author.displayName}</Heading>
                         </Box>
@@ -232,18 +243,29 @@ export default function Post({postData, visibility, userUUID, displayName}){
                     </Flex>
                 )}
                 {showCommentField && (
-                        <Flex flexDirection="column" mt="2" >
-                            <Input
-                                placeholder="Add a comment"
-                                value={comment} // Set the value of the input field to the state
-                                onChange={handleCommentChange} // Update the state when the user types
-                            />
-                            <Button mt="2" backgroundColor={colors.brand.c2} onClick={handleCommentPost}>
-                                Post
-                            </Button>
-                        </Flex>
-                    )}
+                    <Flex flexDirection="column" mt= "2"> 
+                        <Divider/>
+                            <div overflowY="auto" maxheight="5px" alignItems="left">
+                                {postComments.map((comment) => (
+                                    <Comment 
+                                        user= {comment.author}
+                                        comment={comment}/>
+                                ))}
+                            </div>
+                        <Divider/>
+                    </Flex>  
+                )}                
 
+                <Flex flexDirection="column" mt="2" >
+                    <Input
+                        placeholder="Add a comment"
+                        value={comment} // Set the value of the input field to the state
+                        onChange={handleCommentChange} // Update the state when the user types
+                    />
+                    <Button mt="2" backgroundColor={colors.brand.c2} onClick={handleCommentPost}>
+                        Post
+                    </Button>
+                </Flex>
             </CardBody>
         </Card>
     )
@@ -268,7 +290,7 @@ const styles = {
         color: "red",
     },
     // trying to make the comments show on the side- may give up on it (!sink cost fallacy)
-    commentBar:{
+    comments:{
         backgroundColor: "white",
         position: "absolute",
         right: 0,
