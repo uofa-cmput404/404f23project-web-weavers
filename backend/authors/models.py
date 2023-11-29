@@ -31,7 +31,7 @@ class AuthorManager(BaseUserManager):
 
 
 class Author(AbstractBaseUser, PermissionsMixin):
-    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    uuid = models.CharField(primary_key=True, editable=False)
     type = models.CharField(max_length=50, default="author")
     id = models.URLField(max_length=200, unique=True, null=True,editable=False)
     host = models.URLField(max_length=200, blank=True)
@@ -53,7 +53,9 @@ class Author(AbstractBaseUser, PermissionsMixin):
     def __str__(self) -> str:
         return self.displayName
     
-    def save(self, *args, **kwargs):             
+    def save(self, *args, **kwargs):
+        if not self.uuid:
+            self.uuid = str(uuid.uuid4())             
         # When the object is instantiated, set the id and url fields using the host and uuid
         if not self.id:
             if not self.host:
