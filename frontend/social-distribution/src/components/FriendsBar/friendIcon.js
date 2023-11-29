@@ -4,35 +4,35 @@ import {React, useState} from "react";
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineComment, AiFillProfile } from "react-icons/ai";
 import { API_URL } from "../api.js";
-import axiosService, { aTeamService } from "../../utils/axios";
+import axiosService, { aTeamService, BeegYoshiService } from "../../utils/axios";
 import { current } from "@reduxjs/toolkit";
 import Login from "../../pages/login_signup/tab_screens/login.js";
 import { getPositionOfLineAndCharacter } from "typescript";
 
 
 
-export default function FriendIcon({user, displayedUser, currentUser, selectedServer,...props}){
+export default function FriendIcon({user, displayedUser, currentUser, selectedServer, userDisplayName,...props}){
    const {displayName, profileImage} = user;
    const {isOpen, onToggle}= useDisclosure();
+   const [isSent, setIsSent] = useState(false);
    const current= currentUser;
    const [buttonText, setButtonText] = useState('Follow');
 
 
+   //Checking if a request has already been sent
     const handleFollow = () => {
         if(selectedServer == "WebWeavers"){
             handleWebWeaversFollow();
         } else if (selectedServer == "ATeam"){
-            console.log("finding id " + JSON.stringify(user))
-            //handleATeamFollow();
+            handleATeamFollow();
         }
         else if (selectedServer == "BeegYoshi"){
-            //handleBeegYoshiFollow();
-            console.log("finding id " + JSON.stringify(user))
+            handleBeegYoshiFollow();
         }
     }
     const handleWebWeaversFollow = async () => {
         const data= {
-            "summary": displayName + " wants to follow you",
+            "summary": userDisplayName + " wants to follow you",
             "type": "Follow",
             "actor": API_URL + "authors/" + current,           // P2User    2b0144ac-e6a4-40c9-9c5e-b3eff71297bb
             "object": API_URL + "authors/" + user.id           // P2Test     e737be90-bb87-4dbd-8840-209d422e83e7
@@ -58,7 +58,7 @@ export default function FriendIcon({user, displayedUser, currentUser, selectedSe
 
     const handleATeamFollow = async () => {
         const data= {
-            "summary": displayName + " wants to follow you",
+            "summary": userDisplayName + " wants to follow you",
             "actor":current        // P2User    2b0144ac-e6a4-40c9-9c5e-b3eff71297bb          // P2Test     e737be90-bb87-4dbd-8840-209d422e83e7
         }
         const url= "authors/" + user.id + "/followRequests/";
@@ -80,15 +80,16 @@ export default function FriendIcon({user, displayedUser, currentUser, selectedSe
 
     const handleBeegYoshiFollow = async () => {
         const data= {
-            "id": displayedUser.id,
-            "fk": current,
-            "server": "Web-Weavers"
+            "id": current,
+            "fk": "" + user.id,
+            "server": "Web Weavers",
+            "displayName" : userDisplayName
         }
-        const url= "remote/" + displayedUser.id + "/request/" + current;
+        const url= "service/remote/authors/" + current + "/request/" + user.id + "/";
         console.log("sending to url: " + url)
         console.log("sending data: " + JSON.stringify(data))
         try{
-            const response = await aTeamService.post(url, data);
+            const response = await BeegYoshiService.post(url, data);
             setButtonText(buttonText === 'Follow' ? 'Request Sent' : 'Follow');
             console.log(response);
         } catch (error) {

@@ -11,7 +11,7 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
     TODO: Integrate with backend API to get list of friends and necessary data
 } */
 
-export default function FriendsBar({user, selectedServer, ...props}) {
+export default function FriendsBar({user, selectedServer, userDisplayName, ...props}) {
     // Note: only placeholder data for now
     // Only show 10 at a time each page or make it scrollable; Deal with the overflow
     // Add pages to the bottom of the friends bar
@@ -38,11 +38,11 @@ export default function FriendsBar({user, selectedServer, ...props}) {
                     //Beeg Yoshi
                     const response = await BeegYoshiService.get("service/authors/");
                     console.log(JSON.stringify(response.data))
-                    setUsers(response.data.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage})));
+                    setUsers(response.data.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage})));
 
                     //Just followers
                     const res= await axiosService.get("authors/" + currentUser + "/followers/");
-                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage})));
+                    setFollowers(res.data.items.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage})));
 
                 }else if (selectedServer == "ATeam"){
                     // A Team
@@ -92,6 +92,7 @@ export default function FriendsBar({user, selectedServer, ...props}) {
                                     key={user.displayName}
                                     user={user}
                                     currentUser={currentUser}
+                                    userDisplayName = {userDisplayName}
                                     selectedServer = {currentServer}/>)}
                             </Flex>
                         </TabPanel>
@@ -101,6 +102,7 @@ export default function FriendsBar({user, selectedServer, ...props}) {
                                     key={user.displayName}
                                     user={user}
                                     currentUser={currentUser}
+                                    userDisplayName = {userDisplayName}
                                     selectedServer = {currentServer}/>)}
                             </Flex>
                         </TabPanel>

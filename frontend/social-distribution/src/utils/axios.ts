@@ -18,7 +18,7 @@ export const BeegYoshiService = axios.create({
     baseURL: BEEG_YOSHI_URL,
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer Token dd81e18e8f393cc57dd69781902625f0b4ee031c'
+        'Authorization': 'Token bcad92d727cc40cd0435370dd285f9b82626890b'
     },
 })
 
