@@ -140,12 +140,18 @@ class InboxView(APIView, PageNumberPagination):
                 follow_requester = Author.objects.get(id=request.data["actor"])
             except Author.DoesNotExist:
                 remote_author_url = request.data["actor"]
+
+                if remote_author_url.startswith("https://c404-5f70eb0b3255.herokuapp.com"):
+                    headers = {'Authorization': 'Bearer 06c591151b14e0462efd2ad9c91888a530967c7f'} 
+                elif remote_author_url.startswith("https://beeg-yoshi-backend-858f363fca5e.herokuapp.com"):
+                    headers = {'Authorization': 'Token bcad92d727cc40cd0435370dd285f9b82626890b'}
+
                 # Most teams will require a trailing slash because of the Django backend
                 if remote_author_url.endswith("/"):
-                    remote_author = requests.get(remote_author_url).json()
+                    remote_author = requests.get(remote_author_url, headers).json()
                     remote_author_url = remote_author_url[:-1]
                 else:
-                    remote_author = requests.get(remote_author_url + "/").json()
+                    remote_author = requests.get(remote_author_url + "/", headers).json()
 
                 if not Author.objects.filter(displayName=remote_author["displayName"], host=remote_author["host"]).exists():
                     author_serializer = AuthorSerializer(data=remote_author)
@@ -180,12 +186,18 @@ class InboxView(APIView, PageNumberPagination):
                 like_sender = Author.objects.get(id=request.data["author"])
             except Author.DoesNotExist:
                 remote_author_url = request.data["author"]
+
+                if remote_author_url.startswith("https://c404-5f70eb0b3255.herokuapp.com"):
+                    headers = {'Authorization': 'Bearer 06c591151b14e0462efd2ad9c91888a530967c7f'} 
+                elif remote_author_url.startswith("https://beeg-yoshi-backend-858f363fca5e.herokuapp.com"):
+                    headers = {'Authorization': 'Token bcad92d727cc40cd0435370dd285f9b82626890b'}
+
                 # Most teams will require a trailing slash because of the Django backend
                 if remote_author_url.endswith("/"):
-                    remote_author = requests.get(remote_author_url).json()
+                    remote_author = requests.get(remote_author_url, headers).json()
                     remote_author_url = remote_author_url[:-1]
                 else:
-                    remote_author = requests.get(remote_author_url + "/").json()
+                    remote_author = requests.get(remote_author_url + "/", headers).json()
 
                 if not Author.objects.filter(displayName=remote_author["displayName"], host=remote_author["host"]).exists():
                     author_serializer = AuthorSerializer(data=remote_author)
