@@ -2,7 +2,25 @@ import axios from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import store from '../store';
 import authSlice from '../store/slices/auth';
-import {API_URL} from "../components/api"
+import {API_URL, A_TEAM_URL, BEEG_YOSHI_URL} from "../components/api"
+
+export const aTeamService = axios.create({
+    baseURL: A_TEAM_URL,
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token 06c591151b14e0462efd2ad9c91888a530967c7f'
+    },
+})
+
+// TODO The Token on this is currently invalid
+// and not sure how they formatted the authorization header
+export const BeegYoshiService = axios.create({
+    baseURL: BEEG_YOSHI_URL,
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token bcad92d727cc40cd0435370dd285f9b82626890b'
+    },
+})
 
 const axiosService = axios.create({
     baseURL: API_URL,

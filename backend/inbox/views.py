@@ -86,7 +86,7 @@ def delete_follow_request(request):
         return Response({"message": "Follow request deleted"}, status=status.HTTP_200_OK)
     else:
         return Response({"error": "Follow request not found"}, status=status.HTTP_404_NOT_FOUND)
-    
+
 class InboxView(APIView, PageNumberPagination):
     permission_classes = [IsAuthenticated | IsAuthorizedNode]
 

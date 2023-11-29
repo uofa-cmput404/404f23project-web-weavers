@@ -25,11 +25,11 @@ import "./Posting.css"
 import { sizes, colors } from "../../utils/theme";
 import {API_URL} from "../api";
 import { useNavigate } from 'react-router-dom';
-import axiosService, { aTeamService } from "../../utils/axios";
+import axiosService from "../../utils/axios";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 
 
-export default function Post({postData, visibility, userUUID, displayName, team}){
+export default function OSPost({postData, visibility, userUUID, displayName}){
     // const userID= localStorage.getItem()
     // const postID = 1;
     let navigate = useNavigate();
@@ -57,11 +57,6 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             setShowLikeField(true)
             setShowEditField(false)
             setShowDeleteField(false)
-        } else if(visibility == "INBOX"){
-            setShowLikeField(false)
-            setShowDeleteField(false)
-            setShowEditField(false)
-            setShowCommentField(false)
         }
 
         if(postData.contentType == "text/markdown"){
@@ -69,72 +64,23 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         }
      }, []);
 
-    //Check for likes based on server
-    if(team === "WebWeavers"){
-        //For Web Weaver Server
-        let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
-        axiosService.get(url).then( (response) => {
-            for(let i = 0; i < response.data.items.length; i++){
-                if(response.data.items[i].author.uuid == userUUID){
-                    console.log("User has liked this post "+ postData.id)
-                    SetIsLiked(true);
-                }
-            }
-        })
-    } else if (team === "ATeam"){
-        // For A Team
-        let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
-        aTeamService.get(url).then( (response) => {
-            for(let i = 0; i < response.data.results.items.length; i++){
-                if(response.data.results.items[i].author.id == userUUID){
-                    console.log("User has liked this post "+ postData.id)
-                    SetIsLiked(true);
-                }
-            }
-        })
-    }
-
     // Like handles
     const handleLikeClick =() => {
-        if(IsLiked){
-            return;
-        }
         SetIsLiked(!IsLiked); // Toggle the liked state when the button is clicked
 
-        if(team === "WebWeavers"){
-        //our server
-            let like_values = {
-                'author': API_URL + "authors/" + userUUID,
-                'type': "Like",
-                'object': postData.id,
-                'summary': "" + displayName + " liked your post"
-            }
-            console.log("Finding liked posts")
-            axiosService.post("authors/" + postData.author.uuid + "/inbox/", like_values).then(function(response){
-                console.log(response)
-            }).catch(function(error){
-                console.log(error)
-                console.log(like_values)
-            })
-        } else if (team == "ATeam"){
-            // A Team's Server
-            let like_values = {
-                'author_id': userUUID,
-                'post': postData.id,
-                'summary': "" + displayName + " liked your post"
-            }
-            let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
-            aTeamService.post(url, like_values).then(function(response){
-                console.log(response)
-            }).catch(function(error){
-                console.log(error)
-                console.log(like_values)
-            })
-
-        }else if (team == "BeegYoshi"){
-            //NO IDEA HOW THIS WORKS OR IF THERE IS SUPPORT FOR REMOTE AUTHORS
-            //CODING LATER
+        let like_values = {
+            'author': API_URL + "authors/" + userUUID,
+            'type': "Like",
+            'object': postData.id,
+            'summary': "" + displayName + " liked your post"
         }
+
+        axiosService.post("authors/" + postData.author.uuid + "/inbox/", like_values).then(function(response){
+            console.log(response)
+        }).catch(function(error){
+            console.log(error)
+            console.log(like_values)
+        })
 
 
       };
@@ -199,7 +145,6 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                         <Avatar name={postData.author.displayName} src='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80' />
                         <Box>
                             <Heading size={sizes.md}>{postData.author.displayName}</Heading>
-                            <Heading size={sizes.md}>{team}</Heading>
                         </Box>
                         {showEditField && (
                             <Flex style={styles.buttons}>
