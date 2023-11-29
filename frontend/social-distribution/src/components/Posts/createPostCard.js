@@ -118,14 +118,14 @@ export default function CreatePostCard() {
           {whoSees && (
             <>
               <Flex flexDir="column">
-                <h1 styles={{size: "0.8rem"}}>Who can see this post?</h1>
+                <h1 style={{size: "0.8rem", color: colors.brand.c4}}>Who can see this post?</h1>
                 <div>
                   <Tabs variant='solid-rounded' m={6} colorScheme="whiteAlpha" size='sm' align='end'>
                     <TabList>
-                      <Tab>Public</Tab>
-                      <Tab>Friends</Tab>
-                      <Tab>Private</Tab>
-                      <Tab>Unlisted</Tab>
+                      <Tab _selected={{ bg: colors.brand.c4, color: "white" }} color={colors.brand.c4}>Public</Tab>
+                      <Tab _selected={{ bg: colors.brand.c4, color: "white" }} color={colors.brand.c4}>Friends</Tab>
+                      <Tab _selected={{ bg: colors.brand.c4, color: "white" }} color={colors.brand.c4}>Private</Tab>
+                      <Tab _selected={{ bg: colors.brand.c4, color: "white" }} color={colors.brand.c4}>Unlisted</Tab>
                     </TabList>
                   </Tabs>
                 </div>
