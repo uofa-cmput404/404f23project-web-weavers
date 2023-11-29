@@ -47,7 +47,8 @@ class AuthorList(APIView, PageNumberPagination):
         self.page_size = 10 # default page size
         self.max_page_size = 100
 
-        authors = Author.objects.all().order_by('displayName')
+        hosts_to_exclude = ["https://c404-5f70eb0b3255.herokuapp.com/", "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"]
+        authors = Author.objects.all().order_by('displayName').exclude(host__in=hosts_to_exclude)
 
         # if a page query is provided, paginate the results
         if self.get_page_number(request, self):

@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import axiosService, {aTeamService, BeegYoshiService } from "../../utils/axios";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
+
 /* {
     TODO: Integrate with backend API to get list of friends and necessary data
 } */

@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
+from authors.serializers import AuthorSerializer
 from post.serializers import PostSerializer
 from likes.serializers import LikeSerializer
 from rest_framework.response import Response
@@ -14,6 +15,7 @@ from likes.models import Like
 from nodes.permissions import IsAuthorizedNode
 from followers.serializers import FollowSerializer
 from drf_spectacular.utils import extend_schema
+import requests
 
 # Create your views here.
 @extend_schema(
@@ -97,6 +99,7 @@ class InboxView(APIView, PageNumberPagination):
         # if the author is not the owner of the inbox, they cannot access it
         inbox_owner = Author.objects.get(pk=author_id)
         if request.user != inbox_owner:
+            print("hit wrong owner")
             return Response({"error": "You are not authorized to access this inbox"}, status = status.HTTP_403_FORBIDDEN)
 
         # Pagination settings
@@ -133,8 +136,38 @@ class InboxView(APIView, PageNumberPagination):
         inbox = Inbox.objects.get(author=author_id)
 
         if request.data["type"] == "Follow":
-            follow_requester = Author.objects.get(id=request.data["actor"])
+            try:
+                follow_requester = Author.objects.get(id=request.data["actor"])
+            except Author.DoesNotExist:
+                remote_author_url = request.data["actor"]
+
+                if remote_author_url.startswith("https://c404-5f70eb0b3255.herokuapp.com"):
+                    headers = {'Authorization': 'Bearer 06c591151b14e0462efd2ad9c91888a530967c7f'} 
+                elif remote_author_url.startswith("https://beeg-yoshi-backend-858f363fca5e.herokuapp.com"):
+                    headers = {'Authorization': 'Token bcad92d727cc40cd0435370dd285f9b82626890b'}
+
+                # Most teams will require a trailing slash because of the Django backend
+                if remote_author_url.endswith("/"):
+                    remote_author = requests.get(remote_author_url, headers).json()
+                    remote_author_url = remote_author_url[:-1]
+                else:
+                    remote_author = requests.get(remote_author_url + "/", headers).json()
+
+                if not Author.objects.filter(displayName=remote_author["displayName"], host=remote_author["host"]).exists():
+                    author_serializer = AuthorSerializer(data=remote_author)
+                    if author_serializer.is_valid():
+                        author_serializer.validated_data["uuid"] = remote_author["id"]
+                        author_serializer.validated_data["id"] = remote_author_url     # id is not the URL for all teams
+                        author_serializer.validated_data["url"] = remote_author_url
+                        author_serializer.validated_data["host"] = remote_author["host"]
+                        author_serializer.save()
+                    else:
+                        return Response(author_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                    
+                follow_requester = Author.objects.get(displayName=remote_author["displayName"], host=remote_author["host"])
+
             author_to_follow = Author.objects.get(id=request.data["object"])
+
             if inbox.follows.filter(actor=follow_requester, object=author_to_follow).exists():
                 return Response({"error": "Follow already sent to inbox"}, status = status.HTTP_409_CONFLICT)
             else:
@@ -149,8 +182,37 @@ class InboxView(APIView, PageNumberPagination):
                 return Response(follow_serializer.data, status = status.HTTP_200_OK)
 
         elif request.data["type"] == "Like":
-            like_author = Author.objects.get(id=request.data["author"])
-            if inbox.likes.filter(author=like_author, object=request.data["object"]).exists():
+            try:
+                like_sender = Author.objects.get(id=request.data["author"])
+            except Author.DoesNotExist:
+                remote_author_url = request.data["author"]
+
+                if remote_author_url.startswith("https://c404-5f70eb0b3255.herokuapp.com"):
+                    headers = {'Authorization': 'Bearer 06c591151b14e0462efd2ad9c91888a530967c7f'} 
+                elif remote_author_url.startswith("https://beeg-yoshi-backend-858f363fca5e.herokuapp.com"):
+                    headers = {'Authorization': 'Token bcad92d727cc40cd0435370dd285f9b82626890b'}
+
+                # Most teams will require a trailing slash because of the Django backend
+                if remote_author_url.endswith("/"):
+                    remote_author = requests.get(remote_author_url, headers).json()
+                    remote_author_url = remote_author_url[:-1]
+                else:
+                    remote_author = requests.get(remote_author_url + "/", headers).json()
+
+                if not Author.objects.filter(displayName=remote_author["displayName"], host=remote_author["host"]).exists():
+                    author_serializer = AuthorSerializer(data=remote_author)
+                    if author_serializer.is_valid():
+                        author_serializer.validated_data["uuid"] = remote_author["id"]
+                        author_serializer.validated_data["id"] = remote_author_url     # id is not the URL for all teams
+                        author_serializer.validated_data["url"] = remote_author_url
+                        author_serializer.validated_data["host"] = remote_author["host"]
+                        author_serializer.save()
+                    else:
+                        return Response(author_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                    
+                like_sender = Author.objects.get(displayName=remote_author["displayName"], host=remote_author["host"])
+                    
+            if inbox.likes.filter(author=like_sender, object=request.data["object"]).exists():
                 return Response({"error": "Like already sent to inbox"}, status = status.HTTP_409_CONFLICT)
 
             else:
@@ -161,7 +223,7 @@ class InboxView(APIView, PageNumberPagination):
                     #TODO: implement after Comments is done
                 like = Like.objects.create(
                     summary=request.data["summary"],
-                    author=like_author,
+                    author=like_sender,
                     object=object.id
                 )
                 inbox.likes.add(like)
