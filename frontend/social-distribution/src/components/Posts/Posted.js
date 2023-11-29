@@ -81,7 +81,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 }
             }
         })
-    } else if (team == "A Team"){
+    } else if (team == "ATeam"){
         // For A Team
         let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
         aTeamService.get(url).then( (response) => {
@@ -116,7 +116,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 console.log(error)
                 console.log(like_values)
             })
-        } else if (team == "A Team"){
+        } else if (team == "ATeam"){
             // A Team's Server
             let like_values = {
                 'author_id': userUUID,

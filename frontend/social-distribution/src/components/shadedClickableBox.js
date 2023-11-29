@@ -2,8 +2,8 @@ import { Avatar, Link, Flex, IconButton, Text, Button } from "@chakra-ui/react";
 import { colors, spacing } from "../utils/theme";
 import {FiBell, FiUserCheck, FiUserMinus} from 'react-icons/fi'
 import {useState} from 'react';
-import {API_URL, A_TEAM_URL} from "./api";
-import axiosService from '../utils/axios';
+import {API_URL, A_TEAM_URL, BEEG_YOSHI_URL} from "./api";
+import axiosService, { BeegYoshiService, aTeamService } from '../utils/axios';
 
 // TODO
 // Render parent component from child component instead of re-rendering full page
@@ -17,9 +17,9 @@ export default function ShadedClickableBox({
     const variant = {
         notif: variant_ === 'notif',
         msg: variant_ === 'msg',
-        request: variant_ == 'request',
+        request: variant_ === 'request',
       }
-
+      console.log("request is " + JSON.stringify(request))
     const handleClick = () => {
         console.log('clicked')
     }
@@ -41,15 +41,34 @@ export default function ShadedClickableBox({
             'actor' : actor,
             'object' : object
         }
-        if(request.actor.host == API_URL){
+
+        if(request.actor.host === API_URL){
+            // Web Weavers
             axiosService.delete("follow-requests/", {data: body}).then((response) => {
+                console.log("Deleting Follow Request")
+            }).catch((err) => {
+                console.log(err)
+            })
+        } else if(request.actor.host === A_TEAM_URL){
+            // A Team
+            axiosService.delete("follow-requests/", {data: body}).then((response) => {
+                console.log("Deleting Follow Request")
+            }).catch((err) => {
+                console.log(err)
+            })
+        } else if(request.actor.host === BEEG_YOSHI_URL){
+            // Beeg Yoshi
+            let url = "remote/author/" + request.actor.uuid + "/request/" + request.object.uuid + "/";
+
+            BeegYoshiService.put(url).then((response) => {
+                console.log("Sending Acceptance to Beeg Yoshi")
                 console.log(response)
             }).catch((err) => {
                 console.log(err)
             })
-        } else if(request.actor.host == A_TEAM_URL){
+
             axiosService.delete("follow-requests/", {data: body}).then((response) => {
-                console.log(response)
+                console.log("Deleting Follow Request")
             }).catch((err) => {
                 console.log(err)
             })
@@ -69,23 +88,42 @@ export default function ShadedClickableBox({
             'actor' : actor,
             'object' : object
         }
-        if(request.actor.host == API_URL){
+        if(request.actor.host === API_URL){
             axiosService.delete("follow-requests/", {data: body}).then((response) => {
-                console.log(response)
+                console.log("Deleting Follow Request")
                 setShowButtons(false)
                 setRequestText(username + "'s request was denied")
             }).catch((err) => {
                 console.log(err)
             })
-        } else if(request.actor.host == A_TEAM_URL){
+        } else if(request.actor.host === A_TEAM_URL){
+            let url = "/authors/" + request.actor.uuid + "/followRequests/" + request.object.uuid + "/";
+            aTeamService.delete(url).then((response) => {
+                console.log("Rejecting Request from A Team")
+            })
             axiosService.delete("follow-requests/", {data: body}).then((response) => {
-                console.log(response)
+                console.log("Deleting Follow Request")
                 setShowButtons(false)
                 setRequestText(username + "'s request was denied")
             }).catch((err) => {
                 console.log(err)
             })
 
+        }else if(request.actor.host === BEEG_YOSHI_URL){
+            // Beeg Yoshi
+            let url = "remote/author/" + request.actor.uuid + "/request/" + request.object.uuid + "/";
+
+            BeegYoshiService.delete(url).then((response) => {
+                console.log("Sending Rejectance to Beeg Yoshi")
+            }).catch((err) => {
+                console.log(err)
+            })
+
+            axiosService.delete("follow-requests/", {data: body}).then((response) => {
+                console.log("Deleting Follow Request")
+            }).catch((err) => {
+                console.log(err)
+            })
         }
         //Remove from inbox
         //Reload
