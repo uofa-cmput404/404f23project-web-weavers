@@ -10,11 +10,10 @@ import {
   VStack
 } from "@chakra-ui/react";
 import * as Yup from "yup";
-import {API_URL} from "../../../components/api"
 import {colors, sizes, spacing } from '../../../utils/theme';
 import authSlice from "../../../store/slices/auth";
 import { useDispatch } from "react-redux";
-import axios from "axios";
+import axiosService from "../../../utils/axios"
 import { Box } from '@chakra-ui/react';
 
 function Login() {
@@ -22,7 +21,7 @@ function Login() {
   const dispatch = useDispatch();
 
   const handleLogin = (displayName, password) =>{
-    axios.post(API_URL + "auth/login/", { displayName, password })
+    axiosService.post("auth/login/", { displayName, password })
           .then((res) => {
             dispatch(
               authSlice.actions.setAuthTokens({

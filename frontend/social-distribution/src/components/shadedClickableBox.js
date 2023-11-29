@@ -3,7 +3,7 @@ import { colors, spacing } from "../utils/theme";
 import {FiBell, FiUserCheck, FiUserMinus} from 'react-icons/fi'
 import {useState} from 'react';
 import {API_URL} from "./api";
-import axios from 'axios';
+import axiosService from '../utils/axios';
 
 // TODO
 // Render parent component from child component instead of re-rendering full page
@@ -25,7 +25,7 @@ export default function ShadedClickableBox({
     }
     const handleAcceptFollower = () =>{
         console.log("accepting a new follower")
-        axios.put(API_URL + "authors/" + curr_user + "/followers/" + req_user + "/")
+        axiosService.put("authors/" + curr_user + "/followers/" + req_user + "/")
         setShowButtons(false)
         setRequestText(username + "'s request was accepted")
         //Post as follower to self and other author
@@ -42,7 +42,7 @@ export default function ShadedClickableBox({
             'object' : object
         }
         if(request.actor.host == API_URL){
-            axios.delete(API_URL + "follow-requests/", {data: body}).then((response) => {
+            axiosService.delete("follow-requests/", {data: body}).then((response) => {
                 console.log(response)
             }).catch((err) => {
                 console.log(err)
@@ -64,7 +64,7 @@ export default function ShadedClickableBox({
             'object' : object
         }
         if(request.actor.host == API_URL){
-            axios.delete(API_URL + "follow-requests/", {data: body}).then((response) => {
+            axiosService.delete("follow-requests/", {data: body}).then((response) => {
                 console.log(response)
                 setShowButtons(false)
                 setRequestText(username + "'s request was denied")

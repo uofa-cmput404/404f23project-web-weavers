@@ -4,11 +4,9 @@ import { Flex, Divider, IconButton, Button } from "@chakra-ui/react";
 import { FiImage } from "react-icons/fi";
 import { BeatLoader } from "react-spinners";
 import TextPost from "./TextPost.js";
-import { API_URL } from "../api.js";
-import axios from "axios";
+import axiosService from "../../utils/axios"
 
 export default function CreatePostCard() {
-  const baseURL = API_URL + "authors/";
   const fileInputRef = useRef(null);
   const [title, setTitle] = useState(false);
   const [showDescriptionInput, setShowDescriptionInput] = useState(false);
@@ -53,7 +51,7 @@ export default function CreatePostCard() {
     const title= document.getElementById("title").value;
     const imageData= imageSrc;
     const postUserUUID= localStorage.getItem("user");
-    const url= baseURL + postUserUUID + "/posts/";
+    const url= "authors/" + postUserUUID + "/posts/";
 
     const fields= {
       "title": title,
@@ -63,22 +61,23 @@ export default function CreatePostCard() {
     console.log("fields: " + JSON.stringify(fields));
 
     // Send to server
-    axios.post(url, fields)
-    .then((response1) => {
-      if (response1.status >= 200 <= 299) {
+    axiosService.post(url, fields)
+    .then((response) => {
+      if (response.status >= 200 && response.status <= 299) {
         console.log("Post created successfully!");
         setIsLoading(false);
 
         //get all followers
-        axios.get(baseURL + postUserUUID + "/followers/").then((followersResponse) => {
+        axiosService.get("authors/" + postUserUUID + "/followers/").then((followersResponse) => {
           if(followersResponse.status >= 200 <= 299){
             console.log("Followers found");
             const followers = followersResponse.data.items;
+            console.log(followers)
 
             //Send to each Inbox
             if(followers){
               for(let i = 0; i < followers.length; i++){
-                axios.post(followers[i].id + "/inbox/", response1.data).then((inboxResponse) => {
+                axiosService.post("authors/" + followers[i].uuid + "/inbox/", response.data).then((inboxResponse) => {
                   console.log("Successfully sent post to follower " + followers[i].displayName);
                 }).catch((error) =>{
                   console.log(error);

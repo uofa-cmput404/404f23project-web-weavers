@@ -6,8 +6,8 @@ import {colors, sizes, spacing} from "../../utils/theme";
 
 
 import Post from "../../components/Posts/Posted";
-import {API_URL, getDisplayName} from "../../components/api";
-import axios from 'axios';
+import {getDisplayName} from "../../components/api";
+import axiosService from "../../utils/axios";
 import { useState, useEffect } from 'react';
 
 export default function MyStream({props}){
@@ -18,7 +18,7 @@ export default function MyStream({props}){
 
     //This queries the user for all personal posts
     const fetchdata = async () => {
-        const res = await axios.get(API_URL + "/authors/" + user + "/posts/")
+        const res = await axiosService.get("authors/" + user + "/posts/")
         setPosts(res.data.items)
         const res2 = await getDisplayName(user)
         setDisplayName(res2);
@@ -34,7 +34,7 @@ export default function MyStream({props}){
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='My Stream'/>
-            <FriendsBar user={user}/>
+            <FriendsBar/>
             <h1>My Stream</h1>
             <div style={styles.content}>
                 <div style={{ ...styles.postContainer }}>

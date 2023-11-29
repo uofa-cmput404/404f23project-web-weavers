@@ -13,9 +13,8 @@ const axiosService = axios.create({
 
 axiosService.interceptors.request.use(async (config) => {
     const { token } = store.getState().auth;
-
     if (token !== null) {
-        config.headers.Authorization = 'Bearer ' + token;
+        config.headers["Authorization"] = 'Bearer ' + token;
         // @ts-ignore
         console.debug('[Request]', config.baseURL + config.url, JSON.stringify(token));
     }

@@ -29,7 +29,7 @@ class AuthorViewSet(viewsets.ModelViewSet):
         self.check_object_permissions(self.request, obj)
 
         return obj
-    
+
 
 class AuthorList(APIView, PageNumberPagination):
     """
@@ -76,7 +76,7 @@ class AuthorDetails(APIView):
     View to retrieve or update a specific author's profile in the server.
     """
     permission_classes = [IsAuthenticated | IsAuthorizedNode]
-    
+
     @extend_schema(
         description="Retrieve a specific author's profile.",
         responses={200: AuthorSerializer()}
@@ -97,5 +97,5 @@ class AuthorDetails(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-            
+
         return Response(serializer.errors)

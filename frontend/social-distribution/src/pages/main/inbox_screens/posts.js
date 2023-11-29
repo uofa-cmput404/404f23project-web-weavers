@@ -3,7 +3,7 @@ import React from "react";
 import { colors } from "../../../utils/theme";
 import Post from "../../../components/Posts/Posted";
 import { useState, useEffect } from 'react';
-import {API_URL} from "../../../components/api";
+import axiosService from "../../../utils/axios";
 import axios from 'axios';
 
 // TODO
@@ -13,7 +13,7 @@ export default function Posts() {
     const [posts, setPosts] = useState([])
 
     const [displayn, setDisplayn] = useState("")
-    axios.get(API_URL + "authors/")
+    axiosService.get("authors/")
         .then((res) => {
             const authors = res.data
             for (let i = 0; i < authors.items.length; i++) {
@@ -25,7 +25,7 @@ export default function Posts() {
         })
 
     const fetchdata = async () => {
-        const res = await axios.get(API_URL + "authors/" + userUUID+ "/inbox/")
+        const res = await axiosService.get("authors/" + userUUID+ "/inbox/")
         console.log("Inbox is: ")
         console.log(res.data.items)
         setPosts(res.data.items)
