@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Post
@@ -17,7 +17,8 @@ class PostList(APIView, PageNumberPagination):
 
     @extend_schema(
         description="List all posts.",
-        responses={200: PostSerializer(many=True)}
+        responses={200: PostSerializer(many=True)},
+        tags=["posts"]
     )
     def get(self, request, author_id):
         """
@@ -47,7 +48,8 @@ class PostList(APIView, PageNumberPagination):
     @extend_schema(
         description="Create a new post with a new id.",
         request=PostSerializer,
-        responses={201: PostSerializer()}
+        responses={201: PostSerializer()},
+        tags=["posts"]
     )
     def post(self, request, author_id):
         """
@@ -74,7 +76,8 @@ class PostDetails(APIView):
     
     @extend_schema(
         description="Retrieve a post.",
-        responses={200: PostSerializer()}
+        responses={200: PostSerializer()},
+        tags=["posts"]
     )
     def get(self, request, author_id, post_id):
         """
@@ -91,7 +94,8 @@ class PostDetails(APIView):
     @extend_schema(
         description="Update a post.",
         request=PostSerializer,
-        responses={200: PostSerializer()}
+        responses={200: PostSerializer()},
+        tags=["posts"]
     )
     def post(self, request, author_id, post_id):
         """
@@ -112,7 +116,8 @@ class PostDetails(APIView):
     @extend_schema(
         description="Creates a post with a specific id.",
         request=PostSerializer,
-        responses={201: PostSerializer()}
+        responses={201: PostSerializer()},
+        tags=["posts"]
     )
     def put(self, request, author_id, post_id):
         """
@@ -138,7 +143,8 @@ class PostDetails(APIView):
     
     @extend_schema(
         description="Delete a post.",
-        responses={204: None}
+        responses={204: None},
+        tags=["posts"]
     )
     def delete(self, request, author_id, post_id):
         """
@@ -154,9 +160,11 @@ class PostDetails(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated | IsAuthorizedNode])
 @extend_schema(
     description="List all public posts on the node.",
-    responses={200: PostSerializer(many=True)}
+    responses={200: PostSerializer(many=True)},
+        tags=["posts"]
 )
 def list_public_posts(request):
     """

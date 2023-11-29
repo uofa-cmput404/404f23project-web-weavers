@@ -18,7 +18,8 @@ from drf_spectacular.utils import extend_schema
 # Create your views here.
 @extend_schema(
     description="List all follows sent to the author's inbox.",
-    responses={200: FollowSerializer(many=True)}
+    responses={200: FollowSerializer(many=True)},
+    tags=["inbox"]
 )
 @api_view(['GET'])
 @permission_classes([IsAuthenticated | IsAuthorizedNode])
@@ -39,7 +40,8 @@ def list_follows_from_inbox(request, author_id):
 
 @extend_schema(
     description="List all likes sent to the author's inbox.",
-    responses={200: LikeSerializer(many=True)}
+    responses={200: LikeSerializer(many=True)},
+    tags=["inbox"]
 )
 @api_view(['GET'])
 @permission_classes([IsAuthenticated | IsAuthorizedNode])
@@ -67,6 +69,11 @@ def list_likes_from_inbox(request, author_id):
 # def list_comments_from_inbox(self, request, author_id):
 #     pass
 
+@extend_schema(
+    description="Delete a follow request from the author's inbox.",
+    responses={200: {"message": "Follow request deleted"}}
+)
+@permission_classes([IsAuthenticated | IsAuthorizedNode])
 @api_view(['DELETE'])
 def delete_follow_request(request):
     follow_requester = Author.objects.get(id=request.data["actor"])
@@ -80,9 +87,11 @@ def delete_follow_request(request):
     
 class InboxView(APIView, PageNumberPagination):
     permission_classes = [IsAuthenticated | IsAuthorizedNode]
+
     @extend_schema(
         description="List all posts sent to the author's inbox.",
-        responses={200: PostSerializer(many=True)}
+        responses={200: PostSerializer(many=True)},
+        tags=["inbox"]
     )
     def get(self, request, author_id):
         # if the author is not the owner of the inbox, they cannot access it
@@ -115,7 +124,8 @@ class InboxView(APIView, PageNumberPagination):
     @extend_schema(
         description="Send a post, follow request, like or comment to the author's inbox.",
         request=PostSerializer,
-        responses={200: PostSerializer()}
+        responses={200: PostSerializer()},
+        tags=["inbox"]
     )
     def post(self, request, author_id):
         """
@@ -176,7 +186,8 @@ class InboxView(APIView, PageNumberPagination):
 
     @extend_schema(
         description="Clear the author's inbox.",
-        responses={204: None}
+        responses={204: None},
+        tags=["inbox"]
     )
     def delete(self, request, author_id):
         """
