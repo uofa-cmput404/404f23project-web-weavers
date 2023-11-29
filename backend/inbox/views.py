@@ -140,10 +140,11 @@ class InboxView(APIView, PageNumberPagination):
             except Author.DoesNotExist:
                 remote_author_url = request.data["actor"]
                 # Most teams will require a trailing slash because of the Django backend
-                if not remote_author_url.endswith("/"):
-                    remote_author_url += "/"
-                    
-                remote_author = requests.get(remote_author_url).json()
+                if remote_author_url.endswith("/"):
+                    remote_author = requests.get(remote_author_url).json()
+                    remote_author_url = remote_author_url[:-1]
+                else:
+                    remote_author = requests.get(remote_author_url + "/").json()
 
                 if not Author.objects.filter(displayName=remote_author["displayName"], host=remote_author["host"]).exists():
                     author_serializer = AuthorSerializer(data=remote_author)
