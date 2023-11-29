@@ -114,7 +114,30 @@ export default function Post({postData, visibility, userUUID, displayName}){
 
     const handleCommentPost = () => {
     // TODO: post comment to backend
-    console.log(comment);
+        let comment_values = {
+            'author': API_URL + "authors/" + userUUID,
+            'comment': comment,
+            'contentType': "text/plain"
+        }
+
+        console.log("author.uuid: " + postData.author.uuid);
+        console.log("postID: " + postData.id);
+        console.log("comment_values: " + JSON.stringify(comment_values));
+
+        let url = postData.id + "/comments/";
+
+        console.log("url: " + url);
+
+        axiosService.post(url, comment_values)        
+        .then(function(response){
+            console.log(response)   
+        }).catch(function(error){
+            console.log(error)
+            console.log(comment_values)
+        })
+
+
+        console.log(comment);
         setComment(""); // Clear the comment field after posting
     };
 
@@ -209,7 +232,7 @@ export default function Post({postData, visibility, userUUID, displayName}){
                     </Flex>
                 )}
                 {showCommentField && (
-                        <Flex flexDirection="column" mt="2">
+                        <Flex flexDirection="column" mt="2" >
                             <Input
                                 placeholder="Add a comment"
                                 value={comment} // Set the value of the input field to the state
@@ -243,6 +266,13 @@ const styles = {
     },
     likeButton: {
         color: "red",
+    },
+    // trying to make the comments show on the side- may give up on it (!sink cost fallacy)
+    commentBar:{
+        backgroundColor: "white",
+        position: "absolute",
+        right: 0,
+        width: "300px",
     },
     commentButton: {
         mt: "2",
