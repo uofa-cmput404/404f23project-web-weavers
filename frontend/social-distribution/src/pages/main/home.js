@@ -36,7 +36,7 @@ export default function Home() {
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='Home' uuid={user}/>
-            <FriendsBar user={user} />
+            <FriendsBar user={user} selectedServer = {"WebWeavers"}/>
             <div style={styles.content}>
                 <CreatePostCard/>
 

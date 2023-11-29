@@ -4,14 +4,14 @@ import { Flex, Icon } from "@chakra-ui/react";
 import { SearchBar } from "./searchBar.js";
 import FriendIcon from "./friendIcon.js";
 import { useEffect } from 'react';
-import axiosService, { formToJSON } from "../../utils/axios";
+import axiosService, {aTeamService, BeegYoshiService } from "../../utils/axios";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
 /* {
     TODO: Integrate with backend API to get list of friends and necessary data
 } */
 
-export default function FriendsBar({user, ...props}) {
+export default function FriendsBar({user, selectedServer, ...props}) {
     // Note: only placeholder data for now
     // Only show 10 at a time each page or make it scrollable; Deal with the overflow
     // Add pages to the bottom of the friends bar
@@ -20,17 +20,41 @@ export default function FriendsBar({user, ...props}) {
     const [followers, setFollowers]= useState([]);
     const [selectedTab, setValue] = useState('All');
     const currentUser= user;
+    const currentServer = selectedServer;
 
     useEffect(() => {
         const fetchUsers = async () => {
             try{
-                const response = await axiosService.get("authors/");
-                setUsers(response.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage})));
+                console.log("Finding users of " + selectedServer)
+                if(selectedServer == "WebWeavers"){
+                    // Web Weaver Server
+                    const response = await axiosService.get("authors/");
+                    setUsers(response.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage})));
 
-                // Just followers
-                const res= await axiosService.get("authors/" + currentUser + "/followers/");
-                setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage})));
+                    // Just followers
+                    const res= await axiosService.get("authors/" + currentUser + "/followers/");
+                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage})));
+                } else if (selectedServer == "BeegYoshi"){
+                    //Beeg Yoshi
+                    const response = await BeegYoshiService.get("service/authors/");
+                    console.log(JSON.stringify(response.data))
+                    setUsers(response.data.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage})));
 
+                    //Just followers
+                    const res= await axiosService.get("authors/" + currentUser + "/followers/");
+                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage})));
+
+                }else if (selectedServer == "ATeam"){
+                    // A Team
+                    const response = await aTeamService.get("authors/");
+                    console.log(JSON.stringify(response.data.results.items))
+                    setUsers(response.data.results.items.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage})));
+
+                    //Just followers
+                    const res= await axiosService.get("authors/" + currentUser + "/followers/");
+                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage})));
+
+                }
             } catch (error) {
                 console.log(error);
             }
@@ -67,7 +91,8 @@ export default function FriendsBar({user, ...props}) {
                                 {filteredUsers.map(user => <FriendIcon
                                     key={user.displayName}
                                     user={user}
-                                    currentUser={currentUser}/>)}
+                                    currentUser={currentUser}
+                                    selectedServer = {currentServer}/>)}
                             </Flex>
                         </TabPanel>
                         <TabPanel>
@@ -75,7 +100,8 @@ export default function FriendsBar({user, ...props}) {
                                 {followersFiltered.map(user => <FriendIcon
                                     key={user.displayName}
                                     user={user}
-                                    currentUser={currentUser}/>)}
+                                    currentUser={currentUser}
+                                    selectedServer = {currentServer}/>)}
                             </Flex>
                         </TabPanel>
                     </TabPanels>

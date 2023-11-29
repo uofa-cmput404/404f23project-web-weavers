@@ -43,10 +43,10 @@ export default function Explore({props}){
 
       const handleServerChange = (newServer) => {
         //switch server and call the list to reload
-        setCurrServer(newServer);
-        if(newServer == "Beeg Yoshi"){
+        setSelectedServer(newServer);
+        if(newServer == "BeegYoshi"){
             getBEEGPosts();
-        } else if (newServer == "A Team"){
+        } else if (newServer == "ATeam"){
             getATeamPosts();
         }
       }
@@ -70,7 +70,6 @@ export default function Explore({props}){
                 for(let i = 0; i < res.data.length; i++){
                     let postPush = res.data[i];
                     postPush["author"] = postUsers[i];
-                    console.log(JSON.stringify(postPush))
                     currentPosts.push(postPush);
                 }
             }
@@ -106,9 +105,9 @@ export default function Explore({props}){
             <LogoBar/>
             <NavBar current='Explore' uuid={user}/>
             {/* <FriendsBar user={user}/> */}
-            {selectedServer === "All" && <FriendsBar user={user}/> }
-            {selectedServer === "ATeam" && <FriendsBar user={user}/> }
-            {selectedServer === "Beeg Yoshi" && <FriendsBar user={user}/> }
+            {selectedServer === "All" && <FriendsBar user={user} selectedServer={selectedServer}/> }
+            {selectedServer === "ATeam" && <FriendsBar user={user} selectedServer={selectedServer}/> }
+            {selectedServer === "BeegYoshi" && <FriendsBar user={user} selectedServer={selectedServer}/> }
             <div style = {styles.dropdown}>
             <Menu>
                 <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
@@ -116,19 +115,19 @@ export default function Explore({props}){
                 </MenuButton>
                 <MenuList>
                     <MenuItem onClick={() => handleServerChange('All')}>All</MenuItem>
-                    <MenuItem onClick={() => handleServerChange('A Team')}>A Team</MenuItem>
-                    <MenuItem onClick={() => handleServerChange('Beeg Yoshi')}>Beeg Yoshi </MenuItem>
+                    <MenuItem onClick={() => handleServerChange('ATeam')}>A Team</MenuItem>
+                    <MenuItem onClick={() => handleServerChange('BeegYoshi')}>Beeg Yoshi </MenuItem>
                 </MenuList>
             </Menu>
             </div>
-            <h1 style = {styles.header}>Now Exploring {currServer}</h1>
+            <h1 style = {styles.header}>Now Exploring {selectedServer}</h1>
             <h1 alignItems="center"> </h1>
             <div style={styles.content}>
             <div style={{ ...styles.postContainer }}>
                     {/* TODO: change this to be more dynamic when pulling list of posts */}
                     {publicPosts.map((e)=>{
                         return <div style={styles.post}>
-                        <Post postData={e} visibility = {"PUBLIC"} userUUID = {user} displayName={displayName} team = {currServer}/> </div>
+                        <Post postData={e} visibility = {"PUBLIC"} userUUID = {user} displayName={displayName} team = {selectedServer}/> </div>
                     })}
                 </div>
             </div>
