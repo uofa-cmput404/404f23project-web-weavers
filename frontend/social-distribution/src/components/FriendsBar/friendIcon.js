@@ -1,6 +1,6 @@
 import {colors} from "../../utils/theme.js";
 import { Avatar, Collapse, Flex, Link, Text, Button, useDisclosure, IconButton } from "@chakra-ui/react";
-import {React, useState} from "react";
+import {React, useState, useEffect} from "react";
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineComment, AiFillProfile } from "react-icons/ai";
 import { API_URL } from "../api.js";
@@ -11,23 +11,43 @@ import { getPositionOfLineAndCharacter } from "typescript";
 
 
 
-export default function FriendIcon({user, displayedUser, currentUser, selectedServer, userDisplayName,...props}){
+export default function FriendIcon({isFollower, user, displayedUser, currentUser, selectedServer, userDisplayName,...props}){
    const {displayName, profileImage} = user;
    const {isOpen, onToggle}= useDisclosure();
    const [isSent, setIsSent] = useState(false);
    const current= currentUser;
    const [buttonText, setButtonText] = useState('Follow');
+   const [showFollowerDelete, setShowFollowerDelete] = useState(false);
+
+   //add delete functionality if the user shown is a follower
+   useEffect(()=>{
+    if(isFollower){ setShowFollowerDelete(true); setButtonText("Remove Follower");}
+    }, [])
 
 
    //Checking if a request has already been sent
     const handleFollow = () => {
-        if(selectedServer == "WebWeavers"){
+        //Handle Sending Follows
+        if(selectedServer == "WebWeavers" && !isFollower){
             handleWebWeaversFollow();
-        } else if (selectedServer == "ATeam"){
+        } else if (selectedServer == "ATeam"&& !isFollower){
             handleATeamFollow();
         }
-        else if (selectedServer == "BeegYoshi"){
+        else if (selectedServer == "BeegYoshi"&& !isFollower){
             handleBeegYoshiFollow();
+        }
+
+        //Handle Unfollowing People
+        if(selectedServer == "WebWeavers" && isFollower){
+            setButtonText(buttonText === 'Remove Follower' ? 'Removed' : 'Remove Follower');
+            deleteWebWeaversFollow();
+        } else if (selectedServer == "ATeam"&& isFollower){
+            setButtonText(buttonText === 'Remove Follower' ? 'Removed' : 'Remove Follower');
+            deleteATeamFollow();
+        }
+        else if (selectedServer == "BeegYoshi"&& isFollower){
+            setButtonText(buttonText === 'Remove Follower' ? 'Removed' : 'Remove Follower');
+            deleteBeegYoshiFollow();
         }
     }
     const handleWebWeaversFollow = async () => {
@@ -102,6 +122,38 @@ export default function FriendIcon({user, displayedUser, currentUser, selectedSe
         }
     };
 
+    const deleteWebWeaversFollow = async () => {
+        let url = "authors/" + current + "/followers/" + user.id + "/";
+        axiosService.delete(url).then((response) => {
+            console.log("Removed " + displayName + " as a Follower")
+        }).catch((err) => {console.log(err)})
+    };
+
+    const deleteATeamFollow = async () => {
+        let url = "authors/" + current + "/followers/" + user.id + "/";
+        axiosService.delete(url).then((response) => {
+            console.log("Removed " + displayName + " as a Follower")
+        }).catch((err) => {console.log(err)})
+
+        aTeamService.delete(url).then((response) => {
+            console.log("Deleted A Team Follower " + displayName)
+        }).catch((err) => {console.log(err)})
+
+    };
+
+    const deleteBeegYoshiFollow = async () => {
+        let url = "authors/" + current + "/followers/" + user.id + "/";
+        axiosService.delete(url).then((response) => {
+            console.log("Removed " + displayName + " as a Follower")
+        }).catch((err) => {console.log(err)})
+
+        let url2 = "service/authors/" + current + "/followers/" + user.id + "/";
+        BeegYoshiService.delete(url2).then((response) => {
+            console.log("Deleted Beeg Yoshi Follower " + displayName)
+        }).catch((err) => {console.log(err)})
+
+
+    };
     return(
         <Flex align ="center">
             <Link

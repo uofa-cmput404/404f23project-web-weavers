@@ -102,6 +102,7 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
                                     key={user.displayName}
                                     user={user}
                                     currentUser={currentUser}
+                                    isFollower = {true}
                                     userDisplayName = {userDisplayName}
                                     selectedServer = {currentServer}/>)}
                             </Flex>
