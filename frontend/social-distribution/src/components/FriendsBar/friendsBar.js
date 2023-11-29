@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import {colors, sizes} from "../../utils/theme.js";
-import { Flex, Icon } from "@chakra-ui/react";
+import {colors} from "../../utils/theme.js";
+import { Flex} from "@chakra-ui/react";
 import { SearchBar } from "./searchBar.js";
 import FriendIcon from "./friendIcon.js";
 import { useEffect } from 'react';
@@ -26,7 +26,7 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
         const fetchUsers = async () => {
             try{
                 console.log("Finding users of " + selectedServer)
-                if(selectedServer == "WebWeavers"){
+                if(selectedServer === "WebWeavers"){
                     // Web Weaver Server
                     const response = await axiosService.get("authors/");
                     setUsers(response.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage})));
@@ -34,7 +34,7 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
                     // Just followers
                     const res= await axiosService.get("authors/" + currentUser + "/followers/");
                     setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage})));
-                } else if (selectedServer == "BeegYoshi"){
+                } else if (selectedServer === "BeegYoshi"){
                     //Beeg Yoshi
                     const response = await BeegYoshiService.get("service/authors/");
                     console.log(JSON.stringify(response.data))
@@ -44,7 +44,7 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
                     const res= await axiosService.get("authors/" + currentUser + "/followers/");
                     setFollowers(res.data.items.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage})));
 
-                }else if (selectedServer == "ATeam"){
+                }else if (selectedServer === "ATeam"){
                     // A Team
                     const response = await aTeamService.get("authors/");
                     console.log(JSON.stringify(response.data.results.items))
@@ -61,7 +61,7 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
         };
         fetchUsers();
     }
-    , [])
+    , [currentUser, selectedServer])
 
     // Search bar functionality
     const filteredUsers = users.filter(user =>

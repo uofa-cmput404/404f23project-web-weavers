@@ -1,13 +1,9 @@
 import {colors} from "../../utils/theme.js";
 import { Avatar, Collapse, Flex, Link, Text, Button, useDisclosure, IconButton } from "@chakra-ui/react";
 import {React, useState, useEffect} from "react";
-import { useNavigate } from 'react-router-dom';
 import { AiOutlineComment, AiFillProfile } from "react-icons/ai";
 import { API_URL } from "../api.js";
 import axiosService, { aTeamService, BeegYoshiService } from "../../utils/axios";
-import { current } from "@reduxjs/toolkit";
-import Login from "../../pages/login_signup/tab_screens/login.js";
-import { getPositionOfLineAndCharacter } from "typescript";
 
 
 
@@ -22,30 +18,30 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
    //add delete functionality if the user shown is a follower
    useEffect(()=>{
     if(isFollower){ setShowFollowerDelete(true); setButtonText("Remove Follower");}
-    }, [])
+    }, [isFollower])
 
 
    //Checking if a request has already been sent
     const handleFollow = () => {
         //Handle Sending Follows
-        if(selectedServer == "WebWeavers" && !isFollower){
+        if(selectedServer === "WebWeavers" && !isFollower){
             handleWebWeaversFollow();
-        } else if (selectedServer == "ATeam"&& !isFollower){
+        } else if (selectedServer === "ATeam"&& !isFollower){
             handleATeamFollow();
         }
-        else if (selectedServer == "BeegYoshi"&& !isFollower){
+        else if (selectedServer === "BeegYoshi"&& !isFollower){
             handleBeegYoshiFollow();
         }
 
         //Handle Unfollowing People
-        if(selectedServer == "WebWeavers" && isFollower){
+        if(selectedServer === "WebWeavers" && isFollower){
             setButtonText(buttonText === 'Remove Follower' ? 'Removed' : 'Remove Follower');
             deleteWebWeaversFollow();
-        } else if (selectedServer == "ATeam"&& isFollower){
+        } else if (selectedServer === "ATeam"&& isFollower){
             setButtonText(buttonText === 'Remove Follower' ? 'Removed' : 'Remove Follower');
             deleteATeamFollow();
         }
-        else if (selectedServer == "BeegYoshi"&& isFollower){
+        else if (selectedServer === "BeegYoshi"&& isFollower){
             setButtonText(buttonText === 'Remove Follower' ? 'Removed' : 'Remove Follower');
             deleteBeegYoshiFollow();
         }
