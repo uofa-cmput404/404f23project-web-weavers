@@ -1,9 +1,14 @@
-import { Flex, Avatar, Text } from "@chakra-ui/react"
-import { colors } from "../../utils/theme.js";
-import React from "react";
+import { Flex, Avatar, Text, IconButton } from "@chakra-ui/react"
+import React, { useState } from "react";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 
 
 export default function Comment({user, comment, ...props}){
+    const [liked, setLiked] = useState(false)
+
+    const handleLikeClick = () => {
+        setLiked(!liked);
+    }
     
     return (
         <Flex style={styles.container} flexDir="row" align="right">
@@ -12,6 +17,14 @@ export default function Comment({user, comment, ...props}){
                 <Text ml={5} mt={4} fontSize={16} fontWeight="bold" > {user.displayName} </Text>
                 <Text ml={5} mt={2} fontSize={14}> {comment.comment} </Text>
             </div>
+            <IconButton
+                aria-label="Like"
+                icon={liked ? <AiFillHeart /> : <AiOutlineHeart />}
+                color={liked ? "red" : "black"}
+                ml="auto"
+                alignSelf="center"
+                onClick={handleLikeClick}
+                />
         </Flex>
     )
 }
@@ -22,5 +35,8 @@ const styles = {
         margin: "10px",
         padding: "2px",
         borderRadius: "10px",
+    },
+    likebutton:{
+        color: "red"
     }
 }
