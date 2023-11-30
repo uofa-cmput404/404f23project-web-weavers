@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from post.views import list_public_posts
+from post.views import PostDetails
 from likes.views import list_author_likes, list_post_likes
 from followers.views import list_friends
 from inbox.views import InboxView, list_likes_from_inbox, list_follows_from_inbox, delete_follow_request
@@ -36,6 +37,7 @@ urlpatterns = [
     # Posts
     path('public-posts/', list_public_posts),
     path('authors/<uuid:author_id>/posts/', include('post.urls')),
+    path('authors/<uuid:author_id>/posts/<uuid:post_id>/image', PostDetails.as_view({'get': 'get_image'})),
     # Comments
     path('authors/<uuid:author_id>/posts/<uuid:post_id>/comments/', include('comments.urls')),
     # Post Likes

@@ -9,6 +9,7 @@ from .serializers import PostSerializer
 from rest_framework.pagination import PageNumberPagination
 from drf_spectacular.utils import extend_schema
 import uuid
+import base64
 from nodes.permissions import IsAuthorizedNode
 
 # Create your views here.
@@ -90,6 +91,31 @@ class PostDetails(APIView):
             return Response({"error": "Post Not Found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = PostSerializer(post)
         return Response(serializer.data)
+    
+    # image posting/decoding
+
+    @extend_schema(
+        description="Retrieve the image of a post.",
+        responses={200: None},
+        tags=["posts"]
+    )
+    def get_image(self, request, author_id, post_id):
+        """
+        Retrieve the image of a post.
+        """
+        author = Author.objects.get(pk=author_id)
+        post = Post.objects.get(pk=post_id, author=author, visibility="PUBLIC")
+        if post.contentType in [Post.CT_PNG, Post.CT_JPG]:
+            image_data = base64.b64decode(post.content)
+
+            if post.contentType == Post.CT_PNG:
+                content_type="image/png"
+            elif post.contentType == Post.CT_JPG:
+                content_type="image/jpeg"
+
+            return Response(image_data, content_type=content_type)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
     
     @extend_schema(
         description="Update a post.",
