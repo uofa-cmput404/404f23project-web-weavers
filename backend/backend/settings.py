@@ -187,7 +187,9 @@ CSRF_TRUSTED_ORIGINS= [
     "https://frontend-beeg-yoshi.onrender.com", "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com"
     "https://frontend-beeg-yoshi.onrender.com/", "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"
 ]
-#CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 django_on_heroku.settings(locals())
 
