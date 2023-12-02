@@ -94,10 +94,10 @@ export default function Explore({props}){
 
       const getPublicPacketPirateUsers = async () => {
         try {
-            const res = await PacketPiratesServices.get("authors/");
-          setPublicUsers(res.data)
-          console.log(res.data)
-          return res.data;
+            const res = await PacketPiratesServices.get("authors");
+          setPublicUsers(res.data.items)
+          console.log(res.data.items)
+          return res.data.items;
         } catch (err) {
           console.log(err);
         }
@@ -108,7 +108,8 @@ export default function Explore({props}){
           const currentPosts = [];
             let postUsers= await getPublicPacketPirateUsers();
             for (let i = 0; i < postUsers.length; i++){
-                const res = await PacketPiratesServices.get("authors/" + postUsers[i].id + "/posts/" )
+              let custom_id = postUsers[i].id.split("/authors/")[1]
+                const res = await PacketPiratesServices.get("authors/" + custom_id + "/posts" )
                 for(let i = 0; i < res.data.length; i++){
                     let postPush = res.data[i];
                     postPush["author"] = postUsers[i];
@@ -142,7 +143,7 @@ export default function Explore({props}){
             <LogoBar/>
             <NavBar current='Explore' uuid={user}/>
             {/* <FriendsBar user={user}/> */}
-            {selectedServer === "Packet Pirates" && <FriendsBar user={user} selectedServer={selectedServer} userDisplayName= {displayName}/> }
+            {selectedServer === "PacketPirates" && <FriendsBar user={user} selectedServer={selectedServer} userDisplayName= {displayName}/> }
             {selectedServer === "ATeam" && <FriendsBar user={user} selectedServer={selectedServer} userDisplayName= {displayName}/> }
             {selectedServer === "BeegYoshi" && <FriendsBar user={user} selectedServer={selectedServer} userDisplayName= {displayName}/> }
             <div style = {styles.dropdown}>

@@ -4,7 +4,7 @@ import { Flex} from "@chakra-ui/react";
 import { SearchBar } from "./searchBar.js";
 import FriendIcon from "./friendIcon.js";
 import { useEffect } from 'react';
-import axiosService, {aTeamService, BeegYoshiService } from "../../utils/axios";
+import axiosService, {aTeamService, BeegYoshiService, PacketPiratesServices } from "../../utils/axios";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
 
@@ -50,6 +50,16 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
                     const response = await aTeamService.get("authors/");
                     console.log(JSON.stringify(response.data.results.items))
                     setUsers(response.data.results.items.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage, host: user.host})));
+
+                    //Just followers
+                    const res= await axiosService.get("authors/" + currentUser + "/followers/");
+                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage, host: user.host})));
+
+                }else if (selectedServer === "PacketPirates"){
+                    // A Team
+                    const response = await PacketPiratesServices.get("authors");
+                    console.log(JSON.stringify(response.data.items))
+                    setUsers(response.data.items);
 
                     //Just followers
                     const res= await axiosService.get("authors/" + currentUser + "/followers/");

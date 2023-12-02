@@ -2,7 +2,7 @@ import {colors, sizes} from "../../utils/theme.js";
 import { Avatar, Collapse, Flex, Link, Text, Button, useDisclosure, IconButton } from "@chakra-ui/react";
 import {React, useState, useEffect} from "react";
 import { AiOutlineComment, AiFillProfile } from "react-icons/ai";
-import { API_URL } from "../api.js";
+import { API_URL, PACKET_PIRATES_URL } from "../api.js";
 import axiosService, { aTeamService, BeegYoshiService, PacketPiratesServices } from "../../utils/axios";
 import { current } from "@reduxjs/toolkit";
 import Login from "../../pages/login_signup/tab_screens/login.js";
@@ -57,7 +57,7 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
             "summary": userDisplayName + " wants to follow you",
             "type": "Follow",
             "actor": API_URL + "authors/" + current,           // P2User    2b0144ac-e6a4-40c9-9c5e-b3eff71297bb
-            "object": API_URL + "authors/" + user.id           // P2Test     e737be90-bb87-4dbd-8840-209d422e83e7
+            "object": user           // P2Test     e737be90-bb87-4dbd-8840-209d422e83e7
         }
         const url= "authors/" + user.id + "/inbox/";
 
@@ -126,16 +126,18 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
 
     const handlePacketPiratesFollow = async () => {
         const data= {
-            "id": current,
-            "fk": "" + user.id,
-            "server": "Web Weavers",
-            "displayName" : userDisplayName
+            "summary": userDisplayName + " wants to follow you",
+            "type": "Follow",
+            "actor": API_URL + "authors/" + current,           // P2User    2b0144ac-e6a4-40c9-9c5e-b3eff71297bb
+            "object": PACKET_PIRATES_URL + "authors/" + user.id           // P2Test     e737be90-bb87-4dbd-8840-209d422e83e7
         }
-        let url= "authors/" + user.id + "/inbox/"
-        console.log("sending to url: " + url)
-        console.log("sending data: " + JSON.stringify(data))
+        const url= "authors/" + user.id + "/inbox/";
+
+        console.log("actor: " + current);
+        console.log("object: " + user.id);
+
         try{
-            const response = await PacketPiratesServices.post(url, data);
+            const response = await axiosService.post(url, data);
             setButtonText(buttonText === 'Follow' ? 'Request Sent' : 'Follow');
             console.log(response);
         } catch (error) {
