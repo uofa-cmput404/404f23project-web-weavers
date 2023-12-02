@@ -1,9 +1,9 @@
-import {colors} from "../../utils/theme.js";
+import {colors, sizes} from "../../utils/theme.js";
 import { Avatar, Collapse, Flex, Link, Text, Button, useDisclosure, IconButton } from "@chakra-ui/react";
 import {React, useState, useEffect} from "react";
 import { AiOutlineComment, AiFillProfile } from "react-icons/ai";
 import { API_URL } from "../api.js";
-import axiosService, { aTeamService, BeegYoshiService } from "../../utils/axios";
+import axiosService, { aTeamService, BeegYoshiService, PacketPiratesServices } from "../../utils/axios";
 import { current } from "@reduxjs/toolkit";
 import Login from "../../pages/login_signup/tab_screens/login.js";
 
@@ -22,31 +22,34 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
     if(isFollower){ setShowFollowerDelete(true); setButtonText("Remove Follower");}
     }, [isFollower])
 
-
    //Checking if a request has already been sent
     const handleFollow = () => {
         //Handle Sending Follows
-        if(selectedServer === "WebWeavers" && !isFollower){
+        if(user.host === "https://web-weavers-backend-fb4af7963149.herokuapp.com/" && !isFollower){
             handleWebWeaversFollow();
-        } else if (selectedServer === "ATeam"&& !isFollower){
+        } else if (user.host  === "https://c404-5f70eb0b3255.herokuapp.com/"&& !isFollower){
             handleATeamFollow();
         }
-        else if (selectedServer === "BeegYoshi"&& !isFollower){
+        else if (user.host  === "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"&& !isFollower){
             handleBeegYoshiFollow();
+        }
+        else if (user.host === "packet-pirates-backend-d3f5451fdee4.herokuapp.com/" && !isFollower){
+            handlePacketPiratesFollow();
         }
 
         //Handle Unfollowing People
-        if(selectedServer === "WebWeavers" && isFollower){
+        if(user.host=== "https://web-weavers-backend-fb4af7963149.herokuapp.com/" && isFollower){
             setButtonText(buttonText === 'Remove Follower' ? 'Removed' : 'Remove Follower');
             deleteWebWeaversFollow();
-            //deleteBeegYoshiFollow();
-        } else if (selectedServer === "ATeam"&& isFollower){
+        } else if (user.host === "https://c404-5f70eb0b3255.herokuapp.com/"&& isFollower){
             setButtonText(buttonText === 'Remove Follower' ? 'Removed' : 'Remove Follower');
             deleteATeamFollow();
         }
-        else if (selectedServer === "BeegYoshi"&& isFollower){
+        else if (user.host === "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"&& isFollower){
             setButtonText(buttonText === 'Remove Follower' ? 'Removed' : 'Remove Follower');
             deleteBeegYoshiFollow();
+        }else if (user.host === "packet-pirates-backend-d3f5451fdee4.herokuapp.com/" && isFollower){
+            setButtonText(buttonText === 'Remove Follower' ? 'Removed' : 'Remove Follower');
         }
     }
     const handleWebWeaversFollow = async () => {
@@ -121,6 +124,30 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
         }
     };
 
+    const handlePacketPiratesFollow = async () => {
+        const data= {
+            "id": current,
+            "fk": "" + user.id,
+            "server": "Web Weavers",
+            "displayName" : userDisplayName
+        }
+        let url= "authors/" + user.id + "/inbox/"
+        console.log("sending to url: " + url)
+        console.log("sending data: " + JSON.stringify(data))
+        try{
+            const response = await PacketPiratesServices.post(url, data);
+            setButtonText(buttonText === 'Follow' ? 'Request Sent' : 'Follow');
+            console.log(response);
+        } catch (error) {
+            console.error('Error message:', error.message);
+            if (error.response) {
+                console.error('Response data:', error.response.data);
+                console.error('Response status:', error.response.status);
+                console.error('Config:', error.response.config)
+            }
+        }
+    };
+
     const deleteWebWeaversFollow = async () => {
         let url = "authors/" + current + "/followers/" + user.id + "/";
         axiosService.delete(url).then((response) => {
@@ -141,22 +168,22 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
     };
 
     const deleteBeegYoshiFollow = async () => {
-        /*
+
         let url = "authors/" + current + "/followers/" + user.id + "/";
         axiosService.delete(url).then((response) => {
             console.log("Removed " + displayName + " as a Follower")
         }).catch((err) => {console.log(err)})
 
-        */
+
        console.log("displayed User" + JSON.stringify(displayedUser))
        console.log("user" + JSON.stringify(user))
         let url2 = "service/remote/authors/" + current + "/followers/" + user.id + "/";
         console.log("sending to url " + url2)
-        /*
+
         BeegYoshiService.delete(url2).then((response) => {
             console.log("Deleted Beeg Yoshi Follower " + displayName)
         }).catch((err) => {console.log(err)})
-        */
+
 
     };
     return(
@@ -169,7 +196,7 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
                     <Avatar name={displayName} src={profileImage} size="md" ml={2}/>
                     <Text ml={5} mt={4} fontSize={14}> {displayName}</Text>
                 </Flex>
-                <Collapse in={isOpen} animateOpacity >
+                <Collapse in={isOpen} animateOpacity padding={sizes.sm} >
                     <IconButton
                         aria-label="Profile"
                         icon={<AiFillProfile />}
