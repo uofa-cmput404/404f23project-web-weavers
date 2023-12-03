@@ -162,8 +162,14 @@ class InboxView(APIView, PageNumberPagination):
                 if not Author.objects.filter(displayName=remote_author["displayName"], host=remote_author["host"]).exists():
                     author_serializer = AuthorSerializer(data=remote_author)
                     if author_serializer.is_valid():
-                        author_serializer.validated_data["uuid"] = remote_author["id"]
-                        author_serializer.validated_data["id"] = remote_author_url     # id is not the URL for all teams
+                        # if the author's id is not a URL, then it is a ID
+                        if not remote_author["id"].startswith("http"):
+                            author_serializer.validated_data["uuid"] = remote_author["id"]
+                        else:
+                            # extract uuid from the URL
+                            author_serializer.validated_data["uuid"] = remote_author["id"].split("/")[-1]
+
+                        author_serializer.validated_data["id"] = remote_author_url
                         author_serializer.validated_data["url"] = remote_author_url
                         author_serializer.validated_data["host"] = remote_author["host"]
                         author_serializer.save()
