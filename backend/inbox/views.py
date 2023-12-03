@@ -16,6 +16,7 @@ from nodes.permissions import IsAuthorizedNode
 from followers.serializers import FollowSerializer
 from drf_spectacular.utils import extend_schema
 import requests
+from requests.auth import HTTPBasicAuth
 
 # Create your views here.
 @extend_schema(
@@ -145,13 +146,18 @@ class InboxView(APIView, PageNumberPagination):
                     headers = {'Authorization': 'Bearer 06c591151b14e0462efd2ad9c91888a530967c7f'} 
                 elif remote_author_url.startswith("https://beeg-yoshi-backend-858f363fca5e.herokuapp.com"):
                     headers = {'Authorization': 'Token bcad92d727cc40cd0435370dd285f9b82626890b'}
-
-                # Most teams will require a trailing slash because of the Django backend
-                if remote_author_url.endswith("/"):
-                    remote_author = requests.get(remote_author_url, headers).json()
-                    remote_author_url = remote_author_url[:-1]
+                elif remote_author_url.startswith("https://packet-pirates-backend-d3f5451fdee4.herokuapp.com"):
+                    remote_author = requests.get(remote_author_url, auth=HTTPBasicAuth('WebWeavers', '12345')).json()
                 else:
-                    remote_author = requests.get(remote_author_url + "/", headers).json()
+                    headers = {}
+
+                # For teams using Django, it will be necessary to add a trailing slash to the URL
+                if not remote_author_url.startswith("https://packet-pirates-backend-d3f5451fdee4.herokuapp.com"):
+                    if remote_author_url.endswith("/"):
+                        remote_author = requests.get(remote_author_url, headers).json()
+                        remote_author_url = remote_author_url[:-1]
+                    else:
+                        remote_author = requests.get(remote_author_url + "/", headers).json()
 
                 if not Author.objects.filter(displayName=remote_author["displayName"], host=remote_author["host"]).exists():
                     author_serializer = AuthorSerializer(data=remote_author)
@@ -191,13 +197,18 @@ class InboxView(APIView, PageNumberPagination):
                     headers = {'Authorization': 'Bearer 06c591151b14e0462efd2ad9c91888a530967c7f'} 
                 elif remote_author_url.startswith("https://beeg-yoshi-backend-858f363fca5e.herokuapp.com"):
                     headers = {'Authorization': 'Token bcad92d727cc40cd0435370dd285f9b82626890b'}
-
-                # Most teams will require a trailing slash because of the Django backend
-                if remote_author_url.endswith("/"):
-                    remote_author = requests.get(remote_author_url, headers).json()
-                    remote_author_url = remote_author_url[:-1]
+                elif remote_author_url.startswith("https://packet-pirates-backend-d3f5451fdee4.herokuapp.com"):
+                    remote_author = requests.get(remote_author_url, auth=HTTPBasicAuth('WebWeavers', '12345')).json()
                 else:
-                    remote_author = requests.get(remote_author_url + "/", headers).json()
+                    headers = {}
+
+                # For teams using Django, it will be necessary to add a trailing slash to the URL
+                if not remote_author_url.startswith("https://packet-pirates-backend-d3f5451fdee4.herokuapp.com"):
+                    if remote_author_url.endswith("/"):
+                        remote_author = requests.get(remote_author_url, headers).json()
+                        remote_author_url = remote_author_url[:-1]
+                    else:
+                        remote_author = requests.get(remote_author_url + "/", headers).json()
 
                 if not Author.objects.filter(displayName=remote_author["displayName"], host=remote_author["host"]).exists():
                     author_serializer = AuthorSerializer(data=remote_author)
