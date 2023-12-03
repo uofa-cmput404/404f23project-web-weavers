@@ -28,7 +28,6 @@ import { useNavigate } from 'react-router-dom';
 import axiosService, { PacketPiratesServices, aTeamService } from "../../utils/axios";
 import Comment from "./comment.js";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
-import axiosService, { aTeamService } from "../../utils/axios";
 
 export default function Post({postData, visibility, userUUID, displayName, team}){
     // const userID= localStorage.getItem()
