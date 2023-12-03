@@ -5,6 +5,8 @@ from rest_framework.pagination import PageNumberPagination
 from authors.serializers import AuthorSerializer
 from post.serializers import PostSerializer
 from likes.serializers import LikeSerializer
+from followers.serializers import FollowSerializer
+from comments.serializers import CommentSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from authors.models import Author
@@ -12,8 +14,8 @@ from inbox.models import Inbox
 from followers.models import Follow
 from post.models import Post
 from likes.models import Like
+from comments.models import Comment
 from nodes.permissions import IsAuthorizedNode
-from followers.serializers import FollowSerializer
 from drf_spectacular.utils import extend_schema
 import requests
 from requests.auth import HTTPBasicAuth
@@ -63,14 +65,26 @@ def list_likes_from_inbox(request, author_id):
         "items": like_serializer.data
     })
 
-# TODO: implement after Comments is done
-# @extend_schema(
-#     description="List all comments sent to the author's inbox.",
-#     responses={200: CommentSerializer(many=True)}
-# )
-# @api_view(['GET'])
-# def list_comments_from_inbox(self, request, author_id):
-#     pass
+@extend_schema(
+    description="List all comments sent to the author's inbox.",
+    responses={200: CommentSerializer(many=True)}
+)
+@permission_classes([IsAuthenticated | IsAuthorizedNode])
+@api_view(['GET'])
+def list_comments_from_inbox(request, author_id):
+    inbox_owner = Author.objects.get(pk=author_id)
+    if request.user != inbox_owner:
+        return Response({"error": "You are not authorized to access this inbox"}, status = status.HTTP_403_FORBIDDEN)
+
+    inbox = Inbox.objects.get(author=author_id)
+    inbox_comments = inbox.comments.all()
+
+    comment_serializer = CommentSerializer(inbox_comments, many=True)
+    return Response({
+        "type": "inbox",
+        "author": inbox.author.url,
+        "items": comment_serializer.data
+    })
 
 @extend_schema(
     description="Delete a follow request from the author's inbox.",
@@ -243,8 +257,11 @@ class InboxView(APIView, PageNumberPagination):
                 # Need to determine if the object being liked is a post or a comment
                 if Post.objects.filter(id=request.data["object"]).exists():
                     object = Post.objects.get(id=request.data["object"])
-                # else:
-                    #TODO: implement after Comments is done
+                elif Comment.objects.filter(id=request.data["object"]).exists():
+                    object = Comment.objects.get(id=request.data["object"])
+                else:
+                    return Response({"error": "Object being liked does not exist"}, status = status.HTTP_404_NOT_FOUND)
+                
                 like = Like.objects.create(
                     summary=request.data["summary"],
                     author=like_sender,
@@ -264,8 +281,10 @@ class InboxView(APIView, PageNumberPagination):
             return Response(post_serializer.data, status = status.HTTP_200_OK)
 
         elif request.data["type"] == "comment":
-            #TODO: implement after Comments is done
-            return Response({"error": "Not implemented"}, status = status.HTTP_501_NOT_IMPLEMENTED)
+            comment = Comment.objects.get(id=request.data["id"])
+            inbox.comments.add(comment)
+            comment_serializer = CommentSerializer(comment)
+            return Response(comment_serializer.data, status = status.HTTP_200_OK)
 
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
@@ -282,6 +301,6 @@ class InboxView(APIView, PageNumberPagination):
         inbox.posts.clear()
         inbox.follows.all().delete()
         inbox.likes.clear()
-        # inbox.comments.clear() #TODO: implement after Comments is done
+        inbox.comments.clear()
 
         return Response(status = status.HTTP_204_NO_CONTENT)
