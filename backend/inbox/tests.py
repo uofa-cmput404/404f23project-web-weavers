@@ -1,6 +1,7 @@
 from rest_framework.test import APITestCase
 from authors.models import Author
 from post.models import Post
+from comments.models import Comment
 from followers.models import Follow
 from inbox.models import Inbox
 
@@ -12,6 +13,7 @@ class InboxTests(APITestCase):
         self.author3 = Author.objects.create(displayName="Mary")
         self.post1 = Post.objects.create(title="post1", description="content1", author=self.author1)
         self.post2 = Post.objects.create(title="post2", description="content2", author=self.author1)
+        self.comment1 = Comment.objects.create(author=self.author2, post=self.post1, comment="comment1")
         self.inbox = Inbox.objects.get(author=self.author1)
         self.client.force_authenticate(user=self.author1)
 
@@ -81,6 +83,25 @@ class InboxTests(APITestCase):
 
         ### Check Inbox Data
         self.assertEqual(len(self.inbox.likes.all()), 1)
+
+    def test_send_and_get_inbox_comment(self):
+        response1 = self.client.post(f"{self.author1.url}/inbox/", {
+            "type": "comment",
+            "id": self.comment1.id,
+        })
+        self.assertEqual(response1.status_code, 200)
+
+        response2 = self.client.get(f"{self.author1.url}/inbox/comments/")
+        ### Check Response Data
+        self.assertEqual(response2.status_code, 200)
+        print(self.comment1.id)
+        print(response2.data)
+        self.assertEqual(response2.data["author"], self.author1.id)
+        self.assertEqual(response2.data["type"], "inbox")
+        self.assertEqual(len(response2.data["items"]), 1)
+
+        ### Check Inbox Data
+        self.assertEqual(len(self.inbox.comments.all()), 1)
 
     def test_send_and_get_inbox_follow(self):
         response1 = self.client.post(f"{self.author1.url}/inbox/", {
