@@ -5,6 +5,8 @@ from rest_framework.pagination import PageNumberPagination
 from authors.serializers import AuthorSerializer
 from post.serializers import PostSerializer
 from likes.serializers import LikeSerializer
+from followers.serializers import FollowSerializer
+from comments.serializers import CommentSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from authors.models import Author
@@ -12,10 +14,11 @@ from inbox.models import Inbox
 from followers.models import Follow
 from post.models import Post
 from likes.models import Like
+from comments.models import Comment
 from nodes.permissions import IsAuthorizedNode
-from followers.serializers import FollowSerializer
 from drf_spectacular.utils import extend_schema
 import requests
+from requests.auth import HTTPBasicAuth
 
 # Create your views here.
 @extend_schema(
@@ -62,14 +65,26 @@ def list_likes_from_inbox(request, author_id):
         "items": like_serializer.data
     })
 
-# TODO: implement after Comments is done
-# @extend_schema(
-#     description="List all comments sent to the author's inbox.",
-#     responses={200: CommentSerializer(many=True)}
-# )
-# @api_view(['GET'])
-# def list_comments_from_inbox(self, request, author_id):
-#     pass
+@extend_schema(
+    description="List all comments sent to the author's inbox.",
+    responses={200: CommentSerializer(many=True)}
+)
+@permission_classes([IsAuthenticated | IsAuthorizedNode])
+@api_view(['GET'])
+def list_comments_from_inbox(request, author_id):
+    inbox_owner = Author.objects.get(pk=author_id)
+    if request.user != inbox_owner:
+        return Response({"error": "You are not authorized to access this inbox"}, status = status.HTTP_403_FORBIDDEN)
+
+    inbox = Inbox.objects.get(author=author_id)
+    inbox_comments = inbox.comments.all()
+
+    comment_serializer = CommentSerializer(inbox_comments, many=True)
+    return Response({
+        "type": "inbox",
+        "author": inbox.author.url,
+        "items": comment_serializer.data
+    })
 
 @extend_schema(
     description="Delete a follow request from the author's inbox.",
@@ -145,19 +160,30 @@ class InboxView(APIView, PageNumberPagination):
                     headers = {'Authorization': 'Bearer 06c591151b14e0462efd2ad9c91888a530967c7f'} 
                 elif remote_author_url.startswith("https://beeg-yoshi-backend-858f363fca5e.herokuapp.com"):
                     headers = {'Authorization': 'Token bcad92d727cc40cd0435370dd285f9b82626890b'}
-
-                # Most teams will require a trailing slash because of the Django backend
-                if remote_author_url.endswith("/"):
-                    remote_author = requests.get(remote_author_url, headers).json()
-                    remote_author_url = remote_author_url[:-1]
+                elif remote_author_url.startswith("https://packet-pirates-backend-d3f5451fdee4.herokuapp.com"):
+                    remote_author = requests.get(remote_author_url, auth=HTTPBasicAuth('WebWeavers', '12345')).json()
                 else:
-                    remote_author = requests.get(remote_author_url + "/", headers).json()
+                    headers = {}
+
+                # For teams using Django, it will be necessary to add a trailing slash to the URL
+                if not remote_author_url.startswith("https://packet-pirates-backend-d3f5451fdee4.herokuapp.com"):
+                    if remote_author_url.endswith("/"):
+                        remote_author = requests.get(remote_author_url, headers).json()
+                        remote_author_url = remote_author_url[:-1]
+                    else:
+                        remote_author = requests.get(remote_author_url + "/", headers).json()
 
                 if not Author.objects.filter(displayName=remote_author["displayName"], host=remote_author["host"]).exists():
                     author_serializer = AuthorSerializer(data=remote_author)
                     if author_serializer.is_valid():
-                        author_serializer.validated_data["uuid"] = remote_author["id"]
-                        author_serializer.validated_data["id"] = remote_author_url     # id is not the URL for all teams
+                        # if the author's id is not a URL, then it is a ID
+                        if not remote_author["id"].startswith("http"):
+                            author_serializer.validated_data["uuid"] = remote_author["id"]
+                        else:
+                            # extract uuid from the URL
+                            author_serializer.validated_data["uuid"] = remote_author["id"].split("/")[-1]
+
+                        author_serializer.validated_data["id"] = remote_author_url
                         author_serializer.validated_data["url"] = remote_author_url
                         author_serializer.validated_data["host"] = remote_author["host"]
                         author_serializer.save()
@@ -191,18 +217,30 @@ class InboxView(APIView, PageNumberPagination):
                     headers = {'Authorization': 'Bearer 06c591151b14e0462efd2ad9c91888a530967c7f'} 
                 elif remote_author_url.startswith("https://beeg-yoshi-backend-858f363fca5e.herokuapp.com"):
                     headers = {'Authorization': 'Token bcad92d727cc40cd0435370dd285f9b82626890b'}
-
-                # Most teams will require a trailing slash because of the Django backend
-                if remote_author_url.endswith("/"):
-                    remote_author = requests.get(remote_author_url, headers).json()
-                    remote_author_url = remote_author_url[:-1]
+                elif remote_author_url.startswith("https://packet-pirates-backend-d3f5451fdee4.herokuapp.com"):
+                    remote_author = requests.get(remote_author_url, auth=HTTPBasicAuth('WebWeavers', '12345')).json()
                 else:
-                    remote_author = requests.get(remote_author_url + "/", headers).json()
+                    headers = {}
+
+                # For teams using Django, it will be necessary to add a trailing slash to the URL
+                if not remote_author_url.startswith("https://packet-pirates-backend-d3f5451fdee4.herokuapp.com"):
+                    if remote_author_url.endswith("/"):
+                        remote_author = requests.get(remote_author_url, headers).json()
+                        remote_author_url = remote_author_url[:-1]
+                    else:
+                        remote_author = requests.get(remote_author_url + "/", headers).json()
 
                 if not Author.objects.filter(displayName=remote_author["displayName"], host=remote_author["host"]).exists():
                     author_serializer = AuthorSerializer(data=remote_author)
                     if author_serializer.is_valid():
-                        author_serializer.validated_data["uuid"] = remote_author["id"]
+
+                        # if the author's id is not a URL, then it is a ID
+                        if not remote_author["id"].startswith("http"):
+                            author_serializer.validated_data["uuid"] = remote_author["id"]
+                        else:
+                            # extract uuid from the URL
+                            author_serializer.validated_data["uuid"] = remote_author["id"].split("/")[-1]
+
                         author_serializer.validated_data["id"] = remote_author_url     # id is not the URL for all teams
                         author_serializer.validated_data["url"] = remote_author_url
                         author_serializer.validated_data["host"] = remote_author["host"]
@@ -219,8 +257,11 @@ class InboxView(APIView, PageNumberPagination):
                 # Need to determine if the object being liked is a post or a comment
                 if Post.objects.filter(id=request.data["object"]).exists():
                     object = Post.objects.get(id=request.data["object"])
-                # else:
-                    #TODO: implement after Comments is done
+                elif Comment.objects.filter(id=request.data["object"]).exists():
+                    object = Comment.objects.get(id=request.data["object"])
+                else:
+                    return Response({"error": "Object being liked does not exist"}, status = status.HTTP_404_NOT_FOUND)
+                
                 like = Like.objects.create(
                     summary=request.data["summary"],
                     author=like_sender,
@@ -240,8 +281,10 @@ class InboxView(APIView, PageNumberPagination):
             return Response(post_serializer.data, status = status.HTTP_200_OK)
 
         elif request.data["type"] == "comment":
-            #TODO: implement after Comments is done
-            return Response({"error": "Not implemented"}, status = status.HTTP_501_NOT_IMPLEMENTED)
+            comment = Comment.objects.get(id=request.data["id"])
+            inbox.comments.add(comment)
+            comment_serializer = CommentSerializer(comment)
+            return Response(comment_serializer.data, status = status.HTTP_200_OK)
 
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
@@ -258,6 +301,6 @@ class InboxView(APIView, PageNumberPagination):
         inbox.posts.clear()
         inbox.follows.all().delete()
         inbox.likes.clear()
-        # inbox.comments.clear() #TODO: implement after Comments is done
+        inbox.comments.clear()
 
         return Response(status = status.HTTP_204_NO_CONTENT)
