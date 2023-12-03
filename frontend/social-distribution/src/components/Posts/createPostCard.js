@@ -4,7 +4,7 @@ import { Flex, Divider, IconButton, Button } from "@chakra-ui/react";
 import { FiImage } from "react-icons/fi";
 import { BeatLoader } from "react-spinners";
 import TextPost from "./TextPost.js";
-import axiosService from "../../utils/axios"
+import axiosService, {PacketPiratesServices} from "../../utils/axios"
 
 export default function CreatePostCard() {
   const fileInputRef = useRef(null);
@@ -77,11 +77,21 @@ export default function CreatePostCard() {
             //Send to each Inbox
             if(followers){
               for(let i = 0; i < followers.length; i++){
-                axiosService.post("authors/" + followers[i].uuid + "/inbox/", response.data).then((inboxResponse) => {
-                  console.log("Successfully sent post to follower " + followers[i].displayName);
-                }).catch((error) =>{
-                  console.log(error);
-                })
+
+                if(followers[i].host === "https://web-weavers-backend-fb4af7963149.herokuapp.com/"){
+                  axiosService.post("authors/" + followers[i].uuid + "/inbox/", response.data).then((inboxResponse) => {
+                    console.log("Successfully sent post to follower " + followers[i].displayName);
+                  }).catch((error) =>{
+                    console.log(error);
+                  })
+              } else if (followers[i].host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"){
+                  PacketPiratesServices.post("authors/" + followers[i].uuid + "/inbox", response.data).then((inboxResponse) => {
+                    console.log("Successfully sent post to follower " + followers[i].displayName);
+                  }).catch((error) =>{
+                    console.log(error);
+                  })
+              }
+
               }}
           }
 
