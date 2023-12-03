@@ -30,40 +30,37 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
                 if(selectedServer === "WebWeavers"){
                     // Web Weaver Server
                     const response = await axiosService.get("authors/");
-                    setUsers(response.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage, host: user.host})));
+                    setUsers(response.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
 
                     // Just followers
                     const res= await axiosService.get("authors/" + currentUser + "/followers/");
-                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage, host: user.host})));
+                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
                 } else if (selectedServer === "BeegYoshi"){
                     //Beeg Yoshi
                     const response = await BeegYoshiService.get("service/authors/");
-                    console.log(JSON.stringify(response.data))
-                    setUsers(response.data.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage, host: user.host})));
+                    setUsers(response.data.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
 
                     //Just followers
                     const res= await axiosService.get("authors/" + currentUser + "/followers/");
-                    setFollowers(res.data.items.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage, host: user.host})));
+                    setFollowers(res.data.items.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
 
                 }else if (selectedServer === "ATeam"){
                     // A Team
                     const response = await aTeamService.get("authors/");
-                    console.log(JSON.stringify(response.data.results.items))
-                    setUsers(response.data.results.items.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage, host: user.host})));
+                    setUsers(response.data.results.items.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
 
                     //Just followers
                     const res= await axiosService.get("authors/" + currentUser + "/followers/");
-                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage, host: user.host})));
+                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
 
-                }else if (selectedServer === "PacketPirates"){
+                } else if (selectedServer === "PacketPirates"){
                     // A Team
                     const response = await PacketPiratesServices.get("authors");
-                    console.log(JSON.stringify(response.data.items))
-                    setUsers(response.data.items);
+                    setUsers(response.data.items.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
 
                     //Just followers
                     const res= await axiosService.get("authors/" + currentUser + "/followers/");
-                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage, host: user.host})));
+                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
 
                 }
             } catch (error) {

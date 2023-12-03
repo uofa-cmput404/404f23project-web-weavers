@@ -6,13 +6,14 @@ import { API_URL, PACKET_PIRATES_URL } from "../api.js";
 import axiosService, { aTeamService, BeegYoshiService, PacketPiratesServices } from "../../utils/axios";
 import { current } from "@reduxjs/toolkit";
 import Login from "../../pages/login_signup/tab_screens/login.js";
+import userEvent from "@testing-library/user-event";
 
 
 
 export default function FriendIcon({isFollower, user, displayedUser, currentUser, selectedServer, userDisplayName,...props}){
    const {displayName, profileImage} = user;
    const {isOpen, onToggle}= useDisclosure();
-   const [isSent, setIsSent] = useState(false);
+   const [OURuser, setOURuser] = useState(null);
    const current= currentUser;
    const [buttonText, setButtonText] = useState('Follow');
    const [showFollowerDelete, setShowFollowerDelete] = useState(false);
@@ -20,6 +21,9 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
    //add delete functionality if the user shown is a follower
    useEffect(()=>{
     if(isFollower){ setShowFollowerDelete(true); setButtonText("Remove Follower");}
+        let userUUID = localStorage.getItem("user")
+        axiosService.get("authors/" + userUUID + "/").then((response) => {
+    setOURuser(response.data)})
     }, [isFollower])
 
    //Checking if a request has already been sent
@@ -33,10 +37,10 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
         else if (user.host  === "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"&& !isFollower){
             handleBeegYoshiFollow();
         }
-        else if (user.host === "packet-pirates-backend-d3f5451fdee4.herokuapp.com/" && !isFollower){
+        else if (user.host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/" && !isFollower){
             handlePacketPiratesFollow();
         }
-
+        console.log("user host is " + user.host)
         //Handle Unfollowing People
         if(user.host=== "https://web-weavers-backend-fb4af7963149.herokuapp.com/" && isFollower){
             setButtonText(buttonText === 'Remove Follower' ? 'Removed' : 'Remove Follower');
@@ -48,8 +52,9 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
         else if (user.host === "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"&& isFollower){
             setButtonText(buttonText === 'Remove Follower' ? 'Removed' : 'Remove Follower');
             deleteBeegYoshiFollow();
-        }else if (user.host === "packet-pirates-backend-d3f5451fdee4.herokuapp.com/" && isFollower){
+        }else if (user.host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/" && isFollower){
             setButtonText(buttonText === 'Remove Follower' ? 'Removed' : 'Remove Follower');
+            deleteWebWeaversFollow();
         }
     }
     const handleWebWeaversFollow = async () => {
@@ -57,7 +62,7 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
             "summary": userDisplayName + " wants to follow you",
             "type": "Follow",
             "actor": API_URL + "authors/" + current,           // P2User    2b0144ac-e6a4-40c9-9c5e-b3eff71297bb
-            "object": user           // P2Test     e737be90-bb87-4dbd-8840-209d422e83e7
+            "object": API_URL + "authors/" + user.id           // P2Test     e737be90-bb87-4dbd-8840-209d422e83e7
         }
         const url= "authors/" + user.id + "/inbox/";
 
@@ -128,16 +133,17 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
         const data= {
             "summary": userDisplayName + " wants to follow you",
             "type": "Follow",
-            "actor": API_URL + "authors/" + current,           // P2User    2b0144ac-e6a4-40c9-9c5e-b3eff71297bb
-            "object": PACKET_PIRATES_URL + "authors/" + user.id           // P2Test     e737be90-bb87-4dbd-8840-209d422e83e7
+            "actor": OURuser,          // P2User    2b0144ac-e6a4-40c9-9c5e-b3eff71297bb
+            "object": user         // P2Test     e737be90-bb87-4dbd-8840-209d422e83e7
         }
-        const url= "authors/" + user.id + "/inbox/";
+        let custom_id = user.id.split("/authors/")[1]
+        const url= "authors/" + custom_id+ "/inbox";
 
-        console.log("actor: " + current);
-        console.log("object: " + user.id);
+        console.log("data " + JSON.stringify(data));
+        console.log("url: " + url);
 
         try{
-            const response = await axiosService.post(url, data);
+            const response = await PacketPiratesServices.post(url, data);
             setButtonText(buttonText === 'Follow' ? 'Request Sent' : 'Follow');
             console.log(response);
         } catch (error) {

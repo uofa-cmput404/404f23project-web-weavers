@@ -25,7 +25,7 @@ import "./Posting.css"
 import { sizes, colors } from "../../utils/theme";
 import {API_URL} from "../api";
 import { useNavigate } from 'react-router-dom';
-import axiosService, { aTeamService } from "../../utils/axios";
+import axiosService, { PacketPiratesServices, aTeamService } from "../../utils/axios";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 
 
@@ -43,7 +43,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
     const[showEditField, setShowEditField] = useState(false);
     const[showDeleteField, setShowDeleteField] = useState(false);
     const[showImageField, setShowImageField] = useState(false);
-
+    const [OURuser, setOURuser] = useState(null)
     const[showEditPOST, setShowEditPOST] = useState(false)
 
     useEffect(() => {
@@ -67,6 +67,10 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         if(postData.contentType == "text/markdown"){
             setShowImageField(false)
         }
+
+        let userUUID = localStorage.getItem("user")
+        axiosService.get("authors/" + userUUID + "/").then((response) => {
+        setOURuser(response.data)})
      }, []);
 
     //Check for likes based on server
@@ -87,6 +91,17 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         aTeamService.get(url).then( (response) => {
             for(let i = 0; i < response.data.results.items.length; i++){
                 if(response.data.results.items[i].author.id == userUUID){
+                    console.log("User has liked this post "+ postData.id)
+                    SetIsLiked(true);
+                }
+            }
+        })
+    } else if (team === "PacketPirates"){
+        // For A Team
+        let url = "authors/" + postData.id.split("/authors/")[1] + "/likes"
+        PacketPiratesServices.get(url).then( (response) => {
+            for(let i = 0; i < response.data.length; i++){
+                if(response.data[i].author.id == userUUID){
                     console.log("User has liked this post "+ postData.id)
                     SetIsLiked(true);
                 }
@@ -134,7 +149,22 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         }else if (team == "BeegYoshi"){
             //NO IDEA HOW THIS WORKS OR IF THERE IS SUPPORT FOR REMOTE AUTHORS
             //CODING LATER
-        }
+        } if(team === "PacketPirates"){
+            //our server
+                let like_values = {
+                    'author': OURuser,
+                    'type': "Like",
+                    'object': postData.id,
+                    'summary': "" + displayName + " liked your post"
+                }
+                let url = "authors/" + postData.author.id.split("/authors/")[1] + "/inbox"
+                PacketPiratesServices.post(url, like_values).then(function(response){
+                    console.log(response)
+                }).catch(function(error){
+                    console.log(error)
+                    console.log(like_values)
+                })
+            }
 
 
       };

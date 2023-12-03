@@ -48,6 +48,9 @@ export default function Explore({props}){
      useEffect(() => {
         setInitialServer();
       }, []);
+
+
+
     const handleServerChange = (newServer) => {
         //switch server and call the list to reload
         setSelectedServer(newServer);
