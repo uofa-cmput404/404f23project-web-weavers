@@ -16,6 +16,7 @@ from nodes.permissions import IsAuthorizedNode
 from followers.serializers import FollowSerializer
 from drf_spectacular.utils import extend_schema
 import requests
+from requests.auth import HTTPBasicAuth
 
 # Create your views here.
 @extend_schema(
@@ -146,7 +147,7 @@ class InboxView(APIView, PageNumberPagination):
                 elif remote_author_url.startswith("https://beeg-yoshi-backend-858f363fca5e.herokuapp.com"):
                     headers = {'Authorization': 'Token bcad92d727cc40cd0435370dd285f9b82626890b'}
                 elif remote_author_url.startswith("https://packet-pirates-backend-d3f5451fdee4.herokuapp.com"):
-                    headers = {'Authorization': 'Basic V2ViV2VhdmVyczoxMjM0NQ=='}
+                    remote_author = requests.get(remote_author_url, auth=HTTPBasicAuth('WebWeavers', '12345')).json()
                 else:
                     headers = {}
 
@@ -197,8 +198,7 @@ class InboxView(APIView, PageNumberPagination):
                 elif remote_author_url.startswith("https://beeg-yoshi-backend-858f363fca5e.herokuapp.com"):
                     headers = {'Authorization': 'Token bcad92d727cc40cd0435370dd285f9b82626890b'}
                 elif remote_author_url.startswith("https://packet-pirates-backend-d3f5451fdee4.herokuapp.com"):
-                    headers = {'Authorization': 'Basic V2ViV2VhdmVyczoxMjM0NQ=='}
-                    remote_author = requests.get(remote_author_url, headers).json()
+                    remote_author = requests.get(remote_author_url, auth=HTTPBasicAuth('WebWeavers', '12345')).json()
                 else:
                     headers = {}
 
