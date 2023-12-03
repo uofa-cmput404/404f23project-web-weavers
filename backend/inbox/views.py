@@ -216,10 +216,13 @@ class InboxView(APIView, PageNumberPagination):
                 # if an issue occurred while getting the remote post, return the error
                 if isinstance(post, Response):
                     return post
-                
-            inbox.posts.add(post)
-            post_serializer = PostSerializer(post)
-            return Response(post_serializer.data, status = status.HTTP_200_OK)
+            
+            if inbox.posts.filter(id=post.id).exists():
+                return Response({"error": "Post already sent to inbox"}, status = status.HTTP_409_CONFLICT)
+            else:
+                inbox.posts.add(post)
+                post_serializer = PostSerializer(post)
+                return Response(post_serializer.data, status = status.HTTP_200_OK)
 
         elif request.data["type"] == "comment":
             comment = Comment.objects.get(id=request.data["id"])
@@ -247,6 +250,7 @@ class InboxView(APIView, PageNumberPagination):
             else:
                 remote_author = requests.get(remote_author_url + "/", headers).json()
 
+        # if the author does not exist, create it
         if not Author.objects.filter(displayName=remote_author["displayName"], host=remote_author["host"]).exists():
             author_serializer = AuthorSerializer(data=remote_author)
             if author_serializer.is_valid():
@@ -263,10 +267,10 @@ class InboxView(APIView, PageNumberPagination):
                 return author_serializer.save()
             else:
                 return Response(author_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Author.objects.get(displayName=remote_author["displayName"], host=remote_author["host"])
     
-    def _get_remote_post(self, request):
-        remote_post_url = request.data["id"]
-
+    def _get_remote_post(self, remote_post_url):
         if remote_post_url.startswith("https://c404-5f70eb0b3255.herokuapp.com"):
             headers = {'Authorization': 'Bearer 06c591151b14e0462efd2ad9c91888a530967c7f'} 
         elif remote_post_url.startswith("https://beeg-yoshi-backend-858f363fca5e.herokuapp.com"):
@@ -284,6 +288,8 @@ class InboxView(APIView, PageNumberPagination):
             else:
                 remote_post = requests.get(remote_post_url + "/", headers).json()
 
+
+        # if the post does not exist, create it
         if not Post.objects.filter(id=remote_post["id"]).exists():
             post_serializer = PostSerializer(data=remote_post)
             if post_serializer.is_valid():
@@ -299,6 +305,8 @@ class InboxView(APIView, PageNumberPagination):
                 return post_serializer.save()
             else:
                 return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Post.objects.get(id=remote_post["id"])
 
     @extend_schema(
         description="Clear the author's inbox.",
