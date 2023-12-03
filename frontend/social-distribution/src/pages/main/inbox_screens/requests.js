@@ -2,7 +2,7 @@ import {Flex, Text } from "@chakra-ui/react";
 import React from "react";
 import { colors } from "../../../utils/theme";
 import ShadedClickableBox from "../../../components/shadedClickableBox";
-import { useState, useEffect, handleState } from 'react';
+import handleState, { useState, useEffect}  from 'react';
 import axiosService from "../../../utils/axios";
 
 // TODO

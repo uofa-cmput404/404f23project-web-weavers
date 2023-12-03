@@ -25,12 +25,14 @@ import "./Posting.css"
 import { sizes, colors } from "../../utils/theme";
 import {API_URL} from "../api";
 import { useNavigate } from 'react-router-dom';
-import axiosService from "../../utils/axios";
+import axiosService, { aTeamService } from "../../utils/axios";
 import Comment from "./comment.js";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 
 
-export default function Post({postData, visibility, userUUID, displayName}){
+export default function Post({postData, visibility, userUUID, displayName, team}){
+    // const userID= localStorage.getItem()
+    // const postID = 1;
     let navigate = useNavigate();
     const [IsLiked, SetIsLiked]= useState(false);
     const [likes, setLikes] = useState([])
@@ -56,6 +58,11 @@ export default function Post({postData, visibility, userUUID, displayName}){
             setShowLikeField(true)
             setShowEditField(false)
             setShowDeleteField(false)
+        } else if(visibility == "INBOX"){
+            setShowLikeField(false)
+            setShowDeleteField(false)
+            setShowEditField(false)
+            setShowCommentField(false)
         }
 
         if(postData.contentType == "text/markdown"){
@@ -63,35 +70,72 @@ export default function Post({postData, visibility, userUUID, displayName}){
         }
      }, []);
 
-     useEffect(() => {
-        const getPostComments = async () => {
-            try{
-                const response = await axiosService.get(postData.id + "/comments/");
-                setPostComments(response.data.items.map(comment => ({id: comment.id, author: comment.author, comment: comment.comment})));            
-            } catch (error) {
-                console.log(error);
+    //Check for likes based on server
+    if(team === "WebWeavers"){
+        //For Web Weaver Server
+        let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
+        axiosService.get(url).then( (response) => {
+            for(let i = 0; i < response.data.items.length; i++){
+                if(response.data.items[i].author.uuid == userUUID){
+                    console.log("User has liked this post "+ postData.id)
+                    SetIsLiked(true);
+                }
             }
-        };
-        getPostComments();
-    }, [])
+        })
+    } else if (team === "ATeam"){
+        // For A Team
+        let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
+        aTeamService.get(url).then( (response) => {
+            for(let i = 0; i < response.data.results.items.length; i++){
+                if(response.data.results.items[i].author.id == userUUID){
+                    console.log("User has liked this post "+ postData.id)
+                    SetIsLiked(true);
+                }
+            }
+        })
+    }
 
     // Like handles
     const handleLikeClick =() => {
+        if(IsLiked){
+            return;
+        }
         SetIsLiked(!IsLiked); // Toggle the liked state when the button is clicked
 
-        let like_values = {
-            'author': API_URL + "authors/" + userUUID,
-            'type': "Like",
-            'object': postData.id,
-            'summary': "" + displayName + " liked your post"
-        }
+        if(team === "WebWeavers"){
+        //our server
+            let like_values = {
+                'author': API_URL + "authors/" + userUUID,
+                'type': "Like",
+                'object': postData.id,
+                'summary': "" + displayName + " liked your post"
+            }
+            console.log("Finding liked posts")
+            axiosService.post("authors/" + postData.author.uuid + "/inbox/", like_values).then(function(response){
+                console.log(response)
+            }).catch(function(error){
+                console.log(error)
+                console.log(like_values)
+            })
+        } else if (team == "ATeam"){
+            // A Team's Server
+            let like_values = {
+                'author_id': userUUID,
+                'post': postData.id,
+                'summary': "" + displayName + " liked your post"
+            }
+            let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
+            aTeamService.post(url, like_values).then(function(response){
+                console.log(response)
+            }).catch(function(error){
+                console.log(error)
+                console.log(like_values)
+            })
 
-        axiosService.post("authors/" + postData.author.uuid + "/inbox/", like_values).then(function(response){
-            console.log(response)
-        }).catch(function(error){
-            console.log(error)
-            console.log(like_values)
-        })
+        }else if (team == "BeegYoshi"){
+            //NO IDEA HOW THIS WORKS OR IF THERE IS SUPPORT FOR REMOTE AUTHORS
+            //CODING LATER
+        }
 
 
       };
@@ -136,9 +180,7 @@ export default function Post({postData, visibility, userUUID, displayName}){
         console.log("comment_values: " + JSON.stringify(comment_values));
 
         let url = postData.id + "/comments/";
-
         console.log("url: " + url);
-
         axiosService.post(url, comment_values)        
         .then(function(response){
             console.log(response)   
@@ -147,6 +189,14 @@ export default function Post({postData, visibility, userUUID, displayName}){
             console.log(comment_values)
         })
 
+        let inboxURL= "authors/" + postData.author.uuid + "/inbox/comments"
+        console.log("inboxURL: " + inboxURL)
+        axiosService.post(inboxURL, comment_values).then(function(response){
+            console.log(response)
+        }).catch(function(error){
+            console.log(error)
+            console.log(comment_values)
+        })
 
         console.log(comment);
         setComment(""); // Clear the comment field after posting
@@ -179,6 +229,7 @@ export default function Post({postData, visibility, userUUID, displayName}){
                         <Avatar name={postData.author.displayName} src={postData.author.profileImage} />
                         <Box>
                             <Heading size={sizes.md}>{postData.author.displayName}</Heading>
+                            <Heading size={sizes.md}>{team}</Heading>
                         </Box>
                         {showEditField && (
                             <Flex style={styles.buttons}>

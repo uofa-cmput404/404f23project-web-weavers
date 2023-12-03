@@ -29,14 +29,14 @@ export default function Home() {
     const user = localStorage.getItem("user")
 
     axiosService.get("authors/" + user + "/").then((response) => {
-        setDisplayName(response.data.displaName)
+        setDisplayName(response.data.displayName)
     })
 
     return (
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='Home' uuid={user}/>
-            <FriendsBar user={user} />
+            <FriendsBar user={user} selectedServer = {"WebWeavers"}/>
             <div style={styles.content}>
                 <CreatePostCard/>
 
@@ -44,7 +44,7 @@ export default function Home() {
                     {/* TODO: change this to be more dynamic when pulling list of posts */}
                     {publicPosts.map((e)=>{
                         return <div style={styles.post}>
-                        <Post postData={e} visibility = {"PUBLIC"} userUUID = {user} displayName={displayName}/> </div>
+                        <Post postData={e} visibility = {"PUBLIC"} userUUID = {user} displayName={displayName} team = {"WebWeavers"}/> </div>
                     })}
                 </div>
             </div>

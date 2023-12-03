@@ -21,7 +21,6 @@ def list_author_likes(request, author_id):
     """
     List all likes of an author
     """
-    # TODO: Check that the likes are only from public things
     author = Author.objects.get(pk=author_id)
     likes = Like.objects.filter(author=author).all()
     serializer = LikeSerializer(likes, many=True)
