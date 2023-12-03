@@ -16,6 +16,7 @@ export default function MyStream({props}){
     // need a list of all postIDS to show
     const [posts, setPosts] = useState([]);
     const [followers, setFollowers] = useState([]);
+    const [profileImage, setProfileImage] = useState("");
     const [friends, setFriends] = useState([]);
     const [data, setData] = useState([]); // [postID, postID, ...
     const [displayName, setDisplayName] = useState("");
@@ -25,11 +26,17 @@ export default function MyStream({props}){
         const res = await axiosService.get("authors/" + user + "/posts/")
         setPosts(res.data.items)
         
-        const res2 = getDisplayName(user)
-        setDisplayName(res2);
+        // const res2 = getDisplayName(user)
+        // setDisplayName(res2);
         
         const res3 = await axiosService.get("authors/" + user + "/followers/")
         setFollowers(res3.data.items)
+
+        const res4 = await axiosService.get("authors/" + user)
+        setProfileImage(res4.data.profileImage)
+
+        const res5 = await axiosService.get("authors/" + user)
+        setDisplayName(res5.data.displayName)
 
     };
     useEffect(() => {
@@ -45,17 +52,17 @@ export default function MyStream({props}){
             <LogoBar/>
             <NavBar current='My Stream'/>
             <FriendsBar/>
+             <div style={{height: "5vh"}}></div> {/*Just to account for height of LogoBar */}
             <Flex flexDir="column" style={styles.profileHeader}>
-                <Avatar size="2xl" name={displayName} src="https://bit.ly/tioluwani-kolawole" />
-                <h1>UserJK</h1>
-                {/* <Flex fontSize={sizes.xl} color="black" flexDir="row">
-                    
-                </Flex> */}
+                <Avatar marginTop='20px' size="2xl" name={displayName} src="https://bit.ly/tioluwani-kolawole" />
+                <Flex fontSize={sizes.xl} color="black" flexDir="row">
+                    <h1>UserName: {displayName}</h1>
+                </Flex>
                 
                 <Flex flexDir="row" justifyContent="stretch" alignItems="center" fontSize={sizes.sm} color="black">
-                    <div>Posts {posts.length}</div>
-                    <div>Followers {followers.length}</div>
-                    <div>Friends</div>
+                    <div style={{ marginRight: '20px' }}>Posts: {posts.length}</div>
+                    <div style={{ marginRight: '20px' }}>Followers: {followers.length}</div>
+                    <div>Friends: 0 </div>
                 </Flex>
             </Flex>
             <div style={styles.content}>
@@ -99,7 +106,7 @@ const styles = {
         paddingBottom: spacing.md,
         overflow: "auto",
         paddingTop: spacing.md,
-
+        height: "100%",
     },
     post: {
         width: "500px",
