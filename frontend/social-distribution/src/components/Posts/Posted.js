@@ -25,10 +25,13 @@ import "./Posting.css"
 import { sizes, colors } from "../../utils/theme";
 import {API_URL} from "../api";
 import { useNavigate } from 'react-router-dom';
+<<<<<<< HEAD
 import axiosService, { aTeamService } from "../../utils/axios";
+=======
+>>>>>>> a5fd80d5aadd302cd5e1ea18da4e890a1f06a74d
 import Comment from "./comment.js";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
-
+import axiosService, { aTeamService } from "../../utils/axios";
 
 export default function Post({postData, visibility, userUUID, displayName, team}){
     // const userID= localStorage.getItem()
@@ -70,6 +73,20 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         }
      }, []);
 
+<<<<<<< HEAD
+=======
+     useEffect(() => {
+        const getPostComments = async () => {
+            try{
+                const response = await axiosService.get(postData.id + "/comments/");
+                setPostComments(response.data.items.map(comment => ({id: comment.id, author: comment.author, comment: comment.comment})));            
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        getPostComments();
+    }, [])
+>>>>>>> a5fd80d5aadd302cd5e1ea18da4e890a1f06a74d
     //Check for likes based on server
     if(team === "WebWeavers"){
         //For Web Weaver Server
