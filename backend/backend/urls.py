@@ -19,7 +19,7 @@ from django.urls import path, include, re_path
 from post.views import list_public_posts
 from likes.views import list_author_likes, list_post_likes
 from followers.views import list_friends
-from inbox.views import InboxView, list_likes_from_inbox, list_follows_from_inbox, delete_follow_request
+from inbox.views import InboxView, list_likes_from_inbox, list_follows_from_inbox, list_comments_from_inbox, delete_follow_request
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
@@ -46,7 +46,7 @@ urlpatterns = [
     path('authors/<uuid:author_id>/inbox/', InboxView.as_view()),
     path('authors/<uuid:author_id>/inbox/follows/', list_follows_from_inbox),
     path('authors/<uuid:author_id>/inbox/likes/', list_likes_from_inbox),
-    # path('authors/<uuid:author_id>/inbox/comments/', InboxView.as_view()), #TODO: implement after Comments is done
+    path('authors/<uuid:author_id>/inbox/comments/', list_comments_from_inbox),
 
     # API Documentation
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
