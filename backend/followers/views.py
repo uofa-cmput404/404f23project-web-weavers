@@ -57,18 +57,18 @@ class FollowerDetails(APIView):
         tags=["followers"]
     )
     def put(self, request, author_id, foreign_author_id):
-        follow_recipient = Author.objects.get(pk=author_id)
-        if request.user != follow_recipient:
-            return Response({"error": "You are not authorized to add followers to this author"}, status=status.HTTP_403_FORBIDDEN)
-        
         try:
-            author = Author.objects.get(pk=author_id)
+            follow_recipient = Author.objects.get(pk=author_id)
         except Author.DoesNotExist:
             return Response({"error": "Author not found"}, status=status.HTTP_404_NOT_FOUND)
         
-        if not author.followers.filter(pk=foreign_author_id).exists():
+        # Only the author can add followers to their own profile
+        if request.user != follow_recipient:
+            return Response({"error": "You are not authorized to add followers to this author"}, status=status.HTTP_403_FORBIDDEN)
+
+        if not follow_recipient.followers.filter(pk=foreign_author_id).exists():
             follower = Author.objects.get(pk=foreign_author_id)
-            author.followers.add(follower)
+            follow_recipient.followers.add(follower)
         else:
             return Response({"error": "Follower already exists"}, status=status.HTTP_409_CONFLICT)
         
@@ -115,4 +115,3 @@ def list_friends(request, author_id):
         "type": "friends", 
         "items": serializer.data
     })
-
