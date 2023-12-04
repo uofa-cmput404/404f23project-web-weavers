@@ -47,9 +47,6 @@ export default function CreatePostCard() {
   };
 
 
-
-
-
   //Send to each Inbox
   // TODO: implement inbox for Beeg Yoshi and A-Team
   const sendPostsToInboxes = (follower, response) => {
@@ -131,7 +128,8 @@ export default function CreatePostCard() {
             if(followers){
               if(response.data.visibility === "FRIENDS"){
                 for(let i = 0; i < followers.length; i++){
-                  if (checkIfFriend(followers[i], postUserUUID)){
+                  let is_friend = checkIfFriend(followers[i], postUserUUID);
+                  if (is_friend === true){
                     sendPostsToInboxes(followers[i], response)
                   }
                 }} else if (response.data.visibility === "PUBLIC"){

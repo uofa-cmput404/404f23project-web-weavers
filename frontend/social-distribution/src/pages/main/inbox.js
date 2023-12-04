@@ -24,7 +24,7 @@ export default function Inbox({props}){
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='Inbox' uuid={userUUID}/>
-            <FriendsBar user={userUUID}/>
+            <FriendsBar user={userUUID} selectedServer = {"WebWeavers"}/>
 
             <div className='tab-container' style={styles.tabContainer}>
 
