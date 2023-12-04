@@ -184,29 +184,83 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             'comment': comment,
             'contentType': "text/plain"
         }
+        console.log("postData.id: " + postData.id)
+        console.log("postData.author.uuid: " + postData.author.uuid )
 
-        console.log("author.uuid: " + postData.author.uuid);
-        console.log("postID: " + postData.id);
-        console.log("comment_values: " + JSON.stringify(comment_values));
+        if (team == "WebWeavers"){ // Web Weavers Server
+            let url = postData.id + "/comments/";
+            console.log("url: " + url);
+            axiosService.post(url, comment_values)        
+            .then(function(response){
+                console.log(response)   
+            }).catch(function(error){
+                console.log(error)
+                console.log(comment_values)
+            })
+            // send comment to Post User's inbox
+            let inboxURL= "authors/" + postData.author.uuid + "/inbox/"
+            console.log("inboxURL: " + inboxURL)
+            axiosService.post(inboxURL, comment_values).then(function(response){
+                console.log(response)
+            }).catch(function(error){
+                console.log(error)
+                console.log(comment_values)
+            })
 
-        let url = postData.id + "/comments/";
-        console.log("url: " + url);
-        axiosService.post(url, comment_values)        
-        .then(function(response){
-            console.log(response)   
-        }).catch(function(error){
-            console.log(error)
-            console.log(comment_values)
-        })
 
-        let inboxURL= "authors/" + postData.author.uuid + "/inbox/comments"
-        console.log("inboxURL: " + inboxURL)
-        axiosService.post(inboxURL, comment_values).then(function(response){
-            console.log(response)
-        }).catch(function(error){
-            console.log(error)
-            console.log(comment_values)
-        })
+        } else if (team == "ATeam"){ // A Team Server <-- maybe im right, maybe im wrong
+            let url = postData.id + "/comments/";
+            console.log("url: " + url);
+            aTeamService.post(url, comment_values)        
+            .then(function(response){
+                console.log(response)   
+            }).catch(function(error){
+                console.log(error)
+                console.log(comment_values)
+            })
+            // send comment to Post User's inbox
+            let inboxURL= "authors/" + postData.author.uuid + "/inbox/comments"
+            console.log("inboxURL: " + inboxURL)
+            aTeamService.post(inboxURL, comment_values).then(function(response){
+                console.log(response)
+            }).catch(function(error){
+                console.log(error)
+                console.log(comment_values)
+            })
+
+
+        } else if (team == "BeegYoshi"){ // Beeg Yoshi Server <-- I could be horribly wrong about this one
+            let url = postData.id + "/comments/";
+            console.log("url: " + url);
+            axiosService.post(url, comment_values)        
+            .then(function(response){
+                console.log(response)   
+            }).catch(function(error){
+                console.log(error)
+                console.log(comment_values)
+            })
+
+            let inboxURL= "authors/" + postData.author.uuid + "/inbox/comments"
+            console.log("inboxURL: " + inboxURL)
+            axiosService.post(inboxURL, comment_values).then(function(response){
+                console.log(response)
+            }).catch(function(error){
+                console.log(error)
+                console.log(comment_values)
+            })
+        }
+
+
+
+
+        // let inboxURL= "authors/" + postData.author.uuid + "/inbox/comments"
+        // console.log("inboxURL: " + inboxURL)
+        // axiosService.post(inboxURL, comment_values).then(function(response){
+        //     console.log(response)
+        // }).catch(function(error){
+        //     console.log(error)
+        //     console.log(comment_values)
+        // })
 
         console.log(comment);
         setComment(""); // Clear the comment field after posting

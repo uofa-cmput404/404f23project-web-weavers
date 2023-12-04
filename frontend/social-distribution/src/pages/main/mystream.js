@@ -70,7 +70,7 @@ export default function MyStream({props}){
                     {/* TODO: change this to be more dynamic when pulling list of posts */}
                     {posts.map((e)=>{
                         return <div style={styles.post}>
-                        <Post postData={e} visibility = {"PERSONAL"} userUUID = {user}/> </div>
+                        <Post postData={e} visibility = {"PERSONAL"} userUUID = {user} team={"WebWeavers"}/> </div>
                     })}
                 </div>
             </div>
