@@ -28,6 +28,7 @@ import { useNavigate } from 'react-router-dom';
 import axiosService, { PacketPiratesServices, aTeamService } from "../../utils/axios";
 import Comment from "./comment.js";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
+import axios from "axios";
 
 export default function Post({postData, visibility, userUUID, displayName, team}){
     // const userID= localStorage.getItem()
@@ -45,6 +46,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
     const[showImageField, setShowImageField] = useState(false);
     const [OURuser, setOURuser] = useState(null)
     const[showEditPOST, setShowEditPOST] = useState(false)
+    const [commentID, setCommentID]= useState(0);
 
     useEffect(() => {
         //This always get set to false initially
@@ -221,8 +223,6 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             'comment': comment,
             'contentType': "text/plain"
         }
-        console.log("postData.id: " + postData.id)
-        console.log("postData.author.uuid: " + postData.author.uuid )
 
         if (team == "WebWeavers"){ // Web Weavers Server
             let url = postData.id + "/comments/";
@@ -234,10 +234,20 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 console.log(error)
                 console.log(comment_values)
             })
+
             // send comment to Post User's inbox
-            let inboxURL= "authors/" + postData.author.uuid + "/inbox/"
-            console.log("inboxURL: " + inboxURL)
-            axiosService.post(inboxURL, comment_values).then(function(response){
+            axiosService.get(postData.id + "/comments").then((response) => {
+                let comments = response.data.items;
+                let latestComment = comments[comments.length - 1];
+                setCommentID(latestComment.id);
+            })
+
+            let comment_inbox_values={
+                "type": "comment",
+                "id": commentID
+            }
+            let inboxURL= postData.author.url + "/inbox/"
+            axiosService.post(inboxURL, comment_inbox_values).then(function(response){
                 console.log(response)
             }).catch(function(error){
                 console.log(error)
@@ -255,8 +265,8 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 console.log(error)
                 console.log(comment_values)
             })
-            // send comment to Post User's inbox
-            let inboxURL= "authors/" + postData.author.uuid + "/inbox/comments"
+            // send comment to Post User's inbox <-- bro idk how it's structured
+            let inboxURL= "authors/" + postData.author.url + "/inbox/comments"
             console.log("inboxURL: " + inboxURL)
             aTeamService.post(inboxURL, comment_values).then(function(response){
                 console.log(response)
@@ -287,17 +297,6 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             })
         }
 
-
-
-
-        // let inboxURL= "authors/" + postData.author.uuid + "/inbox/comments"
-        // console.log("inboxURL: " + inboxURL)
-        // axiosService.post(inboxURL, comment_values).then(function(response){
-        //     console.log(response)
-        // }).catch(function(error){
-        //     console.log(error)
-        //     console.log(comment_values)
-        // })
 
         console.log(comment);
         setComment(""); // Clear the comment field after posting
