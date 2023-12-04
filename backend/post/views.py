@@ -10,6 +10,10 @@ from rest_framework.pagination import PageNumberPagination
 from drf_spectacular.utils import extend_schema
 import uuid
 from nodes.permissions import IsAuthorizedNode
+import base64
+from PIL import Image
+from io import BytesIO
+from django.http import HttpResponse
 
 # Create your views here.
 class PostList(APIView, PageNumberPagination):
@@ -164,15 +168,43 @@ class PostDetails(APIView):
 @extend_schema(
     description="List all public posts on the node.",
     responses={200: PostSerializer(many=True)},
-        tags=["posts"]
+    tags=["posts"]
 )
 def list_public_posts(request):
     """
     List all public posts on the node.
     """
-    public_posts = Post.objects.filter(visibility="PUBLIC").order_by('-published').all()
+    hosts_to_exclude = ["https://c404-5f70eb0b3255.herokuapp.com/", "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/", "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"]
+    public_posts = Post.objects.filter(visibility="PUBLIC").all().order_by('-published').exclude(author__host__in=hosts_to_exclude)
     serializer = PostSerializer(public_posts, many=True)
     return Response({
         "type": "posts",
         "items": serializer.data
     })
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated | IsAuthorizedNode])
+@extend_schema(
+    description="Get image.",
+    responses={200: None},
+    tags=["posts"]
+)
+def get_image(request, author_id, post_id):
+    author = Author.objects.get(pk=author_id)
+    try:
+        post = Post.objects.get(pk=post_id, author=author)
+    except:
+        return Response({"error": "Post Not Found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    if post.contentType == "image/png;base64":
+        image = Image.open(BytesIO(base64.b64decode(post.content)))
+        buffer = BytesIO()
+        image.save(buffer, format="PNG")
+        return HttpResponse(buffer.getvalue(), status=status.HTTP_200_OK, content_type="image/png")
+    elif post.contentType == "image/jpeg;base64":
+        image = Image.open(BytesIO(base64.b64decode(post.content)))
+        buffer = BytesIO()
+        image.save(buffer, format="JPEG")
+        return HttpResponse(buffer.getvalue(), status=status.HTTP_200_OK, content_type="image/jpeg")
+    else:
+        return Response({"error": "Post is not an image"}, status=status.HTTP_400_BAD_REQUEST)
