@@ -37,10 +37,8 @@ export default function Post({postData, visibility, userUUID, displayName, team}
     const postAuthor= postData.author.uuid              // the one who made the post
     let navigate = useNavigate();
     const [IsLiked, SetIsLiked]= useState(false);
-    const [likes, setLikes] = useState([])
     const [ comment, setComment ] = useState("");
     const [showCommentField, setShowCommentField] = useState(false);
-    const [comments, setComments] = useState([])
     const [ postComments, setPostComments ] = useState([]);
     const[showLikeField, setShowLikeField] = useState(false);
     const[showEditField, setShowEditField] = useState(false);
@@ -49,6 +47,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
     const [OURuser, setOURuser] = useState(null)
     const[showEditPOST, setShowEditPOST] = useState(false)
     const [commentID, setCommentID]= useState(0);
+    const [loggedInData, setLoggedInData] = useState(null)
 
     useEffect(() => {
         const getCurrentUser = async () => {
@@ -237,14 +236,27 @@ export default function Post({postData, visibility, userUUID, displayName, team}
     // TODO: post comment to backend
         console.log("loggedInUser: " + loggedInUser)       
         console.log("postAuthor: " + postAuthor)
+
+
+        const getloggedInUser = async () => {
+            try{
+                const response = await axiosService.get("authors/" + loggedInUser + "/")
+                setLoggedInData(response.data)
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getloggedInUser();
+        
         
         let comment_values = {
-            'author': API_URL + "authors/" + loggedInUser,
+            'author': loggedInData.id,
             'comment': comment,
             'contentType': "text/plain"
         }
-
+        console.log("loggedInData: " + JSON.stringify(loggedInData))
         console.log("comment_values (displayname): " + JSON.stringify(comment_values))
+       
         if (team == "WebWeavers"){ // Web Weavers Server
             let url = postData.id + "/comments/";
             console.log("url: " + url);
@@ -262,10 +274,14 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 setCommentID(latestComment.id);
             })
             let comment_inbox_values={
-                "author": loggedInUser,
+                "id": commentID, // not working
                 "type": "comment",
-                "id": commentID
+                "post": postData.id,
+                "author": loggedInData.id,
+                "comment": comment,
+                
             }
+            console.log("postData.author.url: " + postData.author.url)
             let inboxURL= postData.author.url + "/inbox/"
             // console.log("Posting to URL: ", inboxURL);
             console.log("comment inbox: ", comment_inbox_values);

@@ -44,7 +44,7 @@ export default function MyStream({props}){
         let friends = 0;
         for(let i=0; i < followers.length; i++){
             let is_friend= await checkIfFriend(followers[i], user);
-            if(is_friend){
+            if(is_friend=== true){
                 friends++;
                 console.log("friends: " + JSON.stringify(followers[i]) )
             }

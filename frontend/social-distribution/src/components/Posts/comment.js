@@ -10,7 +10,7 @@ export default function Comment({user, comment, ...props}){
         setLiked(!liked);
     }
 
-    console.log("user:  " + JSON.stringify(user)); 
+    console.log("comment user:  " + JSON.stringify(user)); 
     
     return (
         <Flex style={styles.container} flexDir="row" align="right">
