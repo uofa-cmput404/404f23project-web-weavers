@@ -175,7 +175,7 @@ def list_public_posts(request):
     List all public posts on the node.
     """
     hosts_to_exclude = ["https://c404-5f70eb0b3255.herokuapp.com/", "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/", "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"]
-    public_posts = Post.objects.filter(visibility="PUBLIC").all().order_by('-published').exclude(author__host__in=hosts_to_exclude)
+    public_posts = Post.objects.filter(visibility="PUBLIC", unlisted=False).all().order_by('-published').exclude(author__host__in=hosts_to_exclude)
     serializer = PostSerializer(public_posts, many=True)
     return Response({
         "type": "posts",
