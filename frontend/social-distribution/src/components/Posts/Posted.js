@@ -64,8 +64,10 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             setShowCommentField(false)
         }
 
-        if(postData.contentType == "text/markdown"){
+        if(postData.contentType === "text/markdown"){
             setShowImageField(false)
+        } else if(postData.contentType === "image/png;base64"){
+            setShowImageField(true)
         }
 
         let userUUID = localStorage.getItem("user")
@@ -309,7 +311,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 {showImageField && (
                     <Box mx="auto" textAlign="center">
                         <Flex justifyContent="center">
-                            <img src="https://via.placeholder.com/350x150" alt="Image" />
+                            <img src={postData.content} alt="Image" />
                         </Flex>
                     </Box>
                 )}

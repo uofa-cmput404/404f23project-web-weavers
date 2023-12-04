@@ -94,6 +94,7 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
         let newFriends = []
         for (let i = 0; i < followerUsers.length; i++){
             let is_friend = await checkIfFriend(followerUsers[i], currentUserUUID);
+            console.log("on User " + followerUsers[i].displayName + " we found " + is_friend)
             if(is_friend === true){
                 console.log("Found a " + is_friend+ " friend in " + JSON.stringify(followerUsers[i].displayName))
                 newFriends.push(followerUsers[i])
