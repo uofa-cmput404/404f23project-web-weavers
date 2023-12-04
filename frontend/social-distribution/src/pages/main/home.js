@@ -25,12 +25,15 @@ export default function Home() {
 
      useEffect(() => {
         getPosts();
+        initialize();
       }, []);
     const user = localStorage.getItem("user")
 
-    axiosService.get("authors/" + user + "/").then((response) => {
-        setDisplayName(response.data.displayName)
-    })
+    const initialize = async () => {
+        axiosService.get("authors/" + user + "/").then((response) => {
+            setDisplayName(response.data.displayName)
+        })
+    }
 
     return (
         <div style={styles.container}>

@@ -79,6 +79,9 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
     const followersFiltered = followers.filter(user =>
         user.displayName.toLowerCase().includes(search.toLowerCase())
     );
+    const friendsFiltered = followers.filter(user =>
+        user.displayName.toLowerCase().includes(search.toLowerCase())
+    );
 
     const handleTabChange = (event, newvalue) => {
         setValue(newvalue);
@@ -92,6 +95,7 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
                     <TabList>
                         <Tab _selected={{ color: "white", bg: colors.brand.c2 }} _focus={{boxShadow: "none"}}>All</Tab>
                         <Tab _selected={{ color: "white", bg: colors.brand.c2 }} _focus={{boxShadow: "none"}}>Followers</Tab>
+                        <Tab _selected={{ color: "white", bg: colors.brand.c2 }} _focus={{boxShadow: "none"}}>Friends</Tab>
                     </TabList>
                     <TabPanels>
                         <TabPanel>
@@ -107,6 +111,17 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
                         <TabPanel>
                             <Flex flexDir="column" w="100%" alignItems="center" align="center">
                                 {followersFiltered.map(user => <FriendIcon
+                                    key={user.displayName}
+                                    user={user}
+                                    currentUser={currentUser}
+                                    isFollower = {true}
+                                    userDisplayName = {userDisplayName}
+                                    selectedServer = {currentServer}/>)}
+                            </Flex>
+                        </TabPanel>
+                        <TabPanel>
+                            <Flex flexDir="column" w="100%" alignItems="center" align="center">
+                                {friendsFiltered.map(user => <FriendIcon
                                     key={user.displayName}
                                     user={user}
                                     currentUser={currentUser}

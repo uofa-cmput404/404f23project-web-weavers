@@ -6,6 +6,8 @@ import { BeatLoader } from "react-spinners";
 import TextPost from "./TextPost.js";
 import axiosService, {PacketPiratesServices, aTeamService, BeegYoshiService} from "../../utils/axios"
 import { Text } from "react-font";
+import Inbox from "../../pages/main/inbox.js";
+import {checkIfFriend} from "../../utils/connectionFunctions"
 
 export default function CreatePostCard() {
   const fileInputRef = useRef(null);
@@ -44,6 +46,10 @@ export default function CreatePostCard() {
     reader.readAsDataURL(file);
   };
 
+
+
+
+
   //Send to each Inbox
   // TODO: implement inbox for Beeg Yoshi and A-Team
   const sendPostsToInboxes = (follower, response) => {
@@ -60,7 +66,8 @@ export default function CreatePostCard() {
         console.log(error);
       })
     }else if (follower.host === "https://c404-5f70eb0b3255.herokuapp.com/"){
-      console.log("[Not set up] Successfully sent post to follower " + follower.displayName);
+      console.log("[Not set up for A Team] Successfully sent post to follower " + follower.displayName);
+      //THIS ENDPOINT FULLY DOES NOT EXIST AND MIGHT NOT BE IMPLEMENTED AS A HEADSUP
       /*
       aTeamService.post("authors/" + follower.uuid + "/inbox", response.data).then((inboxResponse) => {
         console.log("Successfully sent post to follower " + follower.displayName);
@@ -69,14 +76,23 @@ export default function CreatePostCard() {
       })
       */
     } else if (follower.host === "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"){
-      console.log("[Not set up] Successfully sent post to follower " + follower.displayName);
-      /*
-      BeegYoshiService.post("authors/" + follower.uuid + "/inbox", response.data).then((inboxResponse) => {
-        console.log("Successfully sent post to follower " + follower.displayName);
-      }).catch((error) =>{
-        console.log(error);
+      console.log("[Beeg Yoshi]] Successfully sent post to follower " + follower.displayName);
+      let url = "service/authors/" + follower.uuid + "/inbox/"
+      BeegYoshiService.get(url).then((BYInboxResponse) =>{
+        const friendRequest = BYInboxResponse.data.items["friendsrequests"]
+        const notifications = BYInboxResponse.data.items["notifications"]
+        const inbox = BYInboxResponse.data.items["inbox"]
+        inbox.push(response.data)
+        const InboxData = {"inbox": inbox, "notifications": notifications, "friendrequests": friendRequest}
+
+        BeegYoshiService.put(url, InboxData).then( (updatedInboxResponse) => {
+          console.log(updatedInboxResponse)
+        }).catch( (err) => {
+        console.log(err)
       })
-      */
+      }).catch( (err) => {
+        console.log(err)
+      })
     }
 
   }
@@ -115,16 +131,15 @@ export default function CreatePostCard() {
             if(followers){
               if(response.data.visibility === "FRIENDS"){
                 for(let i = 0; i < followers.length; i++){
-                  //Handle FRIENDS ONLY POSTS
-                  // For every follower check if you follow then send
-                  //sendPostsToInboxes(followers[i], response);
-
-                }}
-              } else {
-                // handle public posts
-                for(let i = 0; i < followers.length; i++){
-                  //sendPostsToInboxes(followers[i], response);
-                }}
+                  if (checkIfFriend(followers[i], postUserUUID)){
+                    sendPostsToInboxes(followers[i], response)
+                  }
+                }} else if (response.data.visibility === "PUBLIC"){
+                  // handle public posts
+                  for(let i = 0; i < followers.length; i++){
+                    sendPostsToInboxes(followers[i], response);
+                  }}
+              }
             }//followers handling end
 
         }).then((data) => {
