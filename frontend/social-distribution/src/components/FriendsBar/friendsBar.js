@@ -4,6 +4,7 @@ import { Flex} from "@chakra-ui/react";
 import { SearchBar } from "./searchBar.js";
 import FriendIcon from "./friendIcon.js";
 import { useEffect } from 'react';
+import {checkIfFriend} from "../../utils/connectionFunctions";
 import axiosService, {aTeamService, BeegYoshiService, PacketPiratesServices } from "../../utils/axios";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
@@ -22,56 +23,64 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
     const [selectedTab, setValue] = useState('All');
     const currentUser= user;
     const currentServer = selectedServer;
+    const [friendsFiltered, setFriendsFiltered] = useState([])
+    const currentUserUUID = localStorage.getItem("user")
+
+
+
+    const fetchUsers = async () => {
+        try{
+            console.log("Finding users of " + selectedServer)
+            if(selectedServer === "WebWeavers"){
+                // Web Weaver Server
+                const response = await axiosService.get("authors/");
+                setUsers(response.data.items.map(user => ({id: user.uuid, uuid: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
+
+                // Just followers
+                const res= await axiosService.get("authors/" + currentUser + "/followers/");
+                setFollowers(res.data.items.map(user => ({id: user.uuid, uuid: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
+                return res.data.items
+            } else if (selectedServer === "BeegYoshi"){
+                //Beeg Yoshi
+                const response = await BeegYoshiService.get("service/authors/");
+                setUsers(response.data.map(user => ({id: user.id, uuid: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
+
+                //Just followers
+                const res= await axiosService.get("authors/" + currentUser + "/followers/");
+                setFollowers(res.data.items.map(user => ({id: user.id, uuid: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
+                return res.data.items
+            }else if (selectedServer === "ATeam"){
+                // A Team
+                const response = await aTeamService.get("authors/");
+                setUsers(response.data.results.items.map(user => ({id: user.id, uuid: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
+
+                //Just followers
+                const res= await axiosService.get("authors/" + currentUser + "/followers/");
+                setFollowers(res.data.items.map(user => ({id: user.uuid, uuid: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
+                return res.data.items
+            } else if (selectedServer === "PacketPirates"){
+                // A Team
+                const response = await PacketPiratesServices.get("authors");
+                setUsers(response.data.items.map(user => ({id: user.id, uuid: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
+
+                //Just followers
+                const res= await axiosService.get("authors/" + currentUser + "/followers/");
+                setFollowers(res.data.items.map(user => ({id: user.uuid, uuid: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
+                return res.data.items
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     useEffect(() => {
-        const fetchUsers = async () => {
-            try{
-                console.log("Finding users of " + selectedServer)
-                if(selectedServer === "WebWeavers"){
-                    // Web Weaver Server
-                    const response = await axiosService.get("authors/");
-                    setUsers(response.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
+        findFriends();
+      }, []);
 
-                    // Just followers
-                    const res= await axiosService.get("authors/" + currentUser + "/followers/");
-                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
-                } else if (selectedServer === "BeegYoshi"){
-                    //Beeg Yoshi
-                    const response = await BeegYoshiService.get("service/authors/");
-                    setUsers(response.data.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
-
-                    //Just followers
-                    const res= await axiosService.get("authors/" + currentUser + "/followers/");
-                    setFollowers(res.data.items.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
-
-                }else if (selectedServer === "ATeam"){
-                    // A Team
-                    const response = await aTeamService.get("authors/");
-                    setUsers(response.data.results.items.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
-
-                    //Just followers
-                    const res= await axiosService.get("authors/" + currentUser + "/followers/");
-                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
-
-                } else if (selectedServer === "PacketPirates"){
-                    // A Team
-                    const response = await PacketPiratesServices.get("authors");
-                    setUsers(response.data.items.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
-
-                    //Just followers
-                    const res= await axiosService.get("authors/" + currentUser + "/followers/");
-                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
-
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        fetchUsers();
-    }
-    , [currentUser, selectedServer])
 
     // Search bar functionality
+
     const filteredUsers = users.filter(user =>
         user.displayName.toLowerCase().includes(search.toLowerCase())
     );
@@ -79,9 +88,19 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
     const followersFiltered = followers.filter(user =>
         user.displayName.toLowerCase().includes(search.toLowerCase())
     );
-    const friendsFiltered = followers.filter(user =>
-        user.displayName.toLowerCase().includes(search.toLowerCase())
-    );
+
+    const findFriends = async () => {
+        let followerUsers= await fetchUsers();
+        let newFriends = []
+        for (let i = 0; i < followerUsers.length; i++){
+            let is_friend = await checkIfFriend(followerUsers[i], currentUserUUID);
+            if(is_friend === true){
+                console.log("Found a " + is_friend+ " friend in " + JSON.stringify(followerUsers[i].displayName))
+                newFriends.push(followerUsers[i])
+            }
+        }
+        setFriendsFiltered(newFriends)
+    }
 
     const handleTabChange = (event, newvalue) => {
         setValue(newvalue);
