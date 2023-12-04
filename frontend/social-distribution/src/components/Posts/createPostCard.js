@@ -25,6 +25,8 @@ export default function CreatePostCard() {
   const[postContentType, setPostContentType] = useState("text/plain")
   const [showTextContent, setShowTextContent] = useState(false)
   const [textContent, setTextContent] = useState("")
+  const [base64Image, setBase64IMG] = useState("")
+
 
   const handlePostContentChange = (newContentType) => {
     setPostContentType(newContentType);
@@ -44,6 +46,7 @@ export default function CreatePostCard() {
   const getPhoto = () => {
     fileInputRef.current.click();
   };
+
 
   const handleMakePost = () => {
     setShowtitle(!showtitle);
@@ -130,8 +133,16 @@ export default function CreatePostCard() {
       "visibility": postVisibility,
       "contentType" : postContentType
     }
-    console.log("fields: " + JSON.stringify(fields));
 
+    //Handle Encoding Images
+    if(postContentType === "image/png;base64"){
+      fields["content"] = imageData;
+    } else {
+      //handle Text components
+      const textcontent = document.getElementById("textcontent").value;
+      fields["content"] = textcontent;
+    }
+    console.log("fields: " + JSON.stringify(fields));
     // Send to server
     axiosService.post(url, fields)
     .then((response) => {
