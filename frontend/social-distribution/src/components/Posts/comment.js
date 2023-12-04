@@ -9,6 +9,8 @@ export default function Comment({user, comment, ...props}){
     const handleLikeClick = () => {
         setLiked(!liked);
     }
+
+    console.log("user:  " + JSON.stringify(user)); 
     
     return (
         <Flex style={styles.container} flexDir="row" align="right">

@@ -28,6 +28,7 @@ export default function Home() {
         initialize();
       }, []);
     const user = localStorage.getItem("user")
+    console.log("user during home: " + user)
 
     const initialize = async () => {
         axiosService.get("authors/" + user + "/").then((response) => {

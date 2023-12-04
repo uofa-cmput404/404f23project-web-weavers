@@ -31,8 +31,10 @@ import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 import axios from "axios";
 
 export default function Post({postData, visibility, userUUID, displayName, team}){
-    // const userID= localStorage.getItem()
-    // const postID = 1;
+    const user = localStorage.getItem("user")      
+    const [curr_user, setCurrUser]= useState("")    
+    const loggedInUser= localStorage.getItem("user")    // the one logged in
+    const postAuthor= postData.author.uuid              // the one who made the post
     let navigate = useNavigate();
     const [IsLiked, SetIsLiked]= useState(false);
     const [likes, setLikes] = useState([])
@@ -47,6 +49,19 @@ export default function Post({postData, visibility, userUUID, displayName, team}
     const [OURuser, setOURuser] = useState(null)
     const[showEditPOST, setShowEditPOST] = useState(false)
     const [commentID, setCommentID]= useState(0);
+
+    useEffect(() => {
+        const getCurrentUser = async () => {
+            try{
+                const response = await axiosService.get("authors/" + loggedInUser + "/")
+                //console.log("Current user is " + JSON.stringify(response.data))
+                setCurrUser(response.data)
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getCurrentUser();
+    }, [])
 
     useEffect(() => {
         //This always get set to false initially
@@ -218,11 +233,16 @@ export default function Post({postData, visibility, userUUID, displayName, team}
 
     const handleCommentPost = () => {
     // TODO: post comment to backend
+        console.log("loggedInUser: " + loggedInUser)       
+        console.log("postAuthor: " + postAuthor)
+        console.log("curr_user: " + JSON.stringify(curr_user))
+        
         let comment_values = {
-            'author': API_URL + "authors/" + userUUID,
+            'author': API_URL + "authors/" + loggedInUser.uuid,
             'comment': comment,
             'contentType': "text/plain"
         }
+        console.log("comment_values: " + JSON.stringify(comment_values))
 
         if (team == "WebWeavers"){ // Web Weavers Server
             let url = postData.id + "/comments/";
@@ -234,19 +254,20 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 console.log(error)
                 console.log(comment_values)
             })
-
             // send comment to Post User's inbox
             axiosService.get(postData.id + "/comments").then((response) => {
                 let comments = response.data.items;
                 let latestComment = comments[comments.length - 1];
                 setCommentID(latestComment.id);
             })
-
             let comment_inbox_values={
+                "author": loggedInUser,
                 "type": "comment",
                 "id": commentID
             }
             let inboxURL= postData.author.url + "/inbox/"
+            console.log("Posting to URL: ", inboxURL);
+            console.log("Comment inbox values: ", comment_inbox_values);
             axiosService.post(inboxURL, comment_inbox_values).then(function(response){
                 console.log(response)
             }).catch(function(error){
@@ -266,14 +287,14 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 console.log(comment_values)
             })
             // send comment to Post User's inbox <-- bro idk how it's structured
-            let inboxURL= "authors/" + postData.author.url + "/inbox/comments"
-            console.log("inboxURL: " + inboxURL)
-            aTeamService.post(inboxURL, comment_values).then(function(response){
-                console.log(response)
-            }).catch(function(error){
-                console.log(error)
-                console.log(comment_values)
-            })
+            // let inboxURL= "authors/" + postData.author.url + "/inbox/comments"
+            // console.log("inboxURL: " + inboxURL)
+            // aTeamService.post(inboxURL, comment_values).then(function(response){
+            //     console.log(response)
+            // }).catch(function(error){
+            //     console.log(error)
+            //     console.log(comment_values)
+            // })
 
 
         } else if (team == "BeegYoshi"){ // Beeg Yoshi Server <-- I could be horribly wrong about this one
@@ -287,14 +308,14 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 console.log(comment_values)
             })
 
-            let inboxURL= "authors/" + postData.author.uuid + "/inbox/comments"
-            console.log("inboxURL: " + inboxURL)
-            axiosService.post(inboxURL, comment_values).then(function(response){
-                console.log(response)
-            }).catch(function(error){
-                console.log(error)
-                console.log(comment_values)
-            })
+            // let inboxURL= "authors/" + postData.author.uuid + "/inbox/comments"
+            // console.log("inboxURL: " + inboxURL)
+            // axiosService.post(inboxURL, comment_values).then(function(response){
+            //     console.log(response)
+            // }).catch(function(error){
+            //     console.log(error)
+            //     console.log(comment_values)
+            // })
         }
 
 
