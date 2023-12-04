@@ -10,6 +10,10 @@ from rest_framework.pagination import PageNumberPagination
 from drf_spectacular.utils import extend_schema
 import uuid
 from nodes.permissions import IsAuthorizedNode
+import base64
+from PIL import Image
+from io import BytesIO
+from django.http import HttpResponse
 
 # Create your views here.
 class PostList(APIView, PageNumberPagination):
@@ -164,7 +168,7 @@ class PostDetails(APIView):
 @extend_schema(
     description="List all public posts on the node.",
     responses={200: PostSerializer(many=True)},
-        tags=["posts"]
+    tags=["posts"]
 )
 def list_public_posts(request):
     """
@@ -176,3 +180,30 @@ def list_public_posts(request):
         "type": "posts",
         "items": serializer.data
     })
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated | IsAuthorizedNode])
+@extend_schema(
+    description="Get image.",
+    responses={200: None},
+    tags=["posts"]
+)
+def get_image(request, author_id, post_id):
+    author = Author.objects.get(pk=author_id)
+    try:
+        post = Post.objects.get(pk=post_id, author=author)
+    except:
+        return Response({"error": "Post Not Found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    if post.contentType == "image/png;base64":
+        image = Image.open(BytesIO(base64.b64decode(post.content)))
+        buffer = BytesIO()
+        image.save(buffer, format="PNG")
+        return HttpResponse(buffer.getvalue(), status=status.HTTP_200_OK, content_type="image/png")
+    elif post.contentType == "image/jpeg;base64":
+        image = Image.open(BytesIO(base64.b64decode(post.content)))
+        buffer = BytesIO()
+        image.save(buffer, format="JPEG")
+        return HttpResponse(buffer.getvalue(), status=status.HTTP_200_OK, content_type="image/jpeg")
+    else:
+        return Response({"error": "Post is not an image"}, status=status.HTTP_400_BAD_REQUEST)
