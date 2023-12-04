@@ -10,6 +10,7 @@ from .serializers import CommentSerializer
 from rest_framework.pagination import PageNumberPagination
 import uuid
 from drf_spectacular.utils import extend_schema
+from backend.utils import get_remote_author
 
 
 # Create your views here.
@@ -57,7 +58,11 @@ class CommentList(APIView, PageNumberPagination):
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
             post_owner = Author.objects.get(pk=author_id)
-            comment_creator = Author.objects.get(url=request.data['author'])
+            try: 
+                comment_creator = Author.objects.get(url=request.data['author'])
+            except:
+                comment_creator = get_remote_author(request.data['author'])
+
             post = Post.objects.get(pk=post_id)
             new_comment_id = uuid.uuid4()
 
@@ -71,8 +76,5 @@ class CommentList(APIView, PageNumberPagination):
             post.count += 1
             post.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors)
-
-
-        
+        return Response(serializer.errors)        
     
