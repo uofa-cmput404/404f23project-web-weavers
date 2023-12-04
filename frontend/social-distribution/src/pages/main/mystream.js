@@ -10,6 +10,7 @@ import {getDisplayName} from "../../components/api";
 import axiosService from "../../utils/axios";
 import { useState, useEffect } from 'react';
 import { Avatar, Flex } from "@chakra-ui/react";
+import { checkIfFriend } from "../../utils/connectionFunctions.js";
 
 export default function MyStream({props}){
     const user = localStorage.getItem("user")
@@ -17,17 +18,13 @@ export default function MyStream({props}){
     const [posts, setPosts] = useState([]);
     const [followers, setFollowers] = useState([]);
     const [profileImage, setProfileImage] = useState("");
-    const [friends, setFriends] = useState([]);
-    const [data, setData] = useState([]); // [postID, postID, ...
+    const [friends, setFriends] = useState(0);
     const [displayName, setDisplayName] = useState("");
 
     //This queries the user for all personal posts
     const fetchdata = async () => {
         const res = await axiosService.get("authors/" + user + "/posts/")
         setPosts(res.data.items)
-
-        // const res2 = getDisplayName(user)
-        // setDisplayName(res2);
 
         const res3 = await axiosService.get("authors/" + user + "/followers/")
         setFollowers(res3.data.items)
@@ -43,8 +40,20 @@ export default function MyStream({props}){
         fetchdata();
     }, [])
 
-    console.log("user " + user);
-    console.log("displayName " + displayName);
+    const friendsNum = async () => {
+        let friends = 0;
+        for(let i=0; i < followers.length; i++){
+            let is_friend= await checkIfFriend(followers[i], user);
+            if(is_friend){
+                friends++;
+                console.log("friends: " + JSON.stringify(followers[i]) )
+            }
+        }
+        setFriends(friends);
+    }
+    useEffect(() => {
+        friendsNum();
+    }, [followers])
 
 
     return(
@@ -62,7 +71,7 @@ export default function MyStream({props}){
                 <Flex flexDir="row" justifyContent="stretch" alignItems="center" fontSize={sizes.sm} color="black">
                     <div style={{ marginRight: '20px' }}>Posts: {posts.length}</div>
                     <div style={{ marginRight: '20px' }}>Followers: {followers.length}</div>
-                    <div>Friends: 0 </div>
+                    <div>Friends: {friends} </div>
                 </Flex>
             </Flex>
             <div style={styles.content}>
