@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { colors, sizes  } from "../../utils/theme.js";
-import { Flex, Divider, IconButton, Button, Textarea, TabList, Tab, Tabs } from "@chakra-ui/react";
+import { Flex, Divider, IconButton, Button, Textarea, TabList, Tab, Tabs} from "@chakra-ui/react";
 import { FiImage, FiLink } from "react-icons/fi";
 import { BeatLoader } from "react-spinners";
 import TextPost from "./TextPost.js";
@@ -15,11 +15,28 @@ export default function CreatePostCard() {
   const [title, setTitle] = useState(false);
   const [showtitle, setShowtitle] = useState(false);
   const [showDescriptionInput, setShowDescriptionInput] = useState(false);
+  const [showContent, setShowContent] = useState(false)
   const [description, setDescription] = useState("");
   const [postVisibility, setPostVisibility] = useState("PUBLIC")
   const [whoSees, setWhoSees] = useState(false);
   const [imageSrc, setImageSrc] = useState(null);
+  const [showImageContent, setShowImageContent] = useState(false)
   const [isLoading, setIsLoading] = useState(false);
+  const[postContentType, setPostContentType] = useState("text/plain")
+  const [showTextContent, setShowTextContent] = useState(false)
+  const [textContent, setTextContent] = useState("")
+
+  const handlePostContentChange = (newContentType) => {
+    setPostContentType(newContentType);
+    if (newContentType === "image/png;base64"){
+      setShowImageContent(true)
+      setShowTextContent(false)
+    }else {
+      setShowTextContent(true)
+      setShowImageContent(false)
+      setImageSrc(false)
+    }
+  }
 
   const handleVisibilityChange = (newVisibility) => {
     setPostVisibility(newVisibility)
@@ -31,8 +48,12 @@ export default function CreatePostCard() {
   const handleMakePost = () => {
     setShowtitle(!showtitle);
     setShowDescriptionInput(!showDescriptionInput);
+    setShowButtons(!showButtons)
     setWhoSees(!whoSees);
-    setShowButtons(!showButtons);
+    setShowContent(!showContent);
+
+    if(showTextContent){ setShowTextContent(false)}
+    if(showImageContent){ setShowImageContent(false)}
   };
 
   const handleFileSelect = (event) => {
@@ -106,8 +127,8 @@ export default function CreatePostCard() {
     const fields= {
       "title": title,
       "description": description,
-      "image": imageData,
-      "visibility": postVisibility
+      "visibility": postVisibility,
+      "contentType" : postContentType
     }
     console.log("fields: " + JSON.stringify(fields));
 
@@ -167,21 +188,25 @@ export default function CreatePostCard() {
   return (
     <div style={styles.container}>
       <Flex flexDir="column" w="100%" >
-        <Flex flexDir="row" justifyContent={whoSees ? 'flex-start' : 'center'}>
+        <Flex flexDir="column" justifyContent={whoSees ? 'flex-start' : 'center'}>
           <Button onClick={handleMakePost} style={styles.prompt}>
             <h1 style={styles.prompt}>Make New Post</h1>
+
           </Button>
+          <Divider borderColor="black"/>
           {whoSees && (
+
             <>
+
               <Flex flexDir="column">
-                <h1 style={{size: "0.8rem", color: colors.brand.c4}}>Who can see this post?</h1>
+                <h1 style={{size: "0.8rem", color: colors.brand.c2}}>Who can see this post?</h1>
                 <div>
-                  <Tabs id = "visibilityTabs" variant='solid-rounded' m={6} colorScheme="whiteAlpha" size='sm' align='end'>
+                  <Tabs id = "visibilityTabs" variant='solid-rounded' m={6} colorScheme="whiteAlpha" size='sm' align='center'>
                     <TabList>
-                      <Tab _selected={{ bg: colors.brand.c4, color: "white" }} color={colors.brand.c4} onClick={() => handleVisibilityChange("PUBLIC")}>Public</Tab>
-                      <Tab _selected={{ bg: colors.brand.c4, color: "white" }} color={colors.brand.c4} onClick={() => handleVisibilityChange("FRIENDS")}>Friends</Tab>
-                      <Tab _selected={{ bg: colors.brand.c4, color: "white" }} color={colors.brand.c4} onClick={() => handleVisibilityChange("PRIVATE")}>Private</Tab>
-                      <Tab _selected={{ bg: colors.brand.c4, color: "white" }} color={colors.brand.c4} onClick={() => handleVisibilityChange("UNLISTED")}>Unlisted</Tab>
+                      <Tab _selected={{ bg: colors.brand.c2, color: "white" }} color={colors.brand.c2} onClick={() => handleVisibilityChange("PUBLIC")}>Public</Tab>
+                      <Tab _selected={{ bg: colors.brand.c2, color: "white" }} color={colors.brand.c2} onClick={() => handleVisibilityChange("FRIENDS")}>Friends</Tab>
+                      <Tab _selected={{ bg: colors.brand.c2, color: "white" }} color={colors.brand.c2} onClick={() => handleVisibilityChange("PRIVATE")}>Private</Tab>
+                      <Tab _selected={{ bg: colors.brand.c2, color: "white" }} color={colors.brand.c2} onClick={() => handleVisibilityChange("UNLISTED")}>Unlisted</Tab>
                     </TabList>
                   </Tabs>
                 </div>
@@ -210,6 +235,31 @@ export default function CreatePostCard() {
               placeholder="Add a description..."
               onChange={(event) => setDescription(event.target.value)}
             />
+
+          )}
+          { showContent && (
+          <Flex flexDir="column">
+          <h1 style={{size: "0.8rem", color: colors.brand.c2}}>Please Select Content Type</h1>
+          <div>
+            <Tabs id = "contentTabs" variant='solid-rounded' m={6} colorScheme="whiteAlpha" size='sm' align='center'>
+              <TabList>
+                <Tab _selected={{ bg: colors.brand.c2, color: "white" }} color={colors.brand.c2} onClick={() => handlePostContentChange("text/plain")}>Text</Tab>
+                <Tab _selected={{ bg: colors.brand.c2, color: "white" }} color={colors.brand.c2} onClick={() => handlePostContentChange("text/markdown")}>Markdown</Tab>
+                <Tab _selected={{ bg: colors.brand.c2, color: "white" }} color={colors.brand.c2} onClick={() => handlePostContentChange("image/png;base64")}>Picture</Tab>
+              </TabList>
+            </Tabs>
+          </div>
+
+        </Flex>)}
+
+        {showTextContent && (
+          <Textarea
+            type="text"
+            id="textcontent"
+            placeholder="Add some text..."
+            onChange={(event) => setTextContent(event.target.value)}
+          />
+
           )}
           {imageSrc && (
             <img
@@ -220,30 +270,26 @@ export default function CreatePostCard() {
           )}
         </Flex>
 
-        <Flex flexDirection="row" justifyContent="space-between">
+        {showImageContent && (
+          <div>
+          <input
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            ref={fileInputRef}
+            onChange={handleFileSelect}
+          />
+          <IconButton
+            style={{ ...styles.icons, width: "40px", marginRight: "10px"}}
+            icon={<FiImage />}
+            aria-label="Image Upload"
+            onClick={getPhoto}
+          />
+        </div>
+        )}
+
         {showButtons && (
           <>
-            <div>
-              <input
-                type="file"
-                accept="image/*"
-                style={{ display: "none" }}
-                ref={fileInputRef}
-                onChange={handleFileSelect}
-              />
-              <IconButton
-                style={{ ...styles.icons, width: "40px", marginRight: "10px"}}
-                icon={<FiImage />}
-                aria-label="Image Upload"
-                onClick={getPhoto}
-              />
-              <IconButton
-                style={{ ...styles.icons, width: "40px" }}
-                icon={<FiLink />}
-                aria-label="Link"
-              />
-            </div>
-
             <Button
               style={{ ...styles.icons, width: "80px" }}
               isLoading={isLoading} // Add the isLoading prop to the Button component
@@ -256,10 +302,11 @@ export default function CreatePostCard() {
         )}
 
         </Flex>
-      </Flex>
     </div>
   );
+
 }
+
 
 const styles = {
     container:{
@@ -271,23 +318,25 @@ const styles = {
         padding: '1rem',
         border: '1px solid',
         // backgroundColor: "",
-        borderColor: colors.brand.c4,
+        borderColor: colors.brand.c2,
+        backgroundColor: "white",
         borderRadius: '1rem',
     },
     prompt:{
       background: "none",
       border: "none",
-      color: colors.brand.c4,
+      color: colors.brand.c2,
       fontSize: '1.5rem',
     },
     textBox:{
       display: 'flex',
       flexDirection: 'column',
       resize: 'none',
+      padding: sizes.sm,
     },
     icons:{
         marginTop: '1rem',
-        backgroundColor: colors.brand.c4,
+        backgroundColor: colors.brand.c2,
         borderRadius: '1rem',
         boxShadow: '0 0 1rem #0001',
         // marginRight: '16vw',
