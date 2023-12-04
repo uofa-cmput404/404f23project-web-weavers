@@ -94,8 +94,6 @@ class InboxTests(APITestCase):
         response2 = self.client.get(f"{self.author1.url}/inbox/comments/")
         ### Check Response Data
         self.assertEqual(response2.status_code, 200)
-        print(self.comment1.id)
-        print(response2.data)
         self.assertEqual(response2.data["author"], self.author1.id)
         self.assertEqual(response2.data["type"], "inbox")
         self.assertEqual(len(response2.data["items"]), 1)
