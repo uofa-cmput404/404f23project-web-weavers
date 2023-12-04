@@ -235,15 +235,14 @@ export default function Post({postData, visibility, userUUID, displayName, team}
     // TODO: post comment to backend
         console.log("loggedInUser: " + loggedInUser)       
         console.log("postAuthor: " + postAuthor)
-        console.log("curr_user: " + JSON.stringify(curr_user))
         
         let comment_values = {
-            'author': API_URL + "authors/" + loggedInUser.uuid,
+            'author': API_URL + "authors/" + loggedInUser,
             'comment': comment,
             'contentType': "text/plain"
         }
-        console.log("comment_values: " + JSON.stringify(comment_values))
 
+        console.log("comment_values (displayname): " + JSON.stringify(comment_values))
         if (team == "WebWeavers"){ // Web Weavers Server
             let url = postData.id + "/comments/";
             console.log("url: " + url);
@@ -257,7 +256,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             // send comment to Post User's inbox
             axiosService.get(postData.id + "/comments").then((response) => {
                 let comments = response.data.items;
-                let latestComment = comments[comments.length - 1];
+                let latestComment = comments[0];
                 setCommentID(latestComment.id);
             })
             let comment_inbox_values={
@@ -266,8 +265,8 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 "id": commentID
             }
             let inboxURL= postData.author.url + "/inbox/"
-            console.log("Posting to URL: ", inboxURL);
-            console.log("Comment inbox values: ", comment_inbox_values);
+            // console.log("Posting to URL: ", inboxURL);
+            console.log("comment inbox: ", comment_inbox_values);
             axiosService.post(inboxURL, comment_inbox_values).then(function(response){
                 console.log(response)
             }).catch(function(error){
