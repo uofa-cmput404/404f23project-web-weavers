@@ -25,10 +25,10 @@ export default function MyStream({props}){
     const fetchdata = async () => {
         const res = await axiosService.get("authors/" + user + "/posts/")
         setPosts(res.data.items)
-        
+
         // const res2 = getDisplayName(user)
         // setDisplayName(res2);
-        
+
         const res3 = await axiosService.get("authors/" + user + "/followers/")
         setFollowers(res3.data.items)
 
@@ -51,14 +51,14 @@ export default function MyStream({props}){
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='My Stream'/>
-            <FriendsBar/>
+            <FriendsBar user={user} selectedServer = {"WebWeavers"}/>
              <div style={{height: "5vh"}}></div> {/*Just to account for height of LogoBar */}
             <Flex flexDir="column" style={styles.profileHeader}>
                 <Avatar marginTop='20px' size="2xl" name={displayName} src="https://bit.ly/tioluwani-kolawole" />
                 <Flex fontSize={sizes.xl} color="black" flexDir="row">
                     <h1>UserName: {displayName}</h1>
                 </Flex>
-                
+
                 <Flex flexDir="row" justifyContent="stretch" alignItems="center" fontSize={sizes.sm} color="black">
                     <div style={{ marginRight: '20px' }}>Posts: {posts.length}</div>
                     <div style={{ marginRight: '20px' }}>Followers: {followers.length}</div>
