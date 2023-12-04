@@ -56,12 +56,13 @@ class CommentList(APIView, PageNumberPagination):
         """
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
-            author = Author.objects.get(pk=author_id)
+            post_owner = Author.objects.get(pk=author_id)
+            comment_creator = Author.objects.get(url=request.data['author'])
             post = Post.objects.get(pk=post_id)
             new_comment_id = uuid.uuid4()
 
-            comment_url = author.url + "posts/" + str(post_id) + "/comments/" + str(new_comment_id)
-            serializer.validated_data['author'] = author
+            comment_url = post_owner.url + "posts/" + str(post_id) + "/comments/" + str(new_comment_id)
+            serializer.validated_data['author'] = comment_creator
             serializer.validated_data['post'] = post
             serializer.validated_data['id'] = comment_url
             serializer.save()

@@ -21,7 +21,8 @@ class CommentTests(APITestCase):
         self.assertEqual(len(response.data["items"]), 2)
 
     def test_post_comment(self):
-        response = self.client.post(f"{self.author1.url}/posts/{self.post1.uuid}/comments/", data={ 
+        response = self.client.post(f"{self.author1.url}/posts/{self.post1.uuid}/comments/", data={
+            "author": self.author2.url, 
             "comment": "comment3",
         }, format="json")
 
