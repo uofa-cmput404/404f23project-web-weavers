@@ -12,7 +12,7 @@ import {
     Button,
   } from '@chakra-ui/react'
 
-import {aTeamService, BeegYoshiService} from "../../utils/axios";
+import {aTeamService, BeegYoshiService, PacketPiratesServices} from "../../utils/axios";
 import axiosService from "../../utils/axios";
 import {ChevronDownIcon} from '@chakra-ui/icons';
 // File Imports
@@ -35,19 +35,35 @@ export default function Explore({props}){
     const [publicPosts, setPublicPosts] = useState([])
     const [publicUsers, setPublicUsers] = useState([])
     const[displayName, setDisplayName] = useState("")
-    const [selectedServer, setSelectedServer] = useState("All")
+    const [selectedServer, setSelectedServer] = useState("ATeam")
 
-    const handleOpen = () => {
-        setOpen(!open);
-      };
+    const setInitialServer = async () => {
+      try {
+        handleServerChange("ATeam")
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
-      const handleServerChange = (newServer) => {
+     useEffect(() => {
+        setInitialServer();
+      }, []);
+
+
+
+    const handleServerChange = (newServer) => {
         //switch server and call the list to reload
         setSelectedServer(newServer);
-        if(newServer == "BeegYoshi"){
-            getBEEGPosts();
-        } else if (newServer == "ATeam"){
-            getATeamPosts();
+        if(newServer === "BeegYoshi"){
+          setPublicPosts([])
+          getBEEGPosts();
+        } else if (newServer === "ATeam"){
+          setPublicPosts([])
+          getATeamPosts();
+          console.log("all posts are " + JSON.stringify(publicPosts))
+        }else if (newServer === "PacketPirates"){
+          setPublicPosts([])
+          getPacketPiratesPosts();
         }
       }
       const getPublicBEEGUsers = async () => {
@@ -79,20 +95,45 @@ export default function Explore({props}){
         }
       };
 
-      //Getting Beeg Yoshi's Posts
+      const getPublicPacketPirateUsers = async () => {
+        try {
+            const res = await PacketPiratesServices.get("authors");
+          setPublicUsers(res.data.items)
+          console.log(res.data.items)
+          return res.data.items;
+        } catch (err) {
+          console.log(err);
+        }
+      };
 
-
-
+      const getPacketPiratesPosts = async () => {
+        try {
+          const currentPosts = [];
+            let postUsers= await getPublicPacketPirateUsers();
+            for (let i = 0; i < postUsers.length; i++){
+              let custom_id = postUsers[i].id.split("/authors/")[1]
+                const res = await PacketPiratesServices.get("authors/" + custom_id + "/posts" )
+                for(let i = 0; i < res.data.length; i++){
+                    let postPush = res.data[i];
+                    postPush["author"] = postUsers[i];
+                    currentPosts.push(postPush);
+                }
+            }
+          setPublicPosts(currentPosts);
+        } catch (err) {
+          console.log(err);
+        }
+      };
 
     const getATeamPosts = async () => {
         try {
-        const res = await aTeamService.get("getAllPublicPosts/");
-        console.log("recieved response")
-        console.log(res)
-        setPublicPosts(res.data.results.items);
+          const res = await aTeamService.get("getAllPublicPosts/");
+          console.log("recieved response")
+          console.log(res)
+          setPublicPosts(res.data.results.items);
         } catch (err) {
-        console.log(err);
-        }
+          console.log(err);
+          }
         };
 
 
@@ -105,7 +146,7 @@ export default function Explore({props}){
             <LogoBar/>
             <NavBar current='Explore' uuid={user}/>
             {/* <FriendsBar user={user}/> */}
-            {selectedServer === "All" && <FriendsBar user={user} selectedServer={selectedServer} userDisplayName= {displayName}/> }
+            {selectedServer === "PacketPirates" && <FriendsBar user={user} selectedServer={selectedServer} userDisplayName= {displayName}/> }
             {selectedServer === "ATeam" && <FriendsBar user={user} selectedServer={selectedServer} userDisplayName= {displayName}/> }
             {selectedServer === "BeegYoshi" && <FriendsBar user={user} selectedServer={selectedServer} userDisplayName= {displayName}/> }
             <div style = {styles.dropdown}>
@@ -114,7 +155,7 @@ export default function Explore({props}){
                     Teams
                 </MenuButton>
                 <MenuList>
-                    <MenuItem onClick={() => handleServerChange('All')}>All</MenuItem>
+                    <MenuItem onClick={() => handleServerChange('PacketPirates')}>Packet Pirates - NOT WORKING</MenuItem>
                     <MenuItem onClick={() => handleServerChange('ATeam')}>A Team</MenuItem>
                     <MenuItem onClick={() => handleServerChange('BeegYoshi')}>Beeg Yoshi </MenuItem>
                 </MenuList>
