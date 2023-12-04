@@ -4,8 +4,10 @@ import { Flex, Divider, IconButton, Button, Textarea, TabList, Tab, Tabs } from 
 import { FiImage, FiLink } from "react-icons/fi";
 import { BeatLoader } from "react-spinners";
 import TextPost from "./TextPost.js";
-import axiosService from "../../utils/axios"
+import axiosService, {PacketPiratesServices, aTeamService, BeegYoshiService} from "../../utils/axios"
 import { Text } from "react-font";
+import Inbox from "../../pages/main/inbox.js";
+import {checkIfFriend} from "../../utils/connectionFunctions"
 
 export default function CreatePostCard() {
   const fileInputRef = useRef(null);
@@ -14,10 +16,14 @@ export default function CreatePostCard() {
   const [showtitle, setShowtitle] = useState(false);
   const [showDescriptionInput, setShowDescriptionInput] = useState(false);
   const [description, setDescription] = useState("");
+  const [postVisibility, setPostVisibility] = useState("PUBLIC")
   const [whoSees, setWhoSees] = useState(false);
   const [imageSrc, setImageSrc] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleVisibilityChange = (newVisibility) => {
+    setPostVisibility(newVisibility)
+  }
   const getPhoto = () => {
     fileInputRef.current.click();
   };
@@ -40,14 +46,62 @@ export default function CreatePostCard() {
     reader.readAsDataURL(file);
   };
 
+
+
+
+
+  //Send to each Inbox
+  // TODO: implement inbox for Beeg Yoshi and A-Team
+  const sendPostsToInboxes = (follower, response) => {
+    if(follower.host === "https://web-weavers-backend-fb4af7963149.herokuapp.com/"){
+      axiosService.post("authors/" + follower.uuid + "/inbox/", response.data).then((inboxResponse) => {
+        console.log("Successfully sent post to follower " + follower.displayName);
+      }).catch((error) =>{
+        console.log(error);
+      })
+    } else if (follower.host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"){
+      PacketPiratesServices.post("authors/" + follower.uuid + "/inbox", response.data).then((inboxResponse) => {
+        console.log("Successfully sent post to follower " + follower.displayName);
+      }).catch((error) =>{
+        console.log(error);
+      })
+    }else if (follower.host === "https://c404-5f70eb0b3255.herokuapp.com/"){
+      console.log("[Not set up for A Team] Successfully sent post to follower " + follower.displayName);
+      //THIS ENDPOINT FULLY DOES NOT EXIST AND MIGHT NOT BE IMPLEMENTED AS A HEADSUP
+      /*
+      aTeamService.post("authors/" + follower.uuid + "/inbox", response.data).then((inboxResponse) => {
+        console.log("Successfully sent post to follower " + follower.displayName);
+      }).catch((error) =>{
+        console.log(error);
+      })
+      */
+    } else if (follower.host === "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"){
+      console.log("[Beeg Yoshi]] Successfully sent post to follower " + follower.displayName);
+      let url = "service/authors/" + follower.uuid + "/inbox/"
+      BeegYoshiService.get(url).then((BYInboxResponse) =>{
+        const friendRequest = BYInboxResponse.data.items["friendsrequests"]
+        const notifications = BYInboxResponse.data.items["notifications"]
+        const inbox = BYInboxResponse.data.items["inbox"]
+        inbox.push(response.data)
+        const InboxData = {"inbox": inbox, "notifications": notifications, "friendrequests": friendRequest}
+
+        BeegYoshiService.put(url, InboxData).then( (updatedInboxResponse) => {
+          console.log(updatedInboxResponse)
+        }).catch( (err) => {
+        console.log(err)
+      })
+      }).catch( (err) => {
+        console.log(err)
+      })
+    }
+
+  }
   const handlePost = () => {
     // Post to server
     setIsLoading(true);
-
     // Get data from post- don't get rid of the const in front of description
     const description= document.getElementById("description").value;
     const title= document.getElementById("title").value;
-    const whoSees= "PUBLIC";
     const imageData= imageSrc;
     const postUserUUID= localStorage.getItem("user");
     const url= "authors/" + postUserUUID + "/posts/";
@@ -56,6 +110,7 @@ export default function CreatePostCard() {
       "title": title,
       "description": description,
       "image": imageData,
+      "visibility": postVisibility
     }
     console.log("fields: " + JSON.stringify(fields));
 
@@ -65,7 +120,6 @@ export default function CreatePostCard() {
       if (response.status >= 200 && response.status <= 299) {
         console.log("Post created successfully!");
         setIsLoading(false);
-
         //get all followers
         axiosService.get("authors/" + postUserUUID + "/followers/").then((followersResponse) => {
           if(followersResponse.status >= 200 <= 299){
@@ -73,16 +127,20 @@ export default function CreatePostCard() {
             const followers = followersResponse.data.items;
             console.log(followers)
 
-            //Send to each Inbox
+
             if(followers){
-              for(let i = 0; i < followers.length; i++){
-                axiosService.post("authors/" + followers[i].uuid + "/inbox/", response.data).then((inboxResponse) => {
-                  console.log("Successfully sent post to follower " + followers[i].displayName);
-                }).catch((error) =>{
-                  console.log(error);
-                })
-              }}
-          }
+              if(response.data.visibility === "FRIENDS"){
+                for(let i = 0; i < followers.length; i++){
+                  if (checkIfFriend(followers[i], postUserUUID)){
+                    sendPostsToInboxes(followers[i], response)
+                  }
+                }} else if (response.data.visibility === "PUBLIC"){
+                  // handle public posts
+                  for(let i = 0; i < followers.length; i++){
+                    sendPostsToInboxes(followers[i], response);
+                  }}
+              }
+            }//followers handling end
 
         }).then((data) => {
           console.log(data);
@@ -120,12 +178,12 @@ export default function CreatePostCard() {
               <Flex flexDir="column">
                 <h1 style={{size: "0.8rem", color: colors.brand.c4}}>Who can see this post?</h1>
                 <div>
-                  <Tabs variant='solid-rounded' m={6} colorScheme="whiteAlpha" size='sm' align='end'>
+                  <Tabs id = "visibilityTabs" variant='solid-rounded' m={6} colorScheme="whiteAlpha" size='sm' align='end'>
                     <TabList>
-                      <Tab _selected={{ bg: colors.brand.c4, color: "white" }} color={colors.brand.c4}>Public</Tab>
-                      <Tab _selected={{ bg: colors.brand.c4, color: "white" }} color={colors.brand.c4}>Friends</Tab>
-                      <Tab _selected={{ bg: colors.brand.c4, color: "white" }} color={colors.brand.c4}>Private</Tab>
-                      <Tab _selected={{ bg: colors.brand.c4, color: "white" }} color={colors.brand.c4}>Unlisted</Tab>
+                      <Tab _selected={{ bg: colors.brand.c4, color: "white" }} color={colors.brand.c4} onClick={() => handleVisibilityChange("PUBLIC")}>Public</Tab>
+                      <Tab _selected={{ bg: colors.brand.c4, color: "white" }} color={colors.brand.c4} onClick={() => handleVisibilityChange("FRIENDS")}>Friends</Tab>
+                      <Tab _selected={{ bg: colors.brand.c4, color: "white" }} color={colors.brand.c4} onClick={() => handleVisibilityChange("PRIVATE")}>Private</Tab>
+                      <Tab _selected={{ bg: colors.brand.c4, color: "white" }} color={colors.brand.c4} onClick={() => handleVisibilityChange("UNLISTED")}>Unlisted</Tab>
                     </TabList>
                   </Tabs>
                 </div>
@@ -161,9 +219,9 @@ export default function CreatePostCard() {
               alt="Selected Image"
               style={{ maxWidth: "100%", maxHeight: "300px", objectFit: "contain" ,marginTop: "10px" }}
             />
-          )}  
+          )}
         </Flex>
-        
+
         <Flex flexDirection="row" justifyContent="space-between">
         {showButtons && (
           <>
@@ -185,7 +243,7 @@ export default function CreatePostCard() {
                 style={{ ...styles.icons, width: "40px" }}
                 icon={<FiLink />}
                 aria-label="Link"
-              />            
+              />
             </div>
 
             <Button
@@ -195,7 +253,7 @@ export default function CreatePostCard() {
               onClick={handlePost}
             >
               {isLoading ? "Posting..." : "Post"} {/* Change the text of the button based on isLoading */}
-            </Button>          
+            </Button>
           </>
         )}
 

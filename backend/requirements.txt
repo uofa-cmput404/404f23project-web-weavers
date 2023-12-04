@@ -15,6 +15,7 @@ inflection==0.5.1
 jsonschema==4.19.2
 jsonschema-specifications==2023.7.1
 packaging==23.2
+Pillow==10.1.0
 psycopg==3.1.12
 psycopg2-binary==2.9.9
 PyJWT==2.6.0

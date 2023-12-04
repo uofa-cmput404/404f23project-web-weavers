@@ -25,9 +25,9 @@ import "./Posting.css"
 import { sizes, colors } from "../../utils/theme";
 import {API_URL} from "../api";
 import { useNavigate } from 'react-router-dom';
+import axiosService, { PacketPiratesServices, aTeamService } from "../../utils/axios";
 import Comment from "./comment.js";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
-import axiosService, { aTeamService } from "../../utils/axios";
 
 export default function Post({postData, visibility, userUUID, displayName, team}){
     // const userID= localStorage.getItem()
@@ -43,7 +43,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
     const[showEditField, setShowEditField] = useState(false);
     const[showDeleteField, setShowDeleteField] = useState(false);
     const[showImageField, setShowImageField] = useState(false);
-
+    const [OURuser, setOURuser] = useState(null)
     const[showEditPOST, setShowEditPOST] = useState(false)
 
     useEffect(() => {
@@ -67,13 +67,19 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         if(postData.contentType == "text/markdown"){
             setShowImageField(false)
         }
+
+        let userUUID = localStorage.getItem("user")
+        axiosService.get("authors/" + userUUID + "/").then((response) => {
+        setOURuser(response.data)})
+
+        getLikedPosts();
      }, []);
 
      useEffect(() => {
         const getPostComments = async () => {
             try{
                 const response = await axiosService.get(postData.id + "/comments/");
-                setPostComments(response.data.items.map(comment => ({id: comment.id, author: comment.author, comment: comment.comment})));            
+                setPostComments(response.data.items.map(comment => ({id: comment.id, author: comment.author, comment: comment.comment})));
             } catch (error) {
                 console.log(error);
             }
@@ -81,38 +87,54 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         getPostComments();
     }, [])
     //Check for likes based on server
-    if(team === "WebWeavers"){
-        //For Web Weaver Server
-        let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
-        axiosService.get(url).then( (response) => {
-            for(let i = 0; i < response.data.items.length; i++){
-                if(response.data.items[i].author.uuid == userUUID){
-                    console.log("User has liked this post "+ postData.id)
-                    SetIsLiked(true);
+    const getLikedPosts = async() => {
+        if(postData.author.host === "https://web-weavers-backend-fb4af7963149.herokuapp.com/"){
+            //For Web Weaver Server
+            let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
+            await axiosService.get(url).then( (response) => {
+                for(let i = 0; i < response.data.items.length; i++){
+                    if(response.data.items[i].author.uuid == userUUID){
+                        console.log("User has liked this post "+ postData.id)
+                        SetIsLiked(true);
+                    }
                 }
-            }
-        })
-    } else if (team === "ATeam"){
-        // For A Team
-        let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
-        aTeamService.get(url).then( (response) => {
-            for(let i = 0; i < response.data.results.items.length; i++){
-                if(response.data.results.items[i].author.id == userUUID){
-                    console.log("User has liked this post "+ postData.id)
-                    SetIsLiked(true);
+            })
+        } else if (postData.author.host === "https://c404-5f70eb0b3255.herokuapp.com/"){
+            // For A Team
+            let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
+            await aTeamService.get(url).then( (response) => {
+                for(let i = 0; i < response.data.results.items.length; i++){
+                    if(response.data.results.items[i].author.id == userUUID){
+                        console.log("User has liked this post "+ postData.id)
+                        SetIsLiked(true);
+                    }
                 }
-            }
-        })
+            })
+        } else if (postData.author.host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"){
+            // For A Team
+            let url = "authors/" + postData.id.split("/authors/")[1] + "/likes"
+            await PacketPiratesServices.get(url).then( (response) => {
+                console.log("total response is " + JSON.stringify(response))
+                for(let i = 0; i < response.data.length; i++){
+                    console.log("Found " + JSON.stringify(response.data[i].author.id.split("/authors/")[1]))
+
+                    if(response.data[i].author.id.split("/authors/")[1]== userUUID){
+                        console.log("User has liked this post "+ postData.id)
+                        SetIsLiked(true);
+                    }
+                }
+            })
+        }
     }
 
     // Like handles
-    const handleLikeClick =() => {
+    const handleLikeClick = async () => {
         if(IsLiked){
             return;
         }
         SetIsLiked(!IsLiked); // Toggle the liked state when the button is clicked
 
-        if(team === "WebWeavers"){
+        if(postData.author.host === "https://web-weavers-backend-fb4af7963149.herokuapp.com/"){
         //our server
             let like_values = {
                 'author': API_URL + "authors/" + userUUID,
@@ -121,13 +143,13 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 'summary': "" + displayName + " liked your post"
             }
             console.log("Finding liked posts")
-            axiosService.post("authors/" + postData.author.uuid + "/inbox/", like_values).then(function(response){
+            await axiosService.post("authors/" + postData.author.uuid + "/inbox/", like_values).then(function(response){
                 console.log(response)
             }).catch(function(error){
                 console.log(error)
                 console.log(like_values)
             })
-        } else if (team == "ATeam"){
+        } else if (postData.author.host === "https://c404-5f70eb0b3255.herokuapp.com/"){
             // A Team's Server
             let like_values = {
                 'author_id': userUUID,
@@ -135,7 +157,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 'summary': "" + displayName + " liked your post"
             }
             let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
-            aTeamService.post(url, like_values).then(function(response){
+            await aTeamService.post(url, like_values).then(function(response){
                 console.log(response)
             }).catch(function(error){
                 console.log(error)
@@ -145,7 +167,22 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         }else if (team == "BeegYoshi"){
             //NO IDEA HOW THIS WORKS OR IF THERE IS SUPPORT FOR REMOTE AUTHORS
             //CODING LATER
-        }
+        } if(postData.author.host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"){
+            //our server
+                let like_values = {
+                    'author': OURuser,
+                    'type': "Like",
+                    'object': postData.id,
+                    'summary': "" + displayName + " liked your post"
+                }
+                let url = "authors/" + postData.author.id.split("/authors/")[1] + "/inbox"
+                await PacketPiratesServices.post(url, like_values).then(function(response){
+                    console.log(response)
+                }).catch(function(error){
+                    console.log(error)
+                    console.log(like_values)
+                })
+            }
 
 
       };
@@ -358,18 +395,18 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                     </Flex>
                 )}
                 {showCommentField && (
-                    <Flex flexDirection="column" mt= "2"> 
+                    <Flex flexDirection="column" mt= "2">
                         <Divider/>
                             <div overflowY="auto" maxheight="5px" alignItems="left">
                                 {postComments.map((comment) => (
-                                    <Comment 
+                                    <Comment
                                         user= {comment.author}
                                         comment={comment}/>
                                 ))}
                             </div>
                         <Divider/>
-                    </Flex>  
-                )}                
+                    </Flex>
+                )}
 
                 <Flex flexDirection="column" mt="2" >
                     <Input

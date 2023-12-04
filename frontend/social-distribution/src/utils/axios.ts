@@ -2,13 +2,25 @@ import axios from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import store from '../store';
 import authSlice from '../store/slices/auth';
-import {API_URL, A_TEAM_URL, BEEG_YOSHI_URL} from "../components/api"
+import {API_URL, A_TEAM_URL, BEEG_YOSHI_URL, PACKET_PIRATES_URL} from "../components/api"
+const usernamePP = 'WebWeavers';
+const passwordPP = '12345';
+const encodedCredentials = btoa(`${usernamePP}:${passwordPP}`);
 
 export const aTeamService = axios.create({
     baseURL: A_TEAM_URL,
     headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Token 06c591151b14e0462efd2ad9c91888a530967c7f'
+    },
+})
+
+//TODO SET UP THE AUTHENTICATED NODE WITH THEM
+export const PacketPiratesServices = axios.create({
+    baseURL: PACKET_PIRATES_URL,
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${encodedCredentials}`
     },
 })
 

@@ -3,6 +3,7 @@ import axiosService from '../utils/axios';
 export const API_URL = "https://web-weavers-backend-fb4af7963149.herokuapp.com/";
 export const A_TEAM_URL = "https://c404-5f70eb0b3255.herokuapp.com/";
 export const BEEG_YOSHI_URL = "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/";
+export const PACKET_PIRATES_URL = "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/";
 
 function validateUser (username) {
     //Checks if a User exists in the database

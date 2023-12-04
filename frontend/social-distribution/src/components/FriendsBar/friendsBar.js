@@ -4,7 +4,7 @@ import { Flex} from "@chakra-ui/react";
 import { SearchBar } from "./searchBar.js";
 import FriendIcon from "./friendIcon.js";
 import { useEffect } from 'react';
-import axiosService, {aTeamService, BeegYoshiService } from "../../utils/axios";
+import axiosService, {aTeamService, BeegYoshiService, PacketPiratesServices } from "../../utils/axios";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
 
@@ -30,30 +30,37 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
                 if(selectedServer === "WebWeavers"){
                     // Web Weaver Server
                     const response = await axiosService.get("authors/");
-                    setUsers(response.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage})));
+                    setUsers(response.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
 
                     // Just followers
                     const res= await axiosService.get("authors/" + currentUser + "/followers/");
-                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage})));
+                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
                 } else if (selectedServer === "BeegYoshi"){
                     //Beeg Yoshi
                     const response = await BeegYoshiService.get("service/authors/");
-                    console.log(JSON.stringify(response.data))
-                    setUsers(response.data.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage})));
+                    setUsers(response.data.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
 
                     //Just followers
                     const res= await axiosService.get("authors/" + currentUser + "/followers/");
-                    setFollowers(res.data.items.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage})));
+                    setFollowers(res.data.items.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
 
                 }else if (selectedServer === "ATeam"){
                     // A Team
                     const response = await aTeamService.get("authors/");
-                    console.log(JSON.stringify(response.data.results.items))
-                    setUsers(response.data.results.items.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage})));
+                    setUsers(response.data.results.items.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
 
                     //Just followers
                     const res= await axiosService.get("authors/" + currentUser + "/followers/");
-                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage})));
+                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
+
+                } else if (selectedServer === "PacketPirates"){
+                    // A Team
+                    const response = await PacketPiratesServices.get("authors");
+                    setUsers(response.data.items.map(user => ({id: user.id, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
+
+                    //Just followers
+                    const res= await axiosService.get("authors/" + currentUser + "/followers/");
+                    setFollowers(res.data.items.map(user => ({id: user.uuid, displayName: user.displayName, avatar: user.profileImage, host:user.host})));
 
                 }
             } catch (error) {
@@ -72,6 +79,9 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
     const followersFiltered = followers.filter(user =>
         user.displayName.toLowerCase().includes(search.toLowerCase())
     );
+    const friendsFiltered = followers.filter(user =>
+        user.displayName.toLowerCase().includes(search.toLowerCase())
+    );
 
     const handleTabChange = (event, newvalue) => {
         setValue(newvalue);
@@ -85,6 +95,7 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
                     <TabList>
                         <Tab _selected={{ color: "white", bg: colors.brand.c2 }} _focus={{boxShadow: "none"}}>All</Tab>
                         <Tab _selected={{ color: "white", bg: colors.brand.c2 }} _focus={{boxShadow: "none"}}>Followers</Tab>
+                        <Tab _selected={{ color: "white", bg: colors.brand.c2 }} _focus={{boxShadow: "none"}}>Friends</Tab>
                     </TabList>
                     <TabPanels>
                         <TabPanel>
@@ -100,6 +111,17 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
                         <TabPanel>
                             <Flex flexDir="column" w="100%" alignItems="center" align="center">
                                 {followersFiltered.map(user => <FriendIcon
+                                    key={user.displayName}
+                                    user={user}
+                                    currentUser={currentUser}
+                                    isFollower = {true}
+                                    userDisplayName = {userDisplayName}
+                                    selectedServer = {currentServer}/>)}
+                            </Flex>
+                        </TabPanel>
+                        <TabPanel>
+                            <Flex flexDir="column" w="100%" alignItems="center" align="center">
+                                {friendsFiltered.map(user => <FriendIcon
                                     key={user.displayName}
                                     user={user}
                                     currentUser={currentUser}
