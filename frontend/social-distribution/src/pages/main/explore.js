@@ -155,7 +155,7 @@ export default function Explore({props}){
                     Teams
                 </MenuButton>
                 <MenuList>
-                    <MenuItem onClick={() => handleServerChange('PacketPirates')}>Packet Pirates - NOT WORKING</MenuItem>
+                    <MenuItem onClick={() => handleServerChange('PacketPirates')}>Packet Pirates</MenuItem>
                     <MenuItem onClick={() => handleServerChange('ATeam')}>A Team</MenuItem>
                     <MenuItem onClick={() => handleServerChange('BeegYoshi')}>Beeg Yoshi </MenuItem>
                 </MenuList>
