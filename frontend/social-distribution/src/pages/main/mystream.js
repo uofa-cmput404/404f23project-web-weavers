@@ -56,7 +56,7 @@ export default function MyStream({props}){
             <Flex flexDir="column" style={styles.profileHeader}>
                 <Avatar marginTop='20px' size="2xl" name={displayName} src="https://bit.ly/tioluwani-kolawole" />
                 <Flex fontSize={sizes.xl} color="black" flexDir="row">
-                    <h1>UserName: {displayName}</h1>
+                    <h1>Username: {displayName}</h1>
                 </Flex>
                 
                 <Flex flexDir="row" justifyContent="stretch" alignItems="center" fontSize={sizes.sm} color="black">
