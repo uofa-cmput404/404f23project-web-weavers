@@ -7,7 +7,6 @@ export const checkIfFriend = async (follower, postUserUUID) => {
     if(follower.host === "https://web-weavers-backend-fb4af7963149.herokuapp.com/"){
         try {
             const res = await axiosService.get("authors/" + follower.uuid+ "/followers/" + postUserUUID + "/")
-            console.log("in the connection " + res.data.is_follower)
             return res.data.is_follower
         } catch (e) {
             console.log(e)
