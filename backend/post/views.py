@@ -70,6 +70,7 @@ class PostList(APIView, PageNumberPagination):
             serializer.validated_data["id"] = post_url
             serializer.validated_data["source"] = post_url
             serializer.validated_data["origin"] = post_url
+            serializer.validated_data["comments"] = post_url + "/comments/"
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
         
@@ -140,6 +141,7 @@ class PostDetails(APIView):
             serializer.validated_data["id"] = post_url
             serializer.validated_data["source"] = post_url
             serializer.validated_data["origin"] = post_url
+            serializer.validated_data["comments"] = post_url + "/comments/"
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
         
