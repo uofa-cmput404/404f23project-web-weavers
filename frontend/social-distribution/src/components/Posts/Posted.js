@@ -69,7 +69,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         if(postData.contentType === "text/markdown"){
             setShowImageField(false)
             setShowTextContent(true)
-        } else if(postData.contentType === "image/png;base64"){
+        } else if(postData.contentType === "image/png;base64" | postData.contentType === "image/jpeg;base64"){
             setShowImageField(true)
             setShowTextContent(false)
             try {
@@ -86,6 +86,15 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         handleRemoteImages();
      }, []);
 
+     function isValidUrl(string) {
+        try {
+            new URL(string);
+            return true;
+        } catch (_) {
+            return false;
+        }
+    }
+
      const handleRemoteImages = async () => {
         if(postData.author.host === "https://web-weavers-backend-fb4af7963149.herokuapp.com/"){
             setContentImageSrc("data:" + postData.contentType + "," + postData.content)
@@ -101,6 +110,10 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 setContentImageSrc(response.data)
                 setShowImageField(true)
             })
+        }
+        if (isValidUrl(postData.content)){
+            setContentImageSrc(postData.content)
+            setShowImageField(true)
         }
      }
      useEffect(() => {
