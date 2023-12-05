@@ -50,6 +50,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
     const [contentImageSrc, setContentImageSrc] = useState("")
     const [commentID, setCommentID]= useState(0);
     const [loggedInData, setLoggedInData] = useState(null)
+    const [friendsPrivacy, setFriendsPrivacy] = useState(false)
 
     useEffect(() => {
         const getCurrentUser = async () => {
@@ -95,6 +96,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
 
         }
 
+        if(postData.visibility === "FRIENDS"){ setFriendsPrivacy(true)}
         let userUUID = localStorage.getItem("user")
         axiosService.get("authors/" + userUUID + "/").then((response) => {
         setOURuser(response.data)})
@@ -259,7 +261,6 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 console.log(like_values)
             })
 
-<<<<<<< HEAD
         }else if (postData.author.host === "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"){
                 let temp = postData.source
                 let temp2 = temp.split("/posts/")[1]
@@ -278,29 +279,6 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                     console.log(error)
                     console.log(like_values)
                 })
-=======
-        }else if (team == "BeegYoshi"){
-            console.log("post Data " + JSON.stringify(postData))
-            let temp = postData.source
-            let temp2 = temp.split("/posts/")[1]
-            let like_values =
-            {
-                "author": userUUID,
-                "displayName":displayName ,
-                "object_id": temp2.split("/")[0],
-                "server": "Web Weavers"
-            }
-
-            let url = "service/remote/authors/like/" + temp2.split("/")[0] + "/"
-            BeegYoshiService.post(url, like_values).then(function(response){
-                console.log(response)
-            }).catch(function(error){
-                console.log(error)
-                console.log(like_values)
-            })
-
-            console.log("like values are " + JSON.stringify(like_values) + "at url " + url)
->>>>>>> main
         } if(postData.author.host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"){
             //our server
                 let like_values = {
@@ -518,7 +496,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                         />
                     </Flex>
                 )}
-                {showCommentField && (
+                {!friendsPrivacy && showCommentField && (
                     <Flex flexDirection="column" mt= "2">
                         <Divider/>
                             <div overflowY="auto" maxheight="5px" alignItems="left">
