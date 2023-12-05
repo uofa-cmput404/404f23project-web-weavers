@@ -68,7 +68,7 @@ def get_remote_post(remote_post_url):
         post_serializer = PostSerializer(data=remote_post)
         if post_serializer.is_valid():
 
-            remote_author = self._get_remote_author(remote_post["author"]["url"])
+            remote_author = get_remote_author(remote_post["author"]["url"])
 
             # if an issue occurred while getting the remote author, return the error
             if isinstance(remote_author, Response):
