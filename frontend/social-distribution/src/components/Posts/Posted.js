@@ -23,16 +23,16 @@ import {
 } from "react-icons/ai";
 import "./Posting.css"
 import { sizes, colors } from "../../utils/theme";
-import {API_URL} from "../api";
+import {API_URL, BEEG_YOSHI_URL} from "../api";
 import { useNavigate } from 'react-router-dom';
-import axiosService, { PacketPiratesServices, aTeamService } from "../../utils/axios";
+import axiosService, { PacketPiratesServices, aTeamService, BeegYoshiService } from "../../utils/axios";
 import Comment from "./comment.js";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 import axios from "axios";
 
 export default function Post({postData, visibility, userUUID, displayName, team}){
-    const user = localStorage.getItem("user")      
-    const [curr_user, setCurrUser]= useState("")    
+    const user = localStorage.getItem("user")
+    const [curr_user, setCurrUser]= useState("")
     const loggedInUser= localStorage.getItem("user")    // the one logged in
     const postAuthor= postData.author.uuid              // the one who made the post
     let navigate = useNavigate();
@@ -73,6 +73,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             setShowLikeField(true)
             setShowEditField(false)
             setShowDeleteField(false)
+            setShowCommentField(true)
         } else if(visibility == "INBOX"){
             setShowLikeField(false)
             setShowDeleteField(false)
@@ -91,17 +92,45 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         setOURuser(response.data)})
 
         getLikedPosts();
+        getloggedInUser();
      }, []);
+
+     const getloggedInUser = async () => {
+        try{
+            const response = await axiosService.get("authors/" + loggedInUser + "/")
+            setLoggedInData(response.data)
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
      useEffect(() => {
         const getPostComments = async () => {
-            try{
-                const response = await axiosService.get(postData.id + "/comments/");
-                setPostComments(response.data.items.map(comment => ({id: comment.id, author: comment.author, comment: comment.comment})));
-            } catch (error) {
-                console.log(error);
-            }
-        };
+            if(postData.author.host === "https://web-weavers-backend-fb4af7963149.herokuapp.com/"){
+                try{
+                    const response = await axiosService.get(postData.id + "/comments/");
+                    setPostComments(response.data.items.map(comment => ({id: comment.id, author: comment.author, comment: comment.comment})));
+                } catch (error) {
+                    console.log(error);
+                }
+            } else if (postData.author.host === "https://c404-5f70eb0b3255.herokuapp.com/"){
+                try {
+                    const response = await aTeamService.get(postData.id + "/comments/")
+                    setPostComments(response.data.results.comments.map(comment => ({id: comment.id, author: comment.author, comment: comment.comment})));
+                }catch (e){console.log(e)}
+            } else if (postData.author.host === "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"){
+                try {
+                    const url = "service/authors/" + postData.source.split("/authors/")[1] + "comments"
+                    const response = await BeegYoshiService.get(url)
+                    setPostComments(response.data.map(comment => ({id: comment.id, author: comment.author, comment: comment.comment})));
+                }catch (e){console.log(e)}
+            } else if (postData.author.host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"){
+                try {
+                    const response = await PacketPiratesServices.get(postData.id + "/comments")
+                    setPostComments(response.data.map(comment => ({id: comment.id, author: comment.author, comment: comment.comment})));
+                } catch (e) {console.log(e)}
+            }//end if statement
+        }//end Get PostComments
         getPostComments();
     }, [])
     //Check for likes based on server
@@ -132,10 +161,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             // For A Team
             let url = "authors/" + postData.id.split("/authors/")[1] + "/likes"
             await PacketPiratesServices.get(url).then( (response) => {
-                console.log("total response is " + JSON.stringify(response))
                 for(let i = 0; i < response.data.length; i++){
-                    console.log("Found " + JSON.stringify(response.data[i].author.id.split("/authors/")[1]))
-
                     if(response.data[i].author.id.split("/authors/")[1]== userUUID){
                         console.log("User has liked this post "+ postData.id)
                         SetIsLiked(true);
@@ -182,9 +208,25 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 console.log(like_values)
             })
 
-        }else if (team == "BeegYoshi"){
-            //NO IDEA HOW THIS WORKS OR IF THERE IS SUPPORT FOR REMOTE AUTHORS
-            //CODING LATER
+        }else if (postData.author.host === "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"){
+                console.log("post Data " + JSON.stringify(postData))
+                let temp = postData.source
+                let temp2 = temp.split("/posts/")[1]
+                let like_values =
+                {
+                    "author": userUUID,
+                    "displayName":displayName ,
+                    "object_id": temp2.split("/")[0],
+                    "server": "Web Weavers"
+                }
+
+                let url = "service/remote/authors/like/" + temp2.split("/")[0] + "/"
+                BeegYoshiService.post(url, like_values).then(function(response){
+                    console.log(response)
+                }).catch(function(error){
+                    console.log(error)
+                    console.log(like_values)
+                })
         } if(postData.author.host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"){
             //our server
                 let like_values = {
@@ -232,55 +274,30 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         setComment(event.target.value);
     };
 
-    const handleCommentPost = () => {
+
+    const handleCommentPost = async () => {
     // TODO: post comment to backend
-        console.log("loggedInUser: " + loggedInUser)       
+        console.log("loggedInUser: " + loggedInUser)
         console.log("postAuthor: " + postAuthor)
 
-
-        const getloggedInUser = async () => {
-            try{
-                const response = await axiosService.get("authors/" + loggedInUser + "/")
-                setLoggedInData(response.data)
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        getloggedInUser();
-        
-        
-        let comment_values = {
-            'author': loggedInData.id,
-            'comment': comment,
-            'contentType': "text/plain"
-        }
         console.log("loggedInData: " + JSON.stringify(loggedInData))
-        console.log("comment_values (displayname): " + JSON.stringify(comment_values))
-       
-        if (team == "WebWeavers"){ // Web Weavers Server
+
+        if (postData.author.host === "https://web-weavers-backend-fb4af7963149.herokuapp.com/"){
+            let comment_values = {
+                'author': loggedInData.id,
+                'comment': comment,
+                'contentType': "text/plain"
+            }
             let url = postData.id + "/comments/";
             console.log("url: " + url);
-            axiosService.post(url, comment_values)        
-            .then(function(response){
-                console.log(response)   
-            }).catch(function(error){
-                console.log(error)
-                console.log(comment_values)
-            })
+            const response = await axiosService.post(url, comment_values)
+            console.log(JSON.stringify(response))
             // send comment to Post User's inbox
-            axiosService.get(postData.id + "/comments").then((response) => {
-                let comments = response.data.items;
-                let latestComment = comments[0];
-                setCommentID(latestComment.id);
-            })
-            let comment_inbox_values={
-                "id": commentID, // not working
-                "type": "comment",
-                "post": postData.id,
-                "author": loggedInData.id,
-                "comment": comment,
-                
+            const comment_inbox_values={
+                "id": response.data.id, // not working
+                "type": "comment"
             }
+
             console.log("postData.author.url: " + postData.author.url)
             let inboxURL= postData.author.url + "/inbox/"
             // console.log("Posting to URL: ", inboxURL);
@@ -293,46 +310,59 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             })
 
 
-        } else if (team == "ATeam"){ // A Team Server <-- maybe im right, maybe im wrong
-            let url = postData.id + "/comments/";
+        } else if (postData.author.host === "https://c404-5f70eb0b3255.herokuapp.com/"){
+            let comment_values = {
+                'comment': comment,
+                'contenType': 'text/plain',
+                'author_id': userUUID
+            } // A Team Server <-- maybe im right, maybe im wrong
+            let url = "authors/" + postData.id.split("/authors/")[1] + "/comments/"
+            console.log("Comment values are " + comment_values)
             console.log("url: " + url);
-            aTeamService.post(url, comment_values)        
+            aTeamService.post(url, comment_values)
             .then(function(response){
-                console.log(response)   
+                console.log(response)
             }).catch(function(error){
                 console.log(error)
                 console.log(comment_values)
             })
-            // send comment to Post User's inbox <-- bro idk how it's structured
-            // let inboxURL= "authors/" + postData.author.url + "/inbox/comments"
-            // console.log("inboxURL: " + inboxURL)
-            // aTeamService.post(inboxURL, comment_values).then(function(response){
-            //     console.log(response)
-            // }).catch(function(error){
-            //     console.log(error)
-            //     console.log(comment_values)
-            // })
-
-
-        } else if (team == "BeegYoshi"){ // Beeg Yoshi Server <-- I could be horribly wrong about this one
-            let url = postData.id + "/comments/";
+        } else if (postData.author.host === "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"){ // Beeg Yoshi Server <-- I could be horribly wrong about this one
+        let temp = postData.source
+        let temp2 = temp.split("/posts/")[1]
+        let comment_values =
+        {
+            "author": userUUID,
+            "displayName":displayName ,
+            "comment": comment,
+            "server": "Web Weavers"
+        }
+            let url = "service/remote/posts/" + temp2.split("/")[0] + "/comments"
             console.log("url: " + url);
-            axiosService.post(url, comment_values)        
+            console.log("Comment values are " + comment_values)
+            BeegYoshiService.post(url, comment_values)
             .then(function(response){
-                console.log(response)   
+                console.log(response)
             }).catch(function(error){
                 console.log(error)
                 console.log(comment_values)
             })
+        } else if (postData.author.host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"){
+            let url = "authors/" + postData.author.id.split("/authors/")[1] + "/inbox"
 
-            // let inboxURL= "authors/" + postData.author.uuid + "/inbox/comments"
-            // console.log("inboxURL: " + inboxURL)
-            // axiosService.post(inboxURL, comment_values).then(function(response){
-            //     console.log(response)
-            // }).catch(function(error){
-            //     console.log(error)
-            //     console.log(comment_values)
-            // })
+            let comment_values = {
+                "author": curr_user,
+                "type": "comment",
+                "comment": comment,
+                "contentType": "text/plain",
+                "id": postData.id,
+                "published": postData.published
+            }
+            PacketPiratesServices.post(url, comment_values).then(function(response){
+                console.log(response)
+            }).catch(function(error){
+                console.log(error)
+                console.log(comment_values)
+            })
         }
 
 
