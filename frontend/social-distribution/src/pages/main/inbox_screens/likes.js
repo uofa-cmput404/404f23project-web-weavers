@@ -10,9 +10,19 @@ export default function Likes() {
 
     const fetchdata = async () => {
         const res = await axiosService.get("authors/" + user+ "/inbox/likes/")
-        console.log(res.data.items)
+        console.log("Finding inbox likes")
         setNotifs(res.data.items)
+        return res.data.items;
     };
+    useEffect(() => {
+        let interval = setInterval(() => {
+            const res = fetchdata();
+        }, 5000);
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
+
     useEffect(() => {
         fetchdata();
     }, [])

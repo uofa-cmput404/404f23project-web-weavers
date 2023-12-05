@@ -12,16 +12,29 @@ export default function Home() {
     //This is where the uuid of the user is being stored for now
     const [publicPosts, setPublicPosts] = useState([])
     let [displayName, setDisplayName] = useState("")
+    //Interval for Live Updates
+    let time_interval;
 
 
     const getPosts = async () => {
       try {
+        console.log("Querying all public posts")
+
         const res = await axiosService.get("public-posts/");
         setPublicPosts(res.data.items);
       } catch (err) {
         console.log(err);
       }
     };
+
+    useEffect(() => {
+        let interval = setInterval(() => {
+            getPosts();
+        }, 5000);
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
 
      useEffect(() => {
         getPosts();
@@ -88,3 +101,4 @@ const styles = {
         marginTop: spacing.lg,
     },
 };
+

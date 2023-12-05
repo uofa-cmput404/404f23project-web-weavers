@@ -155,10 +155,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             // For A Team
             let url = "authors/" + postData.id.split("/authors/")[1] + "/likes"
             await PacketPiratesServices.get(url).then( (response) => {
-                console.log("total response is " + JSON.stringify(response))
                 for(let i = 0; i < response.data.length; i++){
-                    console.log("Found " + JSON.stringify(response.data[i].author.id.split("/authors/")[1]))
-
                     if(response.data[i].author.id.split("/authors/")[1]== userUUID){
                         console.log("User has liked this post "+ postData.id)
                         SetIsLiked(true);
@@ -200,14 +197,12 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             let temp = postData.id
             let url = "authors/" + temp.split("/authors/")[1] + "/likes/"
             await aTeamService.post(url, like_values).then(function(response){
-                console.log(response)
             }).catch(function(error){
                 console.log(error)
                 console.log(like_values)
             })
 
         }else if (team == "BeegYoshi"){
-            console.log("post Data " + JSON.stringify(postData))
             let temp = postData.source
             let temp2 = temp.split("/posts/")[1]
             let like_values =
@@ -220,13 +215,11 @@ export default function Post({postData, visibility, userUUID, displayName, team}
 
             let url = "service/remote/authors/like/" + temp2.split("/")[0] + "/"
             BeegYoshiService.post(url, like_values).then(function(response){
-                console.log(response)
             }).catch(function(error){
                 console.log(error)
                 console.log(like_values)
             })
 
-            console.log("like values are " + JSON.stringify(like_values) + "at url " + url)
         } if(postData.author.host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"){
             //our server
                 let like_values = {
@@ -237,7 +230,6 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 }
                 let url = "authors/" + postData.author.id.split("/authors/")[1] + "/inbox"
                 await PacketPiratesServices.post(url, like_values).then(function(response){
-                    console.log(response)
                 }).catch(function(error){
                     console.log(error)
                     console.log(like_values)
@@ -282,24 +274,15 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             'contentType': "text/plain"
         }
 
-        console.log("author.uuid: " + postData.author.uuid);
-        console.log("postID: " + postData.id);
-        console.log("comment_values: " + JSON.stringify(comment_values));
-
         let url = postData.id + "/comments/";
 
-        console.log("url: " + url);
 
         axiosService.post(url, comment_values)
         .then(function(response){
-            console.log(response)
         }).catch(function(error){
             console.log(error)
             console.log(comment_values)
         })
-
-
-        console.log(comment);
         setComment(""); // Clear the comment field after posting
     };
 
