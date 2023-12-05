@@ -35,7 +35,7 @@ class PostList(APIView, PageNumberPagination):
 
         author = Author.objects.get(pk=author_id)
         # get the latest public posts from the author
-        posts = Post.objects.filter(author=author, visibility="PUBLIC").order_by('-published')
+        posts = Post.objects.filter(author=author, visibility="PUBLIC", unlisted=False).order_by('-published')
 
         # if a page query is provided, paginate the results
         if self.get_page_number(request, self):
