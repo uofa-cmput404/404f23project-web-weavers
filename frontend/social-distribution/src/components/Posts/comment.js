@@ -10,8 +10,6 @@ export default function Comment({user, comment, ...props}){
         setLiked(!liked);
     }
 
-    console.log("comment user:  " + JSON.stringify(user)); 
-    
     return (
         <Flex style={styles.container} flexDir="row" align="right">
             <Avatar name={user.displayName} src={user.profileImage} size="md" ml={2}/>

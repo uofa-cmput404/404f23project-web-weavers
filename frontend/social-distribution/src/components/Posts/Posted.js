@@ -53,7 +53,6 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         const getCurrentUser = async () => {
             try{
                 const response = await axiosService.get("authors/" + loggedInUser + "/")
-                //console.log("Current user is " + JSON.stringify(response.data))
                 setCurrUser(response.data)
             } catch (error) {
                 console.log(error);
@@ -168,6 +167,16 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                     }
                 }
             })
+        } else if (postData.author.host === "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"){
+            let url = "service/authors/" + postData.source.split("/authors/")[1] + "likes"
+            await BeegYoshiService.get(url).then( (response) => {
+                for(let i = 0; i < response.data.length; i++){
+                    if(response.data[i].author== userUUID){
+                        console.log("User has liked this post "+ postData.id)
+                        SetIsLiked(true);
+                    }
+                }
+            })
         }
     }
 
@@ -209,7 +218,6 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             })
 
         }else if (postData.author.host === "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"){
-                console.log("post Data " + JSON.stringify(postData))
                 let temp = postData.source
                 let temp2 = temp.split("/posts/")[1]
                 let like_values =
@@ -277,11 +285,6 @@ export default function Post({postData, visibility, userUUID, displayName, team}
 
     const handleCommentPost = async () => {
     // TODO: post comment to backend
-        console.log("loggedInUser: " + loggedInUser)
-        console.log("postAuthor: " + postAuthor)
-
-        console.log("loggedInData: " + JSON.stringify(loggedInData))
-
         if (postData.author.host === "https://web-weavers-backend-fb4af7963149.herokuapp.com/"){
             let comment_values = {
                 'author': loggedInData.id,
@@ -289,19 +292,14 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 'contentType': "text/plain"
             }
             let url = postData.id + "/comments/";
-            console.log("url: " + url);
             const response = await axiosService.post(url, comment_values)
-            console.log(JSON.stringify(response))
             // send comment to Post User's inbox
             const comment_inbox_values={
                 "id": response.data.id, // not working
                 "type": "comment"
             }
 
-            console.log("postData.author.url: " + postData.author.url)
             let inboxURL= postData.author.url + "/inbox/"
-            // console.log("Posting to URL: ", inboxURL);
-            console.log("comment inbox: ", comment_inbox_values);
             axiosService.post(inboxURL, comment_inbox_values).then(function(response){
                 console.log(response)
             }).catch(function(error){
@@ -317,8 +315,6 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 'author_id': userUUID
             } // A Team Server <-- maybe im right, maybe im wrong
             let url = "authors/" + postData.id.split("/authors/")[1] + "/comments/"
-            console.log("Comment values are " + comment_values)
-            console.log("url: " + url);
             aTeamService.post(url, comment_values)
             .then(function(response){
                 console.log(response)
@@ -337,8 +333,6 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             "server": "Web Weavers"
         }
             let url = "service/remote/posts/" + temp2.split("/")[0] + "/comments"
-            console.log("url: " + url);
-            console.log("Comment values are " + comment_values)
             BeegYoshiService.post(url, comment_values)
             .then(function(response){
                 console.log(response)
@@ -364,9 +358,6 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 console.log(comment_values)
             })
         }
-
-
-        console.log(comment);
         setComment(""); // Clear the comment field after posting
     };
 
