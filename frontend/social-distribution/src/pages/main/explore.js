@@ -78,6 +78,16 @@ export default function Explore({props}){
       };
 
       const getBEEGPosts = async () => {
+        // try {
+        //   const res = await BeegYoshiService.get("service/public/posts/");
+        //   console.log("big yoshi recieved response")
+        //   console.log(res)
+        //   setPublicPosts(res.data.results.items);
+        // } catch (err) {
+        //   console.log("big yoshi error");
+        //   console.log(err);
+        //   }
+        // };
         try {
           const currentPosts = [];
             let postUsers= await getPublicBEEGUsers();
@@ -116,9 +126,13 @@ export default function Explore({props}){
                 for(let i = 0; i < res.data.length; i++){
                     let postPush = res.data[i];
                     postPush["author"] = postUsers[i];
+                    console.log("post push is " + JSON.stringify(postPush.visibility))
+                    if(postPush.visibility === "PUBLIC" && postPush.unlisted === false){
                     currentPosts.push(postPush);
+                  }
                 }
             }
+          console.log("current posts are " + JSON.stringify(currentPosts))
           setPublicPosts(currentPosts);
         } catch (err) {
           console.log(err);
