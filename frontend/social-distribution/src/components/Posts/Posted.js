@@ -25,7 +25,7 @@ import "./Posting.css"
 import { sizes, colors } from "../../utils/theme";
 import {API_URL} from "../api";
 import { useNavigate } from 'react-router-dom';
-import axiosService, { PacketPiratesServices, aTeamService } from "../../utils/axios";
+import axiosService, { PacketPiratesServices, aTeamService, BeegYoshiService } from "../../utils/axios";
 import Comment from "./comment.js";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 
@@ -45,6 +45,8 @@ export default function Post({postData, visibility, userUUID, displayName, team}
     const[showImageField, setShowImageField] = useState(false);
     const [OURuser, setOURuser] = useState(null)
     const[showEditPOST, setShowEditPOST] = useState(false)
+    const [showTextContent, setShowTextContent] = useState(false)
+    const [contentImageSrc, setContentImageSrc] = useState("")
 
     useEffect(() => {
         //This always get set to false initially
@@ -66,8 +68,14 @@ export default function Post({postData, visibility, userUUID, displayName, team}
 
         if(postData.contentType === "text/markdown"){
             setShowImageField(false)
-        } else if(postData.contentType === "image/png;base64"){
+            setShowTextContent(true)
+        } else if(postData.contentType === "image/png;base64" | postData.contentType === "image/jpeg;base64"){
             setShowImageField(true)
+            setShowTextContent(false)
+            try {
+                setContentImageSrc()
+            }catch (e) { console.log(e)}
+
         }
 
         let userUUID = localStorage.getItem("user")
@@ -75,8 +83,39 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         setOURuser(response.data)})
 
         getLikedPosts();
+        handleRemoteImages();
      }, []);
 
+     function isValidUrl(string) {
+        try {
+            new URL(string);
+            return true;
+        } catch (_) {
+            return false;
+        }
+    }
+
+     const handleRemoteImages = async () => {
+        if(postData.author.host === "https://web-weavers-backend-fb4af7963149.herokuapp.com/"){
+            setContentImageSrc("data:" + postData.contentType + "," + postData.content)
+
+        } else if (postData.author.host === "https://c404-5f70eb0b3255.herokuapp.com/"){
+            // For A Team
+            if(postData.image){
+                setContentImageSrc(postData.image)
+                setShowImageField(true)
+            }
+        } else if (postData.author.host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"){
+            axiosService.get(postData.id + "/image").then((response) => {
+                setContentImageSrc(response.data)
+                setShowImageField(true)
+            })
+        }
+        if (isValidUrl(postData.content)){
+            setContentImageSrc(postData.content)
+            setShowImageField(true)
+        }
+     }
      useEffect(() => {
         const getPostComments = async () => {
             try{
@@ -158,7 +197,8 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 'post': postData.id,
                 'summary': "" + displayName + " liked your post"
             }
-            let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
+            let temp = postData.id
+            let url = "authors/" + temp.split("/authors/")[1] + "/likes/"
             await aTeamService.post(url, like_values).then(function(response){
                 console.log(response)
             }).catch(function(error){
@@ -167,8 +207,26 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             })
 
         }else if (team == "BeegYoshi"){
-            //NO IDEA HOW THIS WORKS OR IF THERE IS SUPPORT FOR REMOTE AUTHORS
-            //CODING LATER
+            console.log("post Data " + JSON.stringify(postData))
+            let temp = postData.source
+            let temp2 = temp.split("/posts/")[1]
+            let like_values =
+            {
+                "author": userUUID,
+                "displayName":displayName ,
+                "object_id": temp2.split("/")[0],
+                "server": "Web Weavers"
+            }
+
+            let url = "service/remote/authors/like/" + temp2.split("/")[0] + "/"
+            BeegYoshiService.post(url, like_values).then(function(response){
+                console.log(response)
+            }).catch(function(error){
+                console.log(error)
+                console.log(like_values)
+            })
+
+            console.log("like values are " + JSON.stringify(like_values) + "at url " + url)
         } if(postData.author.host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"){
             //our server
                 let like_values = {
@@ -311,12 +369,12 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 {showImageField && (
                     <Box mx="auto" textAlign="center">
                         <Flex justifyContent="center">
-                            <img src={postData.content} alt="Image" />
+                            <img src={contentImageSrc} />
                         </Flex>
                     </Box>
                 )}
 
-                {!showImageField && (
+                {showTextContent && (
                     <Box mx="auto" textAlign="center">
                         <Flex justifyContent="center">
                         <Textarea isDisabled
