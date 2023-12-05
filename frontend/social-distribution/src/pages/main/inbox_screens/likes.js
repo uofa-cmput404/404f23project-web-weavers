@@ -14,6 +14,8 @@ export default function Likes() {
         setNotifs(res.data.items)
         return res.data.items;
     };
+
+    //live updates
     useEffect(() => {
         let interval = setInterval(() => {
             const res = fetchdata();
@@ -23,6 +25,7 @@ export default function Likes() {
         };
     }, []);
 
+    //initial setup
     useEffect(() => {
         fetchdata();
     }, [])

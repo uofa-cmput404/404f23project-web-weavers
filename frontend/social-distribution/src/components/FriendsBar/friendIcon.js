@@ -10,7 +10,7 @@ import userEvent from "@testing-library/user-event";
 
 
 
-export default function FriendIcon({isFollower, user, displayedUser, currentUser, selectedServer, userDisplayName,...props}){
+export default function FriendIcon({isFollower, user, displayedUser, currentUser, currentUserData, selectedServer, userDisplayName,...props}){
    const {displayName, profileImage} = user;
    const {isOpen, onToggle}= useDisclosure();
    const [OURuser, setOURuser] = useState(null);
@@ -21,9 +21,7 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
    //add delete functionality if the user shown is a follower
    useEffect(()=>{
     if(isFollower){ setShowFollowerDelete(true); setButtonText("Remove Follower");}
-        let userUUID = localStorage.getItem("user")
-        axiosService.get("authors/" + userUUID + "/").then((response) => {
-    setOURuser(response.data)})
+    setOURuser(currentUserData)
     }, [isFollower])
 
    //Checking if a request has already been sent
@@ -66,13 +64,9 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
         }
         const url= "authors/" + user.id + "/inbox/";
 
-        console.log("actor: " + current);
-        console.log("object: " + user.id);
-
         try{
             const response = await axiosService.post(url, data);
             setButtonText(buttonText === 'Follow' ? 'Request Sent' : 'Follow');
-            console.log(response);
         } catch (error) {
             console.error('Error message:', error.message);
             if (error.response) {
@@ -89,12 +83,9 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
             "actor":current        // P2User    2b0144ac-e6a4-40c9-9c5e-b3eff71297bb          // P2Test     e737be90-bb87-4dbd-8840-209d422e83e7
         }
         const url= "authors/" + user.id + "/followRequests/";
-        console.log("sending to url: " + url)
-        console.log("sending data: " + JSON.stringify(data))
         try{
             const response = await aTeamService.post(url, data);
             setButtonText(buttonText === 'Follow' ? 'Request Sent' : 'Follow');
-            console.log(response);
         } catch (error) {
             console.error('Error message:', error.message);
             if (error.response) {
@@ -113,12 +104,9 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
             "displayName" : userDisplayName
         }
         let url= "service/remote/authors/" + current + "/request/" + user.id + "/";
-        console.log("sending to url: " + url)
-        console.log("sending data: " + JSON.stringify(data))
         try{
             const response = await BeegYoshiService.post(url, data);
             setButtonText(buttonText === 'Follow' ? 'Request Sent' : 'Follow');
-            console.log(response);
         } catch (error) {
             console.error('Error message:', error.message);
             if (error.response) {
@@ -139,13 +127,9 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
         let custom_id = user.id.split("/authors/")[1]
         const url= "authors/" + custom_id+ "/inbox";
 
-        console.log("data " + JSON.stringify(data));
-        console.log("url: " + url);
-
         try{
             const response = await PacketPiratesServices.post(url, data);
             setButtonText(buttonText === 'Follow' ? 'Request Sent' : 'Follow');
-            console.log(response);
         } catch (error) {
             console.error('Error message:', error.message);
             if (error.response) {
@@ -182,11 +166,7 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
             console.log("Removed " + displayName + " as a Follower")
         }).catch((err) => {console.log(err)})
 
-
-       console.log("displayed User" + JSON.stringify(displayedUser))
-       console.log("user" + JSON.stringify(user))
         let url2 = "service/remote/authors/" + current + "/followers/" + user.id + "/";
-        console.log("sending to url " + url2)
 
         BeegYoshiService.delete(url2).then((response) => {
             console.log("Deleted Beeg Yoshi Follower " + displayName)

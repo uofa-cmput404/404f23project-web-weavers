@@ -14,14 +14,20 @@ export default function Home() {
     let [displayName, setDisplayName] = useState("")
     //Interval for Live Updates
     let time_interval;
-
+    const [lastPost, setLastPost] = useState(null)
+    const [changeID, setChangeID] = useState(false)
 
     const getPosts = async () => {
       try {
         console.log("Querying all public posts")
 
         const res = await axiosService.get("public-posts/");
-        setPublicPosts(res.data.items);
+        if(lastPost !== res.data.items[0]){
+            setPublicPosts(res.data.items);
+            setLastPost(res.data.items[0])
+            setChangeID(!changeID)
+            window.location.reload(false);
+        }
       } catch (err) {
         console.log(err);
       }
@@ -57,13 +63,24 @@ export default function Home() {
             <div style={styles.content}>
                 <CreatePostCard/>
 
-                <div style={{ ...styles.postContainer }}>
+                {changeID && (<div style={{ ...styles.postContainer }}>
                     {/* TODO: change this to be more dynamic when pulling list of posts */}
+
                     {publicPosts.map((e)=>{
                         return <div style={styles.post}>
-                        <Post postData={e} visibility = {"PUBLIC"} userUUID = {user} displayName={displayName} team = {"WebWeavers"}/> </div>
+                        <Post key={changeID} postData={e} visibility = {"PUBLIC"} userUUID = {user} displayName={displayName} team = {"WebWeavers"}/> </div>
                     })}
-                </div>
+                </div>)}
+
+                {!changeID && (<div style={{ ...styles.postContainer }}>
+                    {/* TODO: change this to be more dynamic when pulling list of posts */}
+
+                    {publicPosts.map((e)=>{
+                        return <div style={styles.post}>
+                        <Post key={changeID} postData={e} visibility = {"PUBLIC"} userUUID = {user} displayName={displayName} team = {"WebWeavers"}/> </div>
+                    })}
+                </div>)}
+
             </div>
         </div>
     );

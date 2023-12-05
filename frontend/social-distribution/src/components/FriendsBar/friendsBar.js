@@ -13,7 +13,7 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
     TODO: Integrate with backend API to get list of friends and necessary data
 } */
 
-export default function FriendsBar({user, selectedServer, userDisplayName, ...props}) {
+export default function FriendsBar({user, selectedServer, userDisplayName, UserData, ...props}) {
     // Note: only placeholder data for now
     // Only show 10 at a time each page or make it scrollable; Deal with the overflow
     // Add pages to the bottom of the friends bar
@@ -22,6 +22,7 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
     const [followers, setFollowers]= useState([]);
     const [selectedTab, setValue] = useState('All');
     const currentUser= user;
+    const currentUserData = UserData;
     const currentServer = selectedServer;
     const [friendsFiltered, setFriendsFiltered] = useState([])
     const currentUserUUID = localStorage.getItem("user")
@@ -123,6 +124,7 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
                                     key={user.displayName}
                                     user={user}
                                     currentUser={currentUser}
+                                    currentUserData = {UserData}
                                     userDisplayName = {userDisplayName}
                                     selectedServer = {currentServer}/>)}
                             </Flex>
@@ -132,6 +134,7 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
                                 {followersFiltered.map(user => <FriendIcon
                                     key={user.displayName}
                                     user={user}
+                                    currentUserData = {UserData}
                                     currentUser={currentUser}
                                     isFollower = {true}
                                     userDisplayName = {userDisplayName}
@@ -143,6 +146,7 @@ export default function FriendsBar({user, selectedServer, userDisplayName, ...pr
                                 {friendsFiltered.map(user => <FriendIcon
                                     key={user.displayName}
                                     user={user}
+                                    currentUserData = {UserData}
                                     currentUser={currentUser}
                                     isFollower = {true}
                                     userDisplayName = {userDisplayName}

@@ -11,19 +11,31 @@ export default function Messages() {
 
     const fetchdata = async () => {
         const res = await axiosService.get("authors/" + user + "/inbox/comments/")
-        console.log(res.data.items)
+        console.log("Querying inbox comments")
         setMessageNotifs(res.data.items)
     };
+
+    //live updates
+    useEffect(() => {
+        let interval = setInterval(() => {
+            fetchdata();
+        }, 5000);
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
+
+    // initial setup
     useEffect(() => {
         fetchdata();
     }, [])
-    
+
 
     return(
         <Flex flexDir="column" style={styles.container}>
             {messageNotifs.map((user) => (
-                <ShadedClickableBox 
-                    variant_='notif' 
+                <ShadedClickableBox
+                    variant_='notif'
                     text={user.author.displayName + " commented '" + user.comment + "'"}/>
             ))}
 

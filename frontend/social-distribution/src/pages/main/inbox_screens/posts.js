@@ -30,6 +30,8 @@ export default function Posts() {
         setPosts(res.data.items)
 
     };
+
+    //live updates
     useEffect(() => {
         let interval = setInterval(() => {
             const res = fetchdata();
@@ -39,6 +41,7 @@ export default function Posts() {
         };
     }, []);
 
+    //initial setup
     useEffect(() => {
         fetchdata();
     }, [])
