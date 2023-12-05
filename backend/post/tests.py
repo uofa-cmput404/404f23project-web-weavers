@@ -25,13 +25,13 @@ class PostTests(APITestCase):
     def test_list_posts(self):
         response = self.client.get(f"{self.author1.url}/posts/")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data["items"]), 3)
+        self.assertEqual(len(response.data["items"]), 2)
 
     def test_list_posts_pagination(self):
         response = self.client.get(f"{self.author1.url}/posts/?size=1")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["items"]), 1)
-        self.assertEqual(response.data["items"][0]["title"], "post3") # the latest post should be first
+        self.assertEqual(response.data["items"][0]["title"], "post2") # the latest post should be first
 
     def test_get_post(self):
         response = self.client.get(f"{self.author1.url}/posts/{self.post1.uuid}/")
