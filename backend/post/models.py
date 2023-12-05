@@ -25,6 +25,7 @@ class Post(models.Model):
 
     VISIBILITY_CHOICES = (
         ("PUBLIC","PUBLIC"),
+        ("PRIVATE","PRIVATE"),
         ("FRIENDS","FRIENDS")
     )
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -56,4 +57,6 @@ class Post(models.Model):
         # When the object is instantiated, set the id field using the author URL and uuid
         if not self.id and self.author:
             self.id = self.author.url + "/posts/" + str(self.uuid)
+            if not self.comments:
+                self.comments = self.id + "/comments/"
         super().save(*args, **kwargs)
