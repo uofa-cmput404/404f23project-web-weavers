@@ -30,11 +30,12 @@ def get_remote_author(remote_author_url):
         author_serializer = AuthorSerializer(data=remote_author)
         if author_serializer.is_valid():
             # if the author's id is not a URL, then it is a ID
-            if not remote_author["id"].startswith("http"):
-                author_serializer.validated_data["uuid"] = remote_author["id"]
+            remote_author_id = str(remote_author["id"])
+            if not remote_author_id.startswith("http"):
+                author_serializer.validated_data["uuid"] = remote_author_id
             else:
                 # extract uuid from the URL
-                author_serializer.validated_data["uuid"] = remote_author["id"].split("/")[-1]
+                author_serializer.validated_data["uuid"] = remote_author_id.split("/")[-1]
 
             author_serializer.validated_data["id"] = remote_author_url
             author_serializer.validated_data["url"] = remote_author_url
