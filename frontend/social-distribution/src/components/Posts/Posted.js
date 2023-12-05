@@ -96,6 +96,11 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 setContentImageSrc(postData.image)
                 setShowImageField(true)
             }
+        } else if (postData.author.host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"){
+            axiosService.get(postData.id + "/image").then((response) => {
+                setContentImageSrc(response.data)
+                setShowImageField(true)
+            })
         }
      }
      useEffect(() => {
