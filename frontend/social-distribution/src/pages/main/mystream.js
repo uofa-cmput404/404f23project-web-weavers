@@ -9,7 +9,9 @@ import Post from "../../components/Posts/Posted";
 import {getDisplayName} from "../../components/api";
 import axiosService from "../../utils/axios";
 import { useState, useEffect } from 'react';
-import { Avatar, Flex } from "@chakra-ui/react";
+import { Avatar, Collapse, Flex } from "@chakra-ui/react";
+import GitActivity from "../../components/Github/GitActivity.js";
+import Button from "../../components/Button.js";
 
 export default function MyStream({props}){
     const user = localStorage.getItem("user")
@@ -20,6 +22,9 @@ export default function MyStream({props}){
     const [friends, setFriends] = useState([]);
     const [data, setData] = useState([]); // [postID, postID, ...
     const [displayName, setDisplayName] = useState("");
+    const [showGit, setShowGit] = useState(false);
+
+    const handleToggle = () => setShowGit(!showGit);
 
     //This queries the user for all personal posts
     const fetchdata = async () => {
@@ -43,8 +48,8 @@ export default function MyStream({props}){
         fetchdata();
     }, [])
 
-    console.log("user " + user);
-    console.log("displayName " + displayName);
+    // console.log("user " + user);
+    // console.log("displayName " + displayName);
 
 
     return(
@@ -56,7 +61,7 @@ export default function MyStream({props}){
             <Flex flexDir="column" style={styles.profileHeader}>
                 <Avatar marginTop='20px' size="2xl" name={displayName} src="https://bit.ly/tioluwani-kolawole" />
                 <Flex fontSize={sizes.xl} color="black" flexDir="row">
-                    <h1>UserName: {displayName}</h1>
+                    <h1>Username: {displayName}</h1>
                 </Flex>
 
                 <Flex flexDir="row" justifyContent="stretch" alignItems="center" fontSize={sizes.sm} color="black">
@@ -64,7 +69,16 @@ export default function MyStream({props}){
                     <div style={{ marginRight: '20px' }}>Followers: {followers.length}</div>
                     <div>Friends: 0 </div>
                 </Flex>
+
+                <Button onClick={handleToggle} style={{ marginTop: '10px' }}>
+                    View Github Activity
+                </Button>
+                <Collapse in={showGit} animateOpacity>
+                    <GitActivity/>
+                </Collapse>
+
             </Flex>
+
             <div style={styles.content}>
                 <div style={{ ...styles.postContainer }}>
                     {/* TODO: change this to be more dynamic when pulling list of posts */}
