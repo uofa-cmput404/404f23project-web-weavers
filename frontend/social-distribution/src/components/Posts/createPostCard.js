@@ -26,6 +26,7 @@ export default function CreatePostCard() {
   const [showTextContent, setShowTextContent] = useState(false)
   const [textcontent, setPostTextContent] = useState("")
   const [base64Image, setBase64IMG] = useState("")
+  const [postUnlisted, setPostUnlisted] = useState(false)
 
 
   const handlePostContentChange = (newContentType) => {
@@ -41,7 +42,10 @@ export default function CreatePostCard() {
   }
 
   const handleVisibilityChange = (newVisibility) => {
-    setPostVisibility(newVisibility)
+    if(newVisibility === "UNLISTED"){
+      setPostVisibility("PUBLIC")
+      setPostUnlisted(true)
+    } else {setPostVisibility(newVisibility)}
   }
   const getPhoto = () => {
     fileInputRef.current.click();
@@ -132,7 +136,8 @@ export default function CreatePostCard() {
       "title": title,
       "description": description,
       "visibility": postVisibility,
-      "contentType" : postContentType
+      "contentType" : postContentType,
+      "unlisted": postUnlisted
     }
 
     //Handle Encoding Images
