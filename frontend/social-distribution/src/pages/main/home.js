@@ -15,7 +15,7 @@ export default function Home() {
     //Interval for Live Updates
     let time_interval;
     const [lastPost, setLastPost] = useState(null)
-    const [changeID, setChangeID] = useState(false)
+    const [changeID, setChangeID] = useState(true)
 
     const getPosts = async (cPublicPosts) => {
       try {
@@ -24,9 +24,8 @@ export default function Home() {
         const res = await axiosService.get("public-posts/");
         console.log("public posts was " + JSON.stringify(cPublicPosts))
         //Avoiding live updates for now from this
-        //setPublicPosts(res.data.items);
+        setPublicPosts(res.data.items);
         setLastPost(res.data.items[0]);
-        setChangeID(!changeID)
         //the first loading in
       } catch (err) {
         console.log(err);
@@ -37,7 +36,7 @@ export default function Home() {
 
     useEffect(() => {
         let interval = setInterval(() => {
-            getPosts(publicPosts);
+            //getPosts(publicPosts);
             if(!lastPost === null && publicPosts[0] !== lastPost){
                 console.log("public posts changed")
             }
