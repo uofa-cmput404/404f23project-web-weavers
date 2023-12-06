@@ -9,8 +9,7 @@ import authSlice from "../../store/slices/auth.ts";
 import { useDispatch } from "react-redux";
 import localStorage from "redux-persist/es/storage";
 import axiosService from "../../utils/axios"
-// TODO: pictureUrl from backend   -> remove hardcoded values
-//       OPTIMIZE TOO SLOW
+
 
 export default function NavBar({uuid,...props}) {
     let navigate = useNavigate();
@@ -58,7 +57,6 @@ export default function NavBar({uuid,...props}) {
 
                 <NavItem navSize={navSize} icon={FiHome} title="Home" description="Home" active={current === 'Home' ? true : false } onClick={()=>{handleClick('Home')}}/>
                 <NavItem navSize={navSize} icon={FiSquare} title="Explore" active={current === 'Explore' ? true : false } onClick={()=>{handleClick('Explore')}} />
-                {/* <NavItem navSize={navSize} icon={FiUser} title="Profile" active={current === 'Profile' ? true : false } onClick={()=>{handleClick('profile')}} /> */}
                 <NavItem navSize={navSize} icon={FiInbox} title="Inbox" active={current === 'Inbox' ? true : false } onClick={()=>{handleClick('Inbox')}} />
                 <NavItem navSize={navSize} icon={FiBook} title="My Stream" active={current === 'My Stream' ? true : false } onClick={()=>{handleClick('mystream')}} />
                 <NavItem navSize={navSize} icon={FiSettings} title="Settings" active={current === 'Settings' ? true : false } onClick={()=>{handleClick('Settings')}} />

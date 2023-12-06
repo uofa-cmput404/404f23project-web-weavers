@@ -9,7 +9,9 @@ import Post from "../../components/Posts/Posted";
 import {getDisplayName} from "../../components/api";
 import axiosService from "../../utils/axios";
 import { useState, useEffect } from 'react';
-import { Avatar, Flex } from "@chakra-ui/react";
+import { Avatar, Collapse, Flex } from "@chakra-ui/react";
+import GitActivity from "../../components/Github/GitActivity.js";
+import Button from "../../components/Button.js";
 import { checkIfFriend } from "../../utils/connectionFunctions.js";
 
 export default function MyStream({props}){
@@ -21,6 +23,9 @@ export default function MyStream({props}){
     const [currentUserData, setCurrentUserData] = useState(null)
     const [friends, setFriends] = useState(0);
     const [displayName, setDisplayName] = useState("");
+    const [showGit, setShowGit] = useState(false);
+
+    const handleToggle = () => setShowGit(!showGit);
 
     //This queries the user for all personal posts
     const fetchdata = async () => {
@@ -83,7 +88,16 @@ export default function MyStream({props}){
                     <div style={{ marginRight: '20px' }}>Followers: {followers.length}</div>
                     <div>Friends: {friends} </div>
                 </Flex>
+
+                <Button onClick={handleToggle} style={{ marginTop: '10px' }}>
+                    My Github Activity
+                </Button>
+                <Collapse in={showGit} animateOpacity>
+                    <GitActivity/>
+                </Collapse>
+
             </Flex>
+
             <div style={styles.content}>
                 <div style={{ ...styles.postContainer }}>
                     {/* TODO: change this to be more dynamic when pulling list of posts */}

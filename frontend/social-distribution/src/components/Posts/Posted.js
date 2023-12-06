@@ -113,6 +113,8 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         axiosService.get("authors/" + userUUID + "/").then((response) => {
         setOURuser(response.data)})
 
+        getLikedPosts();
+        handleRemoteImages();
         getCurrentUser();
         getSharingPostUsers();
      }, []);

@@ -325,7 +325,7 @@ export default function CreatePostCard() {
 
 const styles = {
     container:{
-        width: "40vw",
+        width: "600px",
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
