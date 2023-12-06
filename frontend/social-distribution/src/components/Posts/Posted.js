@@ -185,46 +185,62 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         if(postData.author.host === "https://web-weavers-backend-fb4af7963149.herokuapp.com/"){
             //For Web Weaver Server
             let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
-            await axiosService.get(url).then( (response) => {
-                for(let i = 0; i < response.data.items.length; i++){
-                    if(response.data.items[i].author.uuid == userUUID){
-                        console.log("User has liked this post "+ postData.id)
-                        SetIsLiked(true);
+            try {
+                await axiosService.get(url).then( (response) => {
+                    for(let i = 0; i < response.data.items.length; i++){
+                        if(response.data.items[i].author.uuid == userUUID){
+                            console.log("User has liked this post "+ postData.id)
+                            SetIsLiked(true);
+                        }
                     }
-                }
-            })
+                })
+            } catch (error) {
+                console.log(error);
+            }
         } else if (postData.author.host === "https://c404-5f70eb0b3255.herokuapp.com/"){
             // For A Team
             let url = "authors/" + postData.id.split("/authors/")[1] + "/likes/"
-            await aTeamService.get(url).then( (response) => {
-                for(let i = 0; i < response.data.results.items.length; i++){
-                    if(response.data.results.items[i].author.id == userUUID){
-                        console.log("User has liked this post "+ postData.id)
-                        SetIsLiked(true);
+            try {
+                await aTeamService.get(url).then( (response) => {
+                    for(let i = 0; i < response.data.results.items.length; i++){
+                        if(response.data.results.items[i].author.id == userUUID){
+                            console.log("User has liked this post "+ postData.id)
+                            SetIsLiked(true);
+                        }
                     }
-                }
-            })
+                })
+            } catch (error) {
+                console.log(error);
+            }
         } else if (postData.author.host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"){
             // For A Team
             let url = "authors/" + postData.id.split("/authors/")[1] + "/likes"
-            await PacketPiratesServices.get(url).then( (response) => {
-                for(let i = 0; i < response.data.length; i++){
-                    if(response.data[i].author.id.split("/authors/")[1]== userUUID){
-                        console.log("User has liked this post "+ postData.id)
-                        SetIsLiked(true);
+            try {
+                await PacketPiratesServices.get(url).then( (response) => {
+                    for(let i = 0; i < response.data.length; i++){
+                        if(response.data[i].author.id.split("/authors/")[1]== userUUID){
+                            console.log("User has liked this post "+ postData.id)
+                            SetIsLiked(true);
+                        }
                     }
-                }
-            })
+                })
+            } catch (error) {
+                console.log(error);
+            }
         } else if (postData.author.host === "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"){
             let url = "service/authors/" + postData.source.split("/authors/")[1] + "likes"
-            await BeegYoshiService.get(url).then( (response) => {
-                for(let i = 0; i < response.data.length; i++){
-                    if(response.data[i].author== userUUID){
-                        console.log("User has liked this post "+ postData.id)
-                        SetIsLiked(true);
+            try {
+                await BeegYoshiService.get(url).then( (response) => {
+                    for(let i = 0; i < response.data.length; i++){
+                        if(response.data[i].author== userUUID){
+                            console.log("User has liked this post "+ postData.id)
+                            SetIsLiked(true);
+                        }
                     }
-                }
-            })
+                })
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 
