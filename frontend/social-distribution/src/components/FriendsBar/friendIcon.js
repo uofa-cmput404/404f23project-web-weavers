@@ -21,7 +21,9 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
    //add delete functionality if the user shown is a follower
    useEffect(()=>{
     if(isFollower){ setShowFollowerDelete(true); setButtonText("Remove Follower");}
-    setOURuser(currentUserData)
+        let userUUID = localStorage.getItem("user")
+        axiosService.get("authors/" + userUUID + "/").then((response) => {
+    setOURuser(response.data)})
     }, [isFollower])
 
    //Checking if a request has already been sent
