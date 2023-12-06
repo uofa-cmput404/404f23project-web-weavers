@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react';
 import { Avatar, Collapse, Flex } from "@chakra-ui/react";
 import GitActivity from "../../components/Github/GitActivity.js";
 import Button from "../../components/Button.js";
+import { checkIfFriend } from "../../utils/connectionFunctions.js";
 
 export default function MyStream({props}){
     const user = localStorage.getItem("user")
@@ -20,7 +21,6 @@ export default function MyStream({props}){
     const [followers, setFollowers] = useState([]);
     const [profileImage, setProfileImage] = useState("");
     const [friends, setFriends] = useState([]);
-    const [data, setData] = useState([]); // [postID, postID, ...
     const [displayName, setDisplayName] = useState("");
     const [showGit, setShowGit] = useState(false);
 
@@ -30,9 +30,6 @@ export default function MyStream({props}){
     const fetchdata = async () => {
         const res = await axiosService.get("authors/" + user + "/posts/")
         setPosts(res.data.items)
-
-        // const res2 = getDisplayName(user)
-        // setDisplayName(res2);
 
         const res3 = await axiosService.get("authors/" + user + "/followers/")
         setFollowers(res3.data.items)
@@ -48,9 +45,20 @@ export default function MyStream({props}){
         fetchdata();
     }, [])
 
-    // console.log("user " + user);
-    // console.log("displayName " + displayName);
-
+    const friendsNum = async () => {
+        let friends = 0;
+        for(let i=0; i < followers.length; i++){
+            let is_friend= await checkIfFriend(followers[i], user);
+            if(is_friend=== true){
+                friends++;
+                console.log("friends: " + JSON.stringify(followers[i]) )
+            }
+        }
+        setFriends(friends);
+    }
+    useEffect(() => {
+        friendsNum();
+    }, [followers])
 
     return(
         <div style={styles.container}>
@@ -67,7 +75,7 @@ export default function MyStream({props}){
                 <Flex flexDir="row" justifyContent="stretch" alignItems="center" fontSize={sizes.sm} color="black">
                     <div style={{ marginRight: '20px' }}>Posts: {posts.length}</div>
                     <div style={{ marginRight: '20px' }}>Followers: {followers.length}</div>
-                    <div>Friends: 0 </div>
+                    <div>Friends: {friends} </div>
                 </Flex>
 
                 <Button onClick={handleToggle} style={{ marginTop: '10px' }}>
