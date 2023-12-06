@@ -52,20 +52,29 @@ export default function Post({postData, visibility, userUUID, displayName, team}
     const [commentID, setCommentID]= useState(0);
     const [loggedInData, setLoggedInData] = useState(null)
     const [friendsPrivacy, setFriendsPrivacy] = useState(false)
+    const[tryReload, setTryReload] = useState(true)
 
+
+    //live updates
     useEffect(() => {
-        const getCurrentUser = async () => {
-            try{
-                const response = await axiosService.get("authors/" + loggedInUser + "/")
-                setCurrUser(response.data)
-            } catch (error) {
-                console.log(error);
+        let interval = setInterval(() => {
+            if(tryReload){
+                try {
+                    getLikedPosts();
+                    getPostComments();
+                    handleRemoteImages();
+                } catch (e) {
+                    console.log(e)
+                }
             }
-        }
-        getCurrentUser();
-    }, [])
+        }, 5000);
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
 
 
+    // initial setup
     useEffect(() => {
         //This always get set to false initially
         setShowEditPOST(false)
@@ -102,15 +111,14 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         axiosService.get("authors/" + userUUID + "/").then((response) => {
         setOURuser(response.data)})
 
-        getLikedPosts();
-        handleRemoteImages();
-
-        getloggedInUser();
+        getCurrentUser();
      }, []);
 
-     const getloggedInUser = async () => {
+
+     const getCurrentUser = async () => {
         try{
             const response = await axiosService.get("authors/" + loggedInUser + "/")
+            setCurrUser(response.data)
             setLoggedInData(response.data)
         } catch (error) {
             console.log(error);
@@ -137,7 +145,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 setShowImageField(true)
             }
         } else if (postData.author.host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"){
-            axiosService.get(postData.id + "/image").then((response) => {
+            PacketPiratesServices.get(postData.id + "/image").then((response) => {
                 setContentImageSrc(response.data)
                 setShowImageField(true)
             })
@@ -147,35 +155,32 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             setShowImageField(true)
         }
      }
-     useEffect(() => {
-        const getPostComments = async () => {
-            if(postData.author.host === "https://web-weavers-backend-fb4af7963149.herokuapp.com/"){
-                try{
-                    const response = await axiosService.get(postData.id + "/comments/");
-                    setPostComments(response.data.items.map(comment => ({id: comment.id, author: comment.author, comment: comment.comment})));
-                } catch (error) {
-                    console.log(error);
-                }
-            } else if (postData.author.host === "https://c404-5f70eb0b3255.herokuapp.com/"){
-                try {
-                    const response = await aTeamService.get(postData.id + "/comments/")
-                    setPostComments(response.data.results.comments.map(comment => ({id: comment.id, author: comment.author, comment: comment.comment})));
-                }catch (e){console.log(e)}
-            } else if (postData.author.host === "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"){
-                try {
-                    const url = "service/authors/" + postData.source.split("/authors/")[1] + "comments"
-                    const response = await BeegYoshiService.get(url)
-                    setPostComments(response.data.map(comment => ({id: comment.id, author: comment.author, comment: comment.comment})));
-                }catch (e){console.log(e)}
-            } else if (postData.author.host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"){
-                try {
-                    const response = await PacketPiratesServices.get(postData.id + "/comments")
-                    setPostComments(response.data.map(comment => ({id: comment.id, author: comment.author, comment: comment.comment})));
-                } catch (e) {console.log(e)}
-            }//end if statement
-        }//end Get PostComments
-        getPostComments();
-    }, [])
+    const getPostComments = async () => {
+        if(postData.author.host === "https://web-weavers-backend-fb4af7963149.herokuapp.com/"){
+            try{
+                const response = await axiosService.get(postData.id + "/comments/");
+                setPostComments(response.data.items.map(comment => ({id: comment.id, author: comment.author, comment: comment.comment})));
+            } catch (error) {
+                console.log(error);
+            }
+        } else if (postData.author.host === "https://c404-5f70eb0b3255.herokuapp.com/"){
+            try {
+                const response = await aTeamService.get(postData.id + "/comments/")
+                setPostComments(response.data.results.comments.map(comment => ({id: comment.id, author: comment.author, comment: comment.comment})));
+            }catch (e){console.log(e)}
+        } else if (postData.author.host === "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"){
+            try {
+                const url = "service/authors/" + postData.source.split("/authors/")[1] + "comments"
+                const response = await BeegYoshiService.get(url)
+                setPostComments(response.data.map(comment => ({id: comment.id, author: comment.author, comment: comment.comment})));
+            }catch (e){console.log(e)}
+        } else if (postData.author.host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"){
+            try {
+                const response = await PacketPiratesServices.get(postData.id + "/comments")
+                setPostComments(response.data.map(comment => ({id: comment.id, author: comment.author, comment: comment.comment})));
+            } catch (e) {console.log(e)}
+        }//end if statement
+    }//end Get PostComments
     //Check for likes based on server
     const getLikedPosts = async() => {
         if(postData.author.host === "https://web-weavers-backend-fb4af7963149.herokuapp.com/"){
@@ -256,7 +261,6 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             let temp = postData.id
             let url = "authors/" + temp.split("/authors/")[1] + "/likes/"
             await aTeamService.post(url, like_values).then(function(response){
-                console.log(response)
             }).catch(function(error){
                 console.log(error)
                 console.log(like_values)
@@ -275,7 +279,6 @@ export default function Post({postData, visibility, userUUID, displayName, team}
 
                 let url = "service/remote/authors/like/" + temp2.split("/")[0] + "/"
                 BeegYoshiService.post(url, like_values).then(function(response){
-                    console.log(response)
                 }).catch(function(error){
                     console.log(error)
                     console.log(like_values)
@@ -290,7 +293,6 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 }
                 let url = "authors/" + postData.author.id.split("/authors/")[1] + "/inbox"
                 await PacketPiratesServices.post(url, like_values).then(function(response){
-                    console.log(response)
                 }).catch(function(error){
                     console.log(error)
                     console.log(like_values)
@@ -397,7 +399,6 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 "published": postData.published
             }
             PacketPiratesServices.post(url, comment_values).then(function(response){
-                console.log(response)
             }).catch(function(error){
                 console.log(error)
                 console.log(comment_values)
@@ -419,10 +420,13 @@ export default function Post({postData, visibility, userUUID, displayName, team}
     });
     };
 
+    const deletePost = async () =>{
+        await axiosService.delete(postData.id + "/")
+    }
     // Delete Handles
     const handleDeleteClick = () => {
-        axiosService.delete(postData.id + "/")
-        window.location.reload(false);
+        setTryReload(false) //This post won't exist anymore
+        deletePost();
     };
 
     return(
