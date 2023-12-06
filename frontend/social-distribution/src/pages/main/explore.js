@@ -89,21 +89,13 @@ export default function Explore({props}){
         //   }
         // };
         try {
-          const currentPosts = [];
-            let postUsers= await getPublicBEEGUsers();
-            for (let i = 0; i < postUsers.length; i++){
-                const res = await BeegYoshiService.get("service/authors/" + postUsers[i].id + "/posts/" )
-                for(let i = 0; i < res.data.length; i++){
-                    let postPush = res.data[i];
-                    postPush["author"] = postUsers[i];
-                    currentPosts.push(postPush);
-                }
-            }
-          setPublicPosts(currentPosts);
+          const res = await BeegYoshiService.get("service/get/public/posts/");
+          console.log("big yoshi recieved response "+ JSON.stringify(res.data))
+          setPublicPosts(res.data);
         } catch (err) {
-          console.log(err);
-        }
-      };
+          console.log("big yoshi error " + err);
+          }
+        };
 
       const getPublicPacketPirateUsers = async () => {
         try {
@@ -126,7 +118,6 @@ export default function Explore({props}){
                 for(let i = 0; i < res.data.length; i++){
                     let postPush = res.data[i];
                     postPush["author"] = postUsers[i];
-                    console.log("post push is " + JSON.stringify(postPush.visibility))
                     if(postPush.visibility === "PUBLIC" && postPush.unlisted === false){
                     currentPosts.push(postPush);
                   }

@@ -163,7 +163,7 @@ export default function CreatePostCard() {
             if(followers){
               if(response.data.visibility === "FRIENDS"){
                 for(let i = 0; i < followers.length; i++){
-                  let is_friend = checkIfFriend(followers[i], postUserUUID);
+                  let is_friend = await checkIfFriend(followers[i], postUserUUID);
                   console.log("follower " + followers[i].displayName + " is " + is_friend)
                   if (is_friend === true){
                     sendPostsToInboxes(followers[i], response)

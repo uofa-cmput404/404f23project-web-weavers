@@ -13,10 +13,21 @@ export default function Requests() {
 
     const fetchdata = async () => {
         const res = await axiosService.get("authors/" + user+ "/inbox/follows/")
-        console.log("Req Inbox is: ")
-        console.log(res.data.items)
+        console.log("querying all request in inbox")
         setRequests(res.data.items)
     };
+
+    //for live updates
+    useEffect(() => {
+        let interval = setInterval(() => {
+            fetchdata();
+        }, 5000);
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
+
+    //for initial setup
     useEffect(() => {
         fetchdata();
     }, [])

@@ -19,7 +19,6 @@ export default function ShadedClickableBox({
         msg: variant_ === 'msg',
         request: variant_ === 'request',
       }
-      console.log("request is " + JSON.stringify(request))
     const handleClick = () => {
         console.log('clicked')
     }
