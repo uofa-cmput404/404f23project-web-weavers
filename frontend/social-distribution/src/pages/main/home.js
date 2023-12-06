@@ -23,7 +23,8 @@ export default function Home() {
 
         const res = await axiosService.get("public-posts/");
         console.log("public posts was " + JSON.stringify(cPublicPosts))
-        setPublicPosts(res.data.items);
+        //Avoiding live updates for now from this
+        //setPublicPosts(res.data.items);
         setLastPost(res.data.items[0]);
         setChangeID(!changeID)
         //the first loading in
