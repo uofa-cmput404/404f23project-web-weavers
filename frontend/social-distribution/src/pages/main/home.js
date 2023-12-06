@@ -15,7 +15,7 @@ export default function Home() {
     //Interval for Live Updates
     let time_interval;
     const [lastPost, setLastPost] = useState(null)
-    const [changeID, setChangeID] = useState(true)
+    const [changeID, setChangeID] = useState(0)
 
     const getPosts = async (cPublicPosts) => {
       try {
@@ -25,7 +25,7 @@ export default function Home() {
         console.log("public posts was " + JSON.stringify(cPublicPosts))
         //Avoiding live updates for now from this
         setPublicPosts(res.data.items);
-        setLastPost(res.data.items[0]);
+        setChangeID(res.data.items.length)
         //the first loading in
       } catch (err) {
         console.log(err);
@@ -36,11 +36,8 @@ export default function Home() {
 
     useEffect(() => {
         let interval = setInterval(() => {
-            //getPosts(publicPosts);
-            if(!lastPost === null && publicPosts[0] !== lastPost){
-                console.log("public posts changed")
-            }
-        }, 5000);
+            getPosts(publicPosts);
+        }, 3000);
         return () => {
             clearInterval(interval);
         };
@@ -67,18 +64,15 @@ export default function Home() {
             <div style={styles.content}>
                 <CreatePostCard/>
 
-                {changeID && (<div style={{ ...styles.postContainer }}>
+                <div style={{ ...styles.postContainer }}>
                     {/* TODO: change this to be more dynamic when pulling list of posts */}
 
                     {publicPosts.map((e)=>{
                         return <div style={styles.post}>
-                        <Post key="1" postData={e} visibility = {"PUBLIC"} userUUID = {user} displayName={displayName} team = {"WebWeavers"}/> </div>
+                        <Post key={changeID} postData={e} visibility = {"PUBLIC"} userUUID = {user} displayName={displayName} team = {"WebWeavers"}/> </div>
                     })}
-                </div>)}
+                </div>
 
-                {!changeID && (<div style={{ ...styles.postContainer }}>
-                    <header>Unmounted</header>
-                </div>)}
 
             </div>
         </div>
@@ -97,16 +91,16 @@ const styles = {
         paddingTop: '5rem',
         height: `calc(100vh - ${navbarHeight})`, // set height to remaining viewport height
         marginBottom: "20px",
-        justifyContent: "center", 
+        justifyContent: "center",
         alignItems: "center",
         margin: "auto",
 
     },
     createPostCard:{
         marginBottom: "20px",
-        justifyContent: "center", 
+        justifyContent: "center",
         alignItems: "center",
-        margin: "auto",  
+        margin: "auto",
     },
     postContainer: {
         display: "flex",
@@ -116,7 +110,7 @@ const styles = {
         paddingBottom: spacing.md,
         overflow: "auto",
         paddingTop: spacing.md,
-        justifyContent: "center", 
+        justifyContent: "center",
         alignItems: "center",
         margin: "auto",
 

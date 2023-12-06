@@ -59,14 +59,26 @@ export const checkIfFriend = async (follower, postUserUUID) => {
       */
     } else if (follower.host === "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"){
       console.log("[Beeg Yoshi]] Successfully sent post to follower " + follower.displayName);
-      let temp_id = follower.id.split("/authors/")[1]
+      let temp_id = follower.url.split("/authors/")[1]
 
-      let url = "service/authors/" + temp_id + "/inbox/"
+      let data = {
+        "senderId": response.data.author.id,
+        "senderName": response.data.author.displayName,
+        "postId": response.data.id,
+        "post": response.data.title,
+        "author": response.data.author,
+        "count": 0,
+        "images": [],
+        "numberOfLikes": response.data.count
+
+      }
+
+      let url = "service/authors/" + temp_id + "inbox/"
       BeegYoshiService.get(url).then((BYInboxResponse) =>{
         const friendRequest = BYInboxResponse.data.items["friendrequests"]
         const notifications = BYInboxResponse.data.items["notifications"]
         const inbox = BYInboxResponse.data.items["inbox"]
-        inbox.push(response.data)
+        inbox.push(data)
         const InboxData = {"inbox": inbox, "notifications": notifications, "friendrequests": friendRequest}
 
         BeegYoshiService.put(url, InboxData).then( (updatedInboxResponse) => {
