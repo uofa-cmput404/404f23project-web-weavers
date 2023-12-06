@@ -14,6 +14,7 @@ import django_on_heroku
 import dj_database_url
 import dotenv
 import os
+from datetime import timedelta 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -168,6 +169,10 @@ SPECTACULAR_SETTINGS = {
 AUTH_USER_MODEL = 'authors.Author'
 SIMPLE_JWT = {
     'USER_ID_FIELD': 'uuid',
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
 }
 
 CORS_ALLOWED_ORIGINS = [
