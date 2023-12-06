@@ -9,7 +9,7 @@ export default function Comment({user, comment, ...props}){
     const handleLikeClick = () => {
         setLiked(!liked);
     }
-    
+
     return (
         <Flex style={styles.container} flexDir="row" align="right">
             <Avatar name={user.displayName} src={user.profileImage} size="md" ml={2}/>

@@ -30,11 +30,12 @@ def get_remote_author(remote_author_url):
         author_serializer = AuthorSerializer(data=remote_author)
         if author_serializer.is_valid():
             # if the author's id is not a URL, then it is a ID
-            if not remote_author["id"].startswith("http"):
-                author_serializer.validated_data["uuid"] = remote_author["id"]
+            remote_author_id = str(remote_author["id"])
+            if not remote_author_id.startswith("http"):
+                author_serializer.validated_data["uuid"] = remote_author_id
             else:
                 # extract uuid from the URL
-                author_serializer.validated_data["uuid"] = remote_author["id"].split("/")[-1]
+                author_serializer.validated_data["uuid"] = remote_author_id.split("/")[-1]
 
             author_serializer.validated_data["id"] = remote_author_url
             author_serializer.validated_data["url"] = remote_author_url
@@ -68,7 +69,7 @@ def get_remote_post(remote_post_url):
         post_serializer = PostSerializer(data=remote_post)
         if post_serializer.is_valid():
 
-            remote_author = self._get_remote_author(remote_post["author"]["url"])
+            remote_author = get_remote_author(remote_post["author"]["url"])
 
             # if an issue occurred while getting the remote author, return the error
             if isinstance(remote_author, Response):

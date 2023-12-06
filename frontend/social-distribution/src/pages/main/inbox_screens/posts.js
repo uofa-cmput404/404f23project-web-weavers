@@ -26,10 +26,22 @@ export default function Posts() {
 
     const fetchdata = async () => {
         const res = await axiosService.get("authors/" + userUUID+ "/inbox/")
-        console.log("Inbox is: ")
-        console.log(res.data.items)
+        console.log("querying all inbox posts")
         setPosts(res.data.items)
+
     };
+
+    //live updates
+    useEffect(() => {
+        let interval = setInterval(() => {
+            const res = fetchdata();
+        }, 5000);
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
+
+    //initial setup
     useEffect(() => {
         fetchdata();
     }, [])

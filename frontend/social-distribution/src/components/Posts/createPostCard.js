@@ -24,7 +24,7 @@ export default function CreatePostCard() {
   const [isLoading, setIsLoading] = useState(false);
   const[postContentType, setPostContentType] = useState("text/plain")
   const [showTextContent, setShowTextContent] = useState(false)
-  const [textContent, setTextContent] = useState("")
+  const [textcontent, setPostTextContent] = useState("")
   const [base64Image, setBase64IMG] = useState("")
 
 
@@ -98,9 +98,11 @@ export default function CreatePostCard() {
       */
     } else if (follower.host === "https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/"){
       console.log("[Beeg Yoshi]] Successfully sent post to follower " + follower.displayName);
-      let url = "service/authors/" + follower.uuid + "/inbox/"
+      let temp_id = follower.id.split("/authors/")[1]
+
+      let url = "service/authors/" + temp_id + "/inbox/"
       BeegYoshiService.get(url).then((BYInboxResponse) =>{
-        const friendRequest = BYInboxResponse.data.items["friendsrequests"]
+        const friendRequest = BYInboxResponse.data.items["friendrequests"]
         const notifications = BYInboxResponse.data.items["notifications"]
         const inbox = BYInboxResponse.data.items["inbox"]
         inbox.push(response.data)
@@ -117,13 +119,12 @@ export default function CreatePostCard() {
     }
 
   }
-  const handlePost = () => {
+  const handlePost = async () => {
     // Post to server
     setIsLoading(true);
     // Get data from post- don't get rid of the const in front of description
     const description= document.getElementById("description").value;
     const title= document.getElementById("title").value;
-    const imageData= imageSrc;
     const postUserUUID= localStorage.getItem("user");
     const url= "authors/" + postUserUUID + "/posts/";
 
@@ -136,10 +137,12 @@ export default function CreatePostCard() {
 
     //Handle Encoding Images
     if(postContentType === "image/png;base64"){
+      const imageData= imageSrc.split(",")[1]
       fields["content"] = imageData;
     } else {
       //handle Text components
-      const textcontent = document.getElementById("textcontent").value;
+      const textcontent= document.getElementById("textcontent").value;
+      console.log("Found content " + textcontent)
       fields["content"] = textcontent;
     }
     console.log("fields: " + JSON.stringify(fields));
@@ -150,7 +153,7 @@ export default function CreatePostCard() {
         console.log("Post created successfully!");
         setIsLoading(false);
         //get all followers
-        axiosService.get("authors/" + postUserUUID + "/followers/").then((followersResponse) => {
+        axiosService.get("authors/" + postUserUUID + "/followers/").then(async (followersResponse) => {
           if(followersResponse.status >= 200 <= 299){
             console.log("Followers found");
             const followers = followersResponse.data.items;
@@ -160,7 +163,8 @@ export default function CreatePostCard() {
             if(followers){
               if(response.data.visibility === "FRIENDS"){
                 for(let i = 0; i < followers.length; i++){
-                  let is_friend = checkIfFriend(followers[i], postUserUUID);
+                  let is_friend = await checkIfFriend(followers[i], postUserUUID);
+                  console.log("follower " + followers[i].displayName + " is " + is_friend)
                   if (is_friend === true){
                     sendPostsToInboxes(followers[i], response)
                   }
@@ -268,7 +272,7 @@ export default function CreatePostCard() {
             type="text"
             id="textcontent"
             placeholder="Add some text..."
-            onChange={(event) => setTextContent(event.target.value)}
+            onChange={(event) => setPostTextContent(event.target.value)}
           />
 
           )}

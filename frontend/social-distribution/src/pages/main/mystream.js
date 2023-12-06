@@ -20,7 +20,8 @@ export default function MyStream({props}){
     const [posts, setPosts] = useState([]);
     const [followers, setFollowers] = useState([]);
     const [profileImage, setProfileImage] = useState("");
-    const [friends, setFriends] = useState([]);
+    const [currentUserData, setCurrentUserData] = useState(null)
+    const [friends, setFriends] = useState(0);
     const [displayName, setDisplayName] = useState("");
     const [showGit, setShowGit] = useState(false);
 
@@ -36,11 +37,21 @@ export default function MyStream({props}){
 
         const res4 = await axiosService.get("authors/" + user)
         setProfileImage(res4.data.profileImage)
-
-        const res5 = await axiosService.get("authors/" + user)
-        setDisplayName(res5.data.displayName)
+        setDisplayName(res4.data.displayName)
+        setCurrentUserData(res4.data)
 
     };
+    //for live updates
+    useEffect(() => {
+        let interval = setInterval(() => {
+            fetchdata();
+        }, 2000);
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
+
+        //for initial setup
     useEffect(() => {
         fetchdata();
     }, [])
@@ -51,7 +62,6 @@ export default function MyStream({props}){
             let is_friend= await checkIfFriend(followers[i], user);
             if(is_friend=== true){
                 friends++;
-                console.log("friends: " + JSON.stringify(followers[i]) )
             }
         }
         setFriends(friends);
@@ -60,11 +70,12 @@ export default function MyStream({props}){
         friendsNum();
     }, [followers])
 
+
     return(
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='My Stream'/>
-            <FriendsBar user={user} selectedServer = {"WebWeavers"}/>
+            <FriendsBar user={user} selectedServer = {"WebWeavers"} UserData = {currentUserData}/>
              <div style={{height: "5vh"}}></div> {/*Just to account for height of LogoBar */}
             <Flex flexDir="column" style={styles.profileHeader}>
                 <Avatar marginTop='20px' size="2xl" name={displayName} src="https://bit.ly/tioluwani-kolawole" />
@@ -92,7 +103,7 @@ export default function MyStream({props}){
                     {/* TODO: change this to be more dynamic when pulling list of posts */}
                     {posts.map((e)=>{
                         return <div style={styles.post}>
-                        <Post postData={e} visibility = {"PERSONAL"} userUUID = {user}/> </div>
+                        <Post postData={e} visibility = {"PERSONAL"} userUUID = {user} team={"WebWeavers"}/> </div>
                     })}
                 </div>
             </div>
