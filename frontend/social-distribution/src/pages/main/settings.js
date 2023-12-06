@@ -10,7 +10,6 @@ export default function Settings({props}){
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='Settings' uuid={user}/>
-            <FriendsBar uuid={user}/>
             <h1>Explore</h1>
         </div>
     )
