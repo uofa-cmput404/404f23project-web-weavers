@@ -20,6 +20,7 @@ import {
     AiFillHeart,
     AiOutlineEdit,
     AiFillDelete,
+    ExternalLinkIcon
 } from "react-icons/ai";
 import "./Posting.css"
 import { sizes, colors } from "../../utils/theme";
