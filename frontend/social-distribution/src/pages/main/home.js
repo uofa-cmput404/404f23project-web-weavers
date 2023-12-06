@@ -17,25 +17,29 @@ export default function Home() {
     const [lastPost, setLastPost] = useState(null)
     const [changeID, setChangeID] = useState(false)
 
-    const getPosts = async () => {
+    const getPosts = async (cPublicPosts) => {
       try {
         console.log("Querying all public posts")
 
         const res = await axiosService.get("public-posts/");
-        if(lastPost !== res.data.items[0]){
-            setPublicPosts(res.data.items);
-            setLastPost(res.data.items[0])
-            setChangeID(!changeID)
-            window.location.reload(false);
-        }
+        console.log("public posts was " + JSON.stringify(cPublicPosts))
+        setPublicPosts(res.data.items);
+        setLastPost(res.data.items[0]);
+        setChangeID(!changeID)
+        //the first loading in
       } catch (err) {
         console.log(err);
       }
     };
 
+    //Check for any changes in public posts
+
     useEffect(() => {
         let interval = setInterval(() => {
-            getPosts();
+            getPosts(publicPosts);
+            if(!lastPost === null && publicPosts[0] !== lastPost){
+                console.log("public posts changed")
+            }
         }, 5000);
         return () => {
             clearInterval(interval);
@@ -43,7 +47,7 @@ export default function Home() {
     }, []);
 
      useEffect(() => {
-        getPosts();
+        getPosts(publicPosts);
         initialize();
       }, []);
     const user = localStorage.getItem("user")
@@ -68,17 +72,12 @@ export default function Home() {
 
                     {publicPosts.map((e)=>{
                         return <div style={styles.post}>
-                        <Post key={changeID} postData={e} visibility = {"PUBLIC"} userUUID = {user} displayName={displayName} team = {"WebWeavers"}/> </div>
+                        <Post key="1" postData={e} visibility = {"PUBLIC"} userUUID = {user} displayName={displayName} team = {"WebWeavers"}/> </div>
                     })}
                 </div>)}
 
                 {!changeID && (<div style={{ ...styles.postContainer }}>
-                    {/* TODO: change this to be more dynamic when pulling list of posts */}
-
-                    {publicPosts.map((e)=>{
-                        return <div style={styles.post}>
-                        <Post key={changeID} postData={e} visibility = {"PUBLIC"} userUUID = {user} displayName={displayName} team = {"WebWeavers"}/> </div>
-                    })}
+                    <header>Unmounted</header>
                 </div>)}
 
             </div>
