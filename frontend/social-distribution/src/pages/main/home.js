@@ -67,10 +67,16 @@ const styles = {
         paddingTop: '5rem',
         height: `calc(100vh - ${navbarHeight})`, // set height to remaining viewport height
         marginBottom: "20px",
+        justifyContent: "center", 
+        alignItems: "center",
+        margin: "auto",
 
     },
     createPostCard:{
-        marginBottom: "20px"
+        marginBottom: "20px",
+        justifyContent: "center", 
+        alignItems: "center",
+        margin: "auto",  
     },
     postContainer: {
         display: "flex",
@@ -80,6 +86,9 @@ const styles = {
         paddingBottom: spacing.md,
         overflow: "auto",
         paddingTop: spacing.md,
+        justifyContent: "center", 
+        alignItems: "center",
+        margin: "auto",
 
     },
     post: {
