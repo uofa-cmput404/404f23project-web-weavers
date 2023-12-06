@@ -42,7 +42,8 @@ export const checkIfFriend = async (follower, postUserUUID) => {
         console.log(error);
       })
     } else if (follower.host === "https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/"){
-      PacketPiratesServices.post("authors/" + follower.uuid + "/inbox", response.data).then((inboxResponse) => {
+      let uuid = follower.id.split("/authors/")[1]
+      PacketPiratesServices.post("authors/" + uuid + "/inbox", response.data).then((inboxResponse) => {
         console.log("Successfully sent post to follower " + follower.displayName);
       }).catch((error) =>{
         console.log(error);
