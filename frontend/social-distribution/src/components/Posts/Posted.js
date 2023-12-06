@@ -20,7 +20,7 @@ import {
     AiFillHeart,
     AiOutlineEdit,
     AiFillDelete,
-    ExternalLinkIcon
+    AiOutlineSend
 } from "react-icons/ai";
 import "./Posting.css"
 import { sizes, colors } from "../../utils/theme";
@@ -28,8 +28,8 @@ import {API_URL, BEEG_YOSHI_URL} from "../api";
 import { useNavigate } from 'react-router-dom';
 import axiosService, { PacketPiratesServices, aTeamService, BeegYoshiService } from "../../utils/axios";
 import Comment from "./comment.js";
-import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
-import axios from "axios";
+import {sendPostsToInboxes, checkIfFriend} from "../../utils/connectionFunctions";
+import SharingPost from "./sharingPost.js";
 
 export default function Post({postData, visibility, userUUID, displayName, team}){
     const user = localStorage.getItem("user")
@@ -53,6 +53,8 @@ export default function Post({postData, visibility, userUUID, displayName, team}
     const [loggedInData, setLoggedInData] = useState(null)
     const [friendsPrivacy, setFriendsPrivacy] = useState(false)
     const[tryReload, setTryReload] = useState(true)
+    const [sharingPostUsers, setSharingPostUsers] = useState([])
+    const [showSharingUsers, setShowSharingUsers] = useState(false);
 
 
     //live updates
@@ -112,9 +114,47 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         setOURuser(response.data)})
 
         getCurrentUser();
+        getSharingPostUsers();
      }, []);
 
 
+     const getSharingPostUsers = async () => {
+        try {
+            const gettingPostUsers = []
+            if(postData.visibility === "PUBLIC"){
+                await axiosService.get("authors").then((response) =>{
+                    for(let i = 0; i < response.data.items.length; i++){
+                        gettingPostUsers.push(response.data.items[i])
+                    }
+                })
+
+                await PacketPiratesServices.get("authors").then((response) => {
+                    for(let i = 0; i < response.data.items.length; i++){
+                        gettingPostUsers.push(response.data.items[i])
+                    }
+                })
+
+                await BeegYoshiService.get("service/authors/").then((response) => {
+                    for(let i = 0; i < response.data.length; i++){
+                        gettingPostUsers.push(response.data[i])
+                    }
+                })
+            } else if (postData.visibility === "FRIENDS"){
+                await axiosService.get("authors/" + user + "/followers/").then(async(response) => {
+                    for(let i = 0; i < response.data.items.length; i++){
+                        let is_friend = await checkIfFriend(response.data.items[i], user);
+                        if (is_friend === true){
+                            gettingPostUsers.push(response.data.items[i])
+                          }
+                    }
+                })
+            }
+            setSharingPostUsers(gettingPostUsers);
+            return gettingPostUsers;
+        } catch (e) {
+            console.log(e)
+        }
+     }
      const getCurrentUser = async () => {
         try{
             const response = await axiosService.get("authors/" + loggedInUser + "/")
@@ -444,8 +484,14 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         setTryReload(false) //This post won't exist anymore
         deletePost();
     };
+    const handleSharingPost = () =>{
+        console.log("Sharing post users are " + JSON.stringify(sharingPostUsers))
+        if(sharingPostUsers){setShowSharingUsers(!showSharingUsers)}
+    }
 
     return(
+        <div>
+
         <Card maxW='md'>
             <CardHeader>
                 <Flex spacing='4'>
@@ -515,8 +561,24 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                         icon={<AiOutlineComment />}
                         onClick={handleCommentClick}
                         />
+                        <IconButton
+                        aria-label="Sharing"
+                        icon={<AiOutlineSend />}
+                        marginLeft = "10px"
+                        onClick={handleSharingPost}
+                        />
                     </Flex>
                 )}
+                {showSharingUsers && (
+                <Flex flexDirection="column" mt= "2">
+                        <Divider/>
+                            <div overflowY="auto" maxheight="5px" alignItems="left">
+                                {sharingPostUsers.map((user) => (
+                                    <SharingPost user= {user}/>
+                                ))}
+                            </div>
+                        <Divider/>
+                    </Flex>)}
                 {!friendsPrivacy && showCommentField && (
                     <Flex flexDirection="column" mt= "2">
                         <Divider/>
@@ -543,6 +605,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                 </Flex>
             </CardBody>
         </Card>
+        </div>
     )
 }
 
