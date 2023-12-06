@@ -88,7 +88,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
             setShowLikeField(true)
             setShowEditField(false)
             setShowDeleteField(false)
-            setShowCommentField(true)
+            setShowCommentField(false)
         } else if(visibility == "INBOX"){
             setShowLikeField(false)
             setShowDeleteField(false)
@@ -485,7 +485,6 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         deletePost();
     };
     const handleSharingPost = () =>{
-        console.log("Sharing post users are " + JSON.stringify(sharingPostUsers))
         if(sharingPostUsers){setShowSharingUsers(!showSharingUsers)}
     }
 
@@ -574,7 +573,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
                         <Divider/>
                             <div overflowY="auto" maxheight="5px" alignItems="left">
                                 {sharingPostUsers.map((user) => (
-                                    <SharingPost user= {user}/>
+                                    <SharingPost user= {user} postData = {postData}/>
                                 ))}
                             </div>
                         <Divider/>
