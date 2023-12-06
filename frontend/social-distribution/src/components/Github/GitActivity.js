@@ -35,22 +35,21 @@ export default function GitActivity({props}){
     return (
         <Flex flexDir="column" w="100%" alignItems="flex-start" align="center">
             { gitUser === "" ? (
-                <h1 style={{color: colors.white}}>add github username to see github activity!</h1>
+                <h1 style={{color: colors.white}}>Add github link to see github activity!</h1>
             ) : (
-                <div>
-                    <h1 style={{color: colors.white}}>Github Activity for {gitUser}</h1>
-                    {Array.isArray(events) && events.map((event) => (
-                        <div style={{flex: '1 0 20%', margin: '10px'}}>
-                            <h1 style={{color: colors.white}}>Event Type: {event.type}</h1>
-                            <h2 style={{color: colors.white}}>Repo: {event.repo.name}</h2>
-                            <h2 style={{color: colors.white}}>{event.created_at}</h2>
-                            {event.payload.commits && event.payload.commits.length > 0 && 
-                                <h2 style={{color: colors.white}}>Commits: {event.payload.commits[0].message}</h2>
-                            }
-                        </div>
-                    ))}
-
-                </div>
+            <Flex direction="column" align="center" borderRadius="20px" width='600px'>
+                <h1 style={{color: colors.white}}>Github Activity for {gitUser}</h1>
+                {Array.isArray(events) && events.slice(0, 4).map((event) => (
+                    <div style={{flex: '1 0 20%', margin: '10px', borderRadius: '20px', width: '300px', background: "white"}}>
+                        <h1><span style={{color: 'ThreeDDarkShadow'}}>Event Type:</span> {event.type}</h1>
+                        <h2><span style={{color: 'darkgoldenrod'}}>Repo: </span>{event.repo.name}</h2>
+                        <h2><span style={{color: 'darkred'}}>Made: </span>{event.created_at}</h2>
+                        {event.payload.commits && event.payload.commits.length > 0 && 
+                            <h2>Commits: {event.payload.commits[0].message}</h2>
+                        }
+                    </div>
+                ))}
+            </Flex>
             )}
         </Flex>
     );

@@ -71,7 +71,7 @@ export default function MyStream({props}){
                 </Flex>
 
                 <Button onClick={handleToggle} style={{ marginTop: '10px' }}>
-                    View Github Activity
+                    My Github Activity
                 </Button>
                 <Collapse in={showGit} animateOpacity>
                     <GitActivity/>
