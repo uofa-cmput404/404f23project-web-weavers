@@ -175,7 +175,7 @@ export default function Explore({props}){
                 </MenuList>
             </Menu>
             </div>
-            <h1 style = {styles.header}>Now Exploring {selectedServer}</h1>
+            <h1 style = {styles.header}>Now Exploring <span style={styles.selectedServer}>{selectedServer}</span></h1>
             <h1 alignItems="center"> </h1>
             <div style={styles.content}>
             <div style={{ ...styles.postContainer }}>
@@ -220,9 +220,14 @@ const styles = {
 
     },
     dropdown: {
-        paddingTop: "10vh"
+        paddingTop: "10vh",
+        paddingBottom: "5vh",
     },
     header: {
         fontSize: sizes.lg,
+        color: "white",
+    },
+    selectedServer: {
+        color: colors.brand.c1,
     }
 }
