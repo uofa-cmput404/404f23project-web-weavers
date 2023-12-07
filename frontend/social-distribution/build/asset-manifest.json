@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/static/css/main.bad01599.css",
+    "main.js": "/static/js/main.a311ffc1.js",
+    "static/media/logo.png": "/static/media/logo.8cb1113b8151ecc02774.png",
+    "static/media/landing.jpeg": "/static/media/landing.db171fa5682ce270220d.jpeg",
+    "static/media/axios.cjs": "/static/media/axios.f73c6a014bbc8a882637.cjs",
+    "index.html": "/index.html"
+  },
+  "entrypoints": [
+    "static/css/main.bad01599.css",
+    "static/js/main.a311ffc1.js"
+  ]
+}
