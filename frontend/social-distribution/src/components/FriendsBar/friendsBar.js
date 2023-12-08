@@ -171,7 +171,7 @@ const styles = {
         paddingTop:'1rem',
         overflow:'scroll',
         overflowX:'hidden',
-        width:'230px',
+        width:'250px',
         height: '100vh',
         scrollbarWidth: 'none',
     },

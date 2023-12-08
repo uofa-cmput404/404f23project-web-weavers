@@ -35,7 +35,7 @@ export default function GitActivity({props}){
     return (
         <Flex flexDir="column" w="100%" alignItems="flex-start" align="center">
             { gitUser === "" ? (
-                <h1 style={{color: colors.white}}>Add github link to see github activity!</h1>
+                <h1 style={{color: colors.white}}>Add GitHub link in Settings see activity!</h1>
             ) : (
             <Flex direction="column" align="center" borderRadius="20px" width='600px'>
                 <h1 style={{color: colors.white}}>Github Activity for {gitUser}</h1>
