@@ -187,16 +187,6 @@ export default function FriendIcon({isFollower, user, displayedUser, currentUser
                     <Text ml={5} mt={4} fontSize={14}> {displayName}</Text>
                 </Flex>
                 <Collapse in={isOpen} animateOpacity padding={sizes.sm} >
-                    <IconButton
-                        aria-label="Profile"
-                        icon={<AiFillProfile />}
-                        // onClick={handleClick}
-                    />
-                    <IconButton
-                        aria-label="Message"
-                        icon={<AiOutlineComment />}
-                        // onClick={handleClick}
-                    />
                     <Button onClick= {() => handleFollow()}>{buttonText}</Button>
                 </Collapse>
             </Link>

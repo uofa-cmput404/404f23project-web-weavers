@@ -35,7 +35,7 @@ export default function Inbox({props}){
 
                 <Tabs variant='soft-rounded' isFitted m={6} colorScheme="blackAlpha"  >
                     <TabList>
-                        <Tab>Messages</Tab>
+                        <Tab>Comments</Tab>
                         <Tab>Likes</Tab>
                         <Tab>Posts</Tab>
                         <Tab>Requests</Tab>

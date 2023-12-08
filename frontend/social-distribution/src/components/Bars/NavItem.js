@@ -14,14 +14,14 @@ export default function NavItem({ icon, title, active, navSize, ...props}) {
             <Menu>
                 <Link
                     backgroundColor={active && colors.brand.c2}
-                    p={3}
+                    p={2}
                     borderRadius={8}
                     _hover={{ textDecor: 'none', backgroundColor: colors.brand.c2 }}
                     w={navSize === "large" && "100%"}    
                 >
-                    <MenuButton w="100%" {...props}>
+                    <MenuButton w="100%" display="flex" alignItems="center" justifyContent="center" {...props}>
                         <Flex>
-                            <Icon as={icon} fontSize="xl" color={active ? "white" : "gray.400"} />
+                            <Icon as={icon} fontSize="2xl" color={active ? "white" : "gray.400"} />
                             <Text ml={5} display={navSize === "small" ? "none" : "flex"} color={active ? "white" : "gray.400"} >{title}</Text>
                         </Flex>
                     </MenuButton>
