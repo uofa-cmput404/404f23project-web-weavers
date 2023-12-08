@@ -74,7 +74,7 @@ export default function MyStream({props}){
     return(
         <div style={styles.container}>
             <LogoBar/>
-            <NavBar current='My Stream'/>
+            <NavBar current='My Stream' uuid={user}/>
             <FriendsBar user={user} selectedServer = {"WebWeavers"}/>
              <div style={{height: "5vh"}}></div> {/*Just to account for height of LogoBar */}
             <Flex flexDir="column" style={styles.profileHeader}>
