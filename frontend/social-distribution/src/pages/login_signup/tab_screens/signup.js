@@ -50,11 +50,11 @@ function Signup() {
             );
             console.log(res.data)
             localStorage.setItem("user", res.data.uuid)
-            alert("New User " + res.data.displayName + " successfully created!")
+            alert("New User successfully created! Please wait for an admin to approve your account")
           })
           .catch((err) => {
             console.log(JSON.stringify(err));
-            alert("Failed to sign up New user. Please try again")
+            alert("Failed to sign up new user. Please try again")
           });
 
 

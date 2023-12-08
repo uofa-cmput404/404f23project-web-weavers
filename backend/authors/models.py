@@ -44,7 +44,7 @@ class Author(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=100, blank=True)  # do we need this? we dont even require email for registration
     password=models.CharField(max_length=100, blank=True, null=False, editable=False)
 
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False) # an admin user
     USERNAME_FIELD = 'displayName'
 
