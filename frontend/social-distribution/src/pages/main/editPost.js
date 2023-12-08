@@ -69,7 +69,6 @@ return (
     <div style={styles.container}>
             <LogoBar/>
             <NavBar current='My Stream'/>
-            <FriendsBar/>
         <div style={styles.content}>
         <div style={styles.postContainer}>
         <Card maxW='md'>

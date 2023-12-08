@@ -30,6 +30,8 @@ import axiosService, { PacketPiratesServices, aTeamService, BeegYoshiService } f
 import Comment from "./comment.js";
 import {sendPostsToInboxes, checkIfFriend} from "../../utils/connectionFunctions";
 import SharingPost from "./sharingPost.js";
+import ReactMarkdown from 'react-markdown';
+
 
 export default function Post({postData, visibility, userUUID, displayName, team}){
     const user = localStorage.getItem("user")
@@ -546,11 +548,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
 
                 {showTextContent && (
                     <Box mx="auto" textAlign="center">
-                        <Flex justifyContent="center">
-                        <Textarea isDisabled
-                            value = {postData.content}
-                        />
-                        </Flex>
+                        <p><ReactMarkdown>{postData.content}</ReactMarkdown></p>
                     </Box>
                 )}
 
@@ -646,3 +644,6 @@ const styles = {
       marginTop: "10px",
     },
   };
+
+
+

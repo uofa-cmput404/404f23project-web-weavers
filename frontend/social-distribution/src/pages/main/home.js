@@ -111,7 +111,6 @@ const styles = {
         overflow: "auto",
         paddingTop: spacing.md,
         justifyContent: "center",
-        alignItems: "center",
         margin: "auto",
 
     },
