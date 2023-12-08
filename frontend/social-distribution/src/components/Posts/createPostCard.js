@@ -58,9 +58,12 @@ export default function CreatePostCard() {
     setShowButtons(!showButtons)
     setWhoSees(!whoSees);
     setShowContent(!showContent);
+    setShowTextContent(!showTextContent)
 
     if(showTextContent){ setShowTextContent(false)}
-    if(showImageContent){ setShowImageContent(false)}
+    if(showImageContent){
+      setShowImageContent(false)
+      setShowTextContent(false)}
   };
 
   const handleFileSelect = (event) => {

@@ -83,7 +83,7 @@ export default function Post({postData, visibility, userUUID, displayName, team}
         //This always get set to false initially
         setShowEditPOST(false)
         if (visibility == "PERSONAL"){
-            setShowLikeField(false)
+            setShowLikeField(true)
             setShowEditField(true)
             setShowDeleteField(true)
         } else if (visibility == "PUBLIC"){
