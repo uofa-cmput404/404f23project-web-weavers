@@ -108,11 +108,8 @@ Backend: https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/
 
 Frontend: https://packet-pirates-frontend-46271456b73c.herokuapp.com/
 
-Backend Credentials:
-
 Frontend Username: Jack
 Frontend Password: cmput404
-
 
 
 ## A Team Connectivity
@@ -120,10 +117,17 @@ Frontend Password: cmput404
 - Accepting and Declining Friend Requests 
 - Recieving Posts (A Team has no inbox and instead filters our posts) 
 - Image Posts
-- Private Posts
-- Friends Only Posts
 - Liking and Recieving Likes 
 - Sending and Recieving Comments 
+
+
+### A Team Credentials
+Backend: https://c404-5f70eb0b3255.herokuapp.com/
+
+Frontend: https://c404-5f70eb0b3255.herokuapp.com/
+
+Username and password: TBD
+
 
 ## Beeg Yoshi Team Connectivity
 - Sending and Recieving Friend Requests 
@@ -135,8 +139,15 @@ Frontend Password: cmput404
 - Liking and Recieving Likes 
 - Sending and Recieving Comments 
 
+### Beeg Yoshi Credentials
+Backend: https://beeg-yoshi-backend-858f363fca5e.herokuapp.com/
 
-Set up 
+Frontend: https://frontend-beeg-yoshi.onrender.com/
+
+Email: youwei@ualberta.ca
+
+Password: youwei
+
 ========================
 
 ## API Documentation
