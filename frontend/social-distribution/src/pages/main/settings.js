@@ -6,6 +6,7 @@ import FriendsBar from "../../components/FriendsBar/friendsBar.js";
 import { Card, CardBody, Divider } from "@chakra-ui/react";
 import axiosService from '../../utils/axios.ts';
 import Button from '../../components/Button.js';
+import axios from 'axios';
 
 export default function Settings({props}){
     const user = localStorage.getItem("user")
@@ -15,10 +16,11 @@ export default function Settings({props}){
     const [isLoading, setIsLoading] = useState(false)
     const [isSubmitted, setIsSubmitted] = useState(false)
     const [isLoadingUser, setIsLoadingUser] = useState(true)
+    const [selectedImage, setSelectedImage] = useState(null)
 
     useEffect(() => {
         const fetchdata = async () => {
-            // takes a second to load this
+            // grabs current user info- takes a second to load
             const res = await axiosService.get("authors/" + user)
             setUsername(res.data.displayName)
             setGitHub(res.data.github)
@@ -28,7 +30,6 @@ export default function Settings({props}){
         setIsLoadingUser(false)
     }
     , [])
-
 
     const handleUsernameChange = (event) => {
         setUsername(event.target.value)
@@ -40,24 +41,36 @@ export default function Settings({props}){
 
     const handleProfilePictureChange = (event) => {
         setProfilePicture(event.target.value)
+    };
 
-        const res = axiosService.post("authors/" + user + "/", {
-            profileImage: event.target.value
-        })
-    }
-
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         setIsLoading(true)
         event.preventDefault();
-
-        const res = axiosService.post("authors/" + user + "/", {
-            displayName: username,
-            profilePicture: profilePicture,
-            github: gitHub
-        })
-
-        setIsLoading(false)
-        setIsSubmitted(true)
+    
+        // const formData = new FormData();
+        // formData.append('file', selectedImage);
+    
+        // console.log("formData: ", JSON.stringify(formData));
+        // console.log("selectedImage: ", selectedImage);
+    
+        try {
+            // const imageUploadResponse = await axiosService.post("authors/" + user + "/", formData); // replace with your actual image upload endpoint
+            // const imageUrl = imageUploadResponse.data.profileImage; // replace 'url' with the actual property name in the response
+            // console.log('Image upload successful: ', imageUrl);
+    
+            const res = await axiosService.post("authors/" + user + "/", {
+                displayName: username,
+                profileImage: profilePicture,
+                github: gitHub
+            })
+            console.log("res: ", JSON.stringify(res.data))
+    
+            setIsSubmitted(true)
+        } catch (error) {
+            console.error('Image upload failed:', error);
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return(
@@ -79,11 +92,20 @@ export default function Settings({props}){
                             <label style={{display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '20px'}}>
                                 GitHub Account: 
                                 <input type="text" value={gitHub} style={{marginLeft: '10px'}} onChange={handleGitHubChange}/>
-                            </label>                        
-                            <label style={{...styles.buttonIcon, cursor: 'pointer'}}>
-                                <input type="file" value={profilePicture} style={{display: 'none', marginLeft: '10px'}} onChange={handleProfilePictureChange} />
-                                Choose File
+                            </label>                      
+                            <label style={{display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '5px'}}>
+                                Profile Picture: 
+                                <input type='text' value={profilePicture} style={{marginLeft: '10px'}} onChange={handleProfilePictureChange} />
                             </label>
+                            {selectedImage && (
+                                <img src={selectedImage} alt="Profile" style={{width: '100px', height: '100px'}} />
+                            )}
+                            {/* <label style={{...styles.buttonIcon, cursor: 'pointer'}}>
+                                <input type="file" accept='.jpeg,.jpg,.png' style={{display: 'none', marginLeft: '10px'}} onChange={handleProfilePictureChange} />
+                                    Choose File
+                                </label> */}
+
+                            <div>Image must be jpeg or png</div>
                             <Button 
                                 type="submit" 
                                 isLoading={isLoading} 

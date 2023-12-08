@@ -75,10 +75,10 @@ export default function MyStream({props}){
         <div style={styles.container}>
             <LogoBar/>
             <NavBar current='My Stream'/>
-            <FriendsBar user={user} selectedServer = {"WebWeavers"} UserData = {currentUserData}/>
+            <FriendsBar user={user} selectedServer = {"WebWeavers"}/>
              <div style={{height: "5vh"}}></div> {/*Just to account for height of LogoBar */}
             <Flex flexDir="column" style={styles.profileHeader}>
-                <Avatar marginTop='20px' size="2xl" name={displayName} src="https://bit.ly/tioluwani-kolawole" />
+                <Avatar marginTop='20px' size="2xl" name={displayName} src={profileImage} />
                 <Flex fontSize={sizes.xl} color="black" flexDir="row">
                     <h1>Username: {displayName}</h1>
                 </Flex>
