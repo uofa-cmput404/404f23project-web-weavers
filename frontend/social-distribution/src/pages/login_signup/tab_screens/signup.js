@@ -29,7 +29,7 @@ const validate = values => {
 
     if (!values.password) {
       errors.password = 'Password required';
-    } else if (values.password.length < 8) {
+    }else if (values.password.length < 8) {
       errors.password = 'Must be 8 characters or more';
     }
 
@@ -50,9 +50,11 @@ function Signup() {
             );
             console.log(res.data)
             localStorage.setItem("user", res.data.uuid)
+            alert("New User " + res.data.displayName + " successfully created!")
           })
           .catch((err) => {
             console.log(JSON.stringify(err));
+            alert("Failed to sign up New user. Please try again")
           });
 
 

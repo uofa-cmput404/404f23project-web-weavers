@@ -3,6 +3,7 @@ import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import store from '../store';
 import authSlice from '../store/slices/auth';
 import {API_URL, A_TEAM_URL, BEEG_YOSHI_URL, PACKET_PIRATES_URL} from "../components/api"
+import {useNavigate} from "react-router-dom";
 const usernamePP = 'WebWeavers';
 const passwordPP = '12345';
 const encodedCredentials = btoa(`${usernamePP}:${passwordPP}`);
@@ -64,7 +65,11 @@ axiosService.interceptors.response.use(
             err.response.status,
             err.response.data
         );
-        return Promise.reject(err);
+        if(err.config.status === 401){
+            window.location.href = '/';
+            alert("Your Session has Expired. Please Login again")
+        } else {return Promise.reject(err);}
+
     }
 );
 

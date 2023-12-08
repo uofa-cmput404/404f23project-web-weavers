@@ -58,9 +58,12 @@ export default function CreatePostCard() {
     setShowButtons(!showButtons)
     setWhoSees(!whoSees);
     setShowContent(!showContent);
+    setShowTextContent(!showTextContent)
 
     if(showTextContent){ setShowTextContent(false)}
-    if(showImageContent){ setShowImageContent(false)}
+    if(showImageContent){
+      setShowImageContent(false)
+      setShowTextContent(false)}
   };
 
   const handleFileSelect = (event) => {
@@ -167,6 +170,12 @@ export default function CreatePostCard() {
     axiosService.post(url, fields)
     .then((response) => {
       if (response.status >= 200 && response.status <= 299) {
+
+        if(!response.data.author){
+          alert(JSON.stringify(response.data))
+          return
+        }
+
         console.log("Post created successfully!");
         setIsLoading(false);
         //get all followers

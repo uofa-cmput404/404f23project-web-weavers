@@ -35,6 +35,7 @@ function Login() {
           })
           .catch((err) => {
             console.log(JSON.stringify(err));
+            alert("Error: failed to login. Invalid Credentials used")
           });
   }
   const formik = useFormik({

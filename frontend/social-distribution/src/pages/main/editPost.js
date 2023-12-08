@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import {Flex, Divider, IconButton, Button, Card, Textarea} from '@chakra-ui/react'
+import {Flex, Divider, IconButton, Button, Card, Textarea, RadioGroup, Stack, Radio} from '@chakra-ui/react'
 import {colors, sizes, spacing } from "../../utils/theme";
 import axiosService from "../../utils/axios";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -15,17 +15,33 @@ export function EditPost(){
     const fileInputRef = useRef(null);
   const [imageSrc, setImageSrc] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [visibility, setVisibility] = useState('PUBLIC')
+  const [contentType, setContentType] = useState("text/plain")
+  const [showTextContent, setShowTextContent] = useState(false)
+  const [showImageContent, setShowImageContent] = useState(false)
+  const [contentImageSrc, setContentImageSrc] = useState("")
 
   const getPhoto = () => {
     fileInputRef.current.click();
   };
 
+  const handleContentChange = (event) => {
+    setContentType(event)
+    if(event === "image/png;base64"){
+        setShowImageContent(true)
+        setShowTextContent(false)
+    } else {
+        setShowImageContent(false)
+        setShowTextContent(true)
+    }
+
+  }
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
 
     reader.onload = (event) => {
-      setImageSrc(event.target.result);
+      setContentImageSrc(event.target.result);
     };
 
     reader.readAsDataURL(file);
@@ -33,6 +49,19 @@ export function EditPost(){
 
     const location = useLocation();
     const navigate = useNavigate();
+    useEffect(() => {
+        setVisibility(location.state.postData.visibility)
+        setContentType(location.state.postData.contentType)
+
+        if(location.state.postData.contentType === "image/png;base64"){
+            setContentImageSrc("data:"+location.state.postData.contentType+","+location.state.postData.content)
+            setShowImageContent(true)
+            setShowTextContent(false)
+        } else {
+            setShowImageContent(false)
+            setShowTextContent(true)
+        }
+    }, [])
 
     //If a user has accessed this page without information send them back
     useEffect(() => {
@@ -54,8 +83,15 @@ export function EditPost(){
             categories: location.state.postData.categories,
             visibility: location.state.postData.visibility,
             content: location.state.postData.content,
+            contentType: location.state.postData.contentType,
         },
         onSubmit: values => {
+            values["visibility"] = visibility;
+
+            if(contentType === "image/png;base64"){
+                const imageData= contentImageSrc.split(",")[1]
+                values["content"] = imageData;
+            }
             const url = "authors/" + location.state.postData.id.split("/authors/")[1] + "/"
                 axiosService.post(url, values).then((response) => {
                 navigate("/mystream")
@@ -69,7 +105,6 @@ return (
     <div style={styles.container}>
             <LogoBar/>
             <NavBar current='My Stream'/>
-            <FriendsBar/>
         <div style={styles.content}>
         <div style={styles.postContainer}>
         <Card maxW='md'>
@@ -108,23 +143,36 @@ return (
                 </FormControl>
                 <FormControl>
                 <FormLabel htmlFor="visibility"> Visibility </FormLabel>
-                <Input
-                    id="visibility"
-                    name="visibility"
-                    type="text"
-                    defaultValue = {formik.values.visibility}
-                    onChange={formik.handleChange}
-                    />
-                </FormControl>
+                    <RadioGroup onChange={setVisibility} value={visibility}>
+                    <Stack direction='row'>
+                        <Radio value='PUBLIC'>PUBLIC</Radio>
+                        <Radio value='FRIENDS'>FRIENDS</Radio>
+                        <Radio value='PRIVATE'>PRIVATE</Radio>
+                        <Radio value='UNLISTED'>UNLISTED</Radio>
+                    </Stack>
+                    </RadioGroup>
+                    </FormControl>
+                    <FormControl>
+                <FormLabel htmlFor="contentType"> Please Select Content Type </FormLabel>
+                    <RadioGroup onChange={handleContentChange} value={contentType}>
+                    <Stack direction='row'>
+                        <Radio value='text/plain'>Plain Text</Radio>
+                        <Radio value='text/markdown'>Markdown</Radio>
+                        <Radio value='image/png;base64'>Image</Radio>
+                    </Stack>
+                    </RadioGroup>
+                    </FormControl>
                 <FormControl>
                 <FormLabel htmlFor="content"> Content</FormLabel>
-                <Textarea
-                    id="content"
-                    name="content"
-                    defaultValue = {formik.values.content}
-                    onChange={formik.handleChange}
-                    size='sm'
-                    />
+
+                    {showTextContent && (<Textarea
+                        id="content"
+                        name="content"
+                        defaultValue = {formik.values.content}
+                        onChange={formik.handleChange}
+                        size='sm'
+                        />)}
+                    {showImageContent && (<img src={contentImageSrc} />)}
                 </FormControl>
             </VStack>
             {imageSrc && (
@@ -144,12 +192,13 @@ return (
                 ref={fileInputRef}
                 onChange={handleFileSelect}
                 />
-                <IconButton
-                style={{ ...styles.icons, width: "40px", marginRight: "100px" }}
-                icon={<FiImage />}
-                aria-label="Image Upload"
-                onClick={getPhoto}
-                />
+                {showImageContent && (
+                    <IconButton
+                    style={{ ...styles.icons, width: "40px", marginRight: "100px" }}
+                    icon={<FiImage />}
+                    aria-label="Image Upload"
+                    onClick={getPhoto}
+                    />)}
                 <Button
                 style={{ ...styles.icons, width: "80px", marginLeft: "100px" }}
                 isLoading={isLoading} // Add the isLoading prop to the Button component
