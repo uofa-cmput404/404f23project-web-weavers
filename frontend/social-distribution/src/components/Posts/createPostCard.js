@@ -170,6 +170,12 @@ export default function CreatePostCard() {
     axiosService.post(url, fields)
     .then((response) => {
       if (response.status >= 200 && response.status <= 299) {
+
+        if(!response.data.author){
+          alert(JSON.stringify(response.data))
+          return
+        }
+
         console.log("Post created successfully!");
         setIsLoading(false);
         //get all followers
