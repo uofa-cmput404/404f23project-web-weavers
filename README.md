@@ -121,6 +121,7 @@ Backend: https://packet-pirates-backend-d3f5451fdee4.herokuapp.com/
 Frontend: https://packet-pirates-frontend-46271456b73c.herokuapp.com/
 
 Frontend Username: Jack
+
 Frontend Password: cmput404
 
 
