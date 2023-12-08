@@ -126,7 +126,9 @@ Backend: https://c404-5f70eb0b3255.herokuapp.com/
 
 Frontend: https://c404-5f70eb0b3255.herokuapp.com/
 
-Username and password: TBD
+Username: ww-a-team-demo
+
+Password: 12345678
 
 
 ## Beeg Yoshi Team Connectivity
