@@ -24,9 +24,21 @@ Backend: https://web-weavers-backend-fb4af7963149.herokuapp.com/
 
 Frontend: https://web-weavers-2df78f.netlify.app/
 
-Backend Credentials:
+Video Demo: https://drive.google.com/file/d/1qcvxH0jMAy1QqsKTA7CS-yjd-ldhZvnA/view?usp=sharing
 
-Frontend Credentials:
+
+### Backend Credentials:
+
+Backend Username: web-weavers
+
+Backend password: 12345
+
+
+### Frontend Credentials:
+
+Frontend Username: BadUser
+
+Frontend password: 12345678
 
 User Stories
 ========================
